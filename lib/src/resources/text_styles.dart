@@ -13,7 +13,7 @@ const TextStyle splashText = TextStyle(
 
 const TextStyle loginTitle = TextStyle(
   color: PrimrayColor,
-  fontSize: 35,
+  fontSize: 28,
   fontFamily: 'Poppins',
   fontWeight: FontWeight.w500,
 );

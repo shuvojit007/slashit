@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/text_styles.dart';
-import 'package:slashit/src/view/auth/login_business.dart';
 
-class LoginShopper extends StatefulWidget {
-  static const routeName = "/login_shopper";
+class LoginBusiness extends StatefulWidget {
+  static const routeName = "/login_business";
   @override
-  _LoginShopperState createState() => _LoginShopperState();
+  _LoginBusinessState createState() => _LoginBusinessState();
 }
 
-class _LoginShopperState extends State<LoginShopper> {
+class _LoginBusinessState extends State<LoginBusiness> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   ProgressDialog _pr;
@@ -45,7 +44,7 @@ class _LoginShopperState extends State<LoginShopper> {
           Padding(
             padding: EdgeInsets.only(left: 20, bottom: 10),
             child: Text(
-              "Login",
+              "Help your customer pay you easily",
               style: loginTitle,
             ),
           ),
@@ -68,22 +67,6 @@ class _LoginShopperState extends State<LoginShopper> {
             child: Center(child: Text("Sign Up", style: SignupStyle)),
           ),
           SizedBox(height: 10),
-          Container(
-            margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
-            child: Divider(color: Colors.black26),
-          ),
-          Center(
-              child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text("Business account ? Sign in ", style: goToSignUp),
-              GestureDetector(
-                onTap: () =>
-                    Navigator.pushNamed(context, LoginBusiness.routeName),
-                child: Text("here", style: goToSignUpBlue),
-              )
-            ],
-          )),
         ],
       ),
     );
