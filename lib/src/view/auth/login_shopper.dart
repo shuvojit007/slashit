@@ -15,12 +15,13 @@ class _LoginShopperState extends State<LoginShopper> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   ProgressDialog _pr;
-
+ bool _showPassword;
   @override
   void initState() {
     _pr = ProgressDialog(context, type: ProgressDialogType.Normal);
     // TODO: implement initState
     super.initState();
+    _showPassword = true;
   }
 
   @override
@@ -120,7 +121,7 @@ class _LoginShopperState extends State<LoginShopper> {
       ),
       child: TextField(
         controller: _passwordController,
-        obscureText: true,
+        obscureText: _showPassword,
         decoration: InputDecoration(
           labelText: "Password",
           focusedBorder: OutlineInputBorder(
@@ -128,6 +129,16 @@ class _LoginShopperState extends State<LoginShopper> {
           ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.black, width: 2.0),
+          ),
+          suffixIcon: IconButton(
+              icon: Icon(
+               _showPassword ?
+              Icons.remove_red_eye: Icons.visibility_off,
+            color: _showPassword ? Colors.blue : Colors.grey,
+          ),
+          onPressed: (){
+            setState(()=> _showPassword = !_showPassword);
+          } 
           ),
         ),
         cursorColor: appbartitle,

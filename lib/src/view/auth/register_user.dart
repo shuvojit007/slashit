@@ -205,7 +205,6 @@ class _RegisterUserState extends State<RegisterUser> {
         obscureText: _showPassword,
         decoration: InputDecoration(
           labelText: "Password",
-          // prefixIcon: Icon(Icons.security),
           suffixIcon: IconButton(
               icon: Icon(
                _showPassword ?
