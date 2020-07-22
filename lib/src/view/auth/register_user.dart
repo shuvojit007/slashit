@@ -53,10 +53,30 @@ class _RegisterUserState extends State<RegisterUser> {
           _userName(),
           SizedBox(height: 30),
           _userEmail(),
-          SizedBox(height: 16),
+          SizedBox(height: 30),
           _userPass(),
-          SizedBox(height: 20),
+          SizedBox(height: 30),
            _userConfirmPass(),
+          SizedBox(height: 10),
+          Container(
+            padding: EdgeInsets.only(left: 20, right: 20),
+              child: Wrap(
+            children: <Widget>[
+              Text("By signing up you agree to Slashit ", style: termsAndCondition),
+              GestureDetector(
+                onTap: () =>{},
+                    // Navigator.pushNamed(context, LoginShopper.routeName),
+                child: Text("Terms of Service", style: goToSignUpBlue),
+              ),
+              Text(" and ", style: termsAndCondition),
+              GestureDetector(
+                onTap: () =>{},
+                    // Navigator.pushNamed(context, LoginShopper.routeName),
+                child: Text("Privacy Policy", style: goToSignUpBlue),
+              )
+            ],
+          ),
+          ),
           SizedBox(height: 20),
           _signInButton(),
           SizedBox(height: 10),

@@ -39,6 +39,12 @@ const TextStyle goToSignUp = TextStyle(
   fontWeight: FontWeight.normal,
 );
 
+const TextStyle termsAndCondition = TextStyle(
+  color: Colors.black54,
+  fontSize: size_14,
+  fontWeight: FontWeight.normal,
+);
+
 const TextStyle createAccount = TextStyle(
   color: Colors.black,
   fontSize: size_24,
