@@ -89,6 +89,7 @@ class _LoginBusinessState extends State<LoginBusiness> {
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.black, width: 2.0),
           ),
+          prefixIcon: Icon(Icons.mail_outline),
         ),
         cursorColor: appbartitle,
       ),
@@ -112,6 +113,7 @@ class _LoginBusinessState extends State<LoginBusiness> {
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.black, width: 2.0),
           ),
+          prefixIcon: Icon(Icons.lock_outline),
           suffixIcon: IconButton(
               icon: Icon(
                _showPassword ?

@@ -158,6 +158,7 @@ class _RegisterUserState extends State<RegisterUser> {
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.black, width: 2.0),
           ),
+           prefixIcon: Icon(Icons.supervised_user_circle),
         ),
         cursorColor: appbartitle,
       ),
@@ -184,6 +185,7 @@ class _RegisterUserState extends State<RegisterUser> {
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.black, width: 2.0),
           ),
+           prefixIcon: Icon(Icons.mail_outline),
         ),
         cursorColor: appbartitle,
       ),
@@ -205,6 +207,7 @@ class _RegisterUserState extends State<RegisterUser> {
         obscureText: _showPassword,
         decoration: InputDecoration(
           labelText: "Password",
+           prefixIcon: Icon(Icons.lock_outline),
           suffixIcon: IconButton(
               icon: Icon(
                _showPassword ?
@@ -247,6 +250,7 @@ class _RegisterUserState extends State<RegisterUser> {
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.black, width: 2.0),
           ),
+           prefixIcon: Icon(Icons.lock_outline),
           suffixIcon: IconButton(
               icon: Icon(
                _showConfirmPassword ?
