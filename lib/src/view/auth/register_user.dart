@@ -12,7 +12,9 @@ class RegisterUser extends StatefulWidget {
 
 class _RegisterUserState extends State<RegisterUser> {
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
   ProgressDialog _pr;
 
   @override
@@ -32,6 +34,7 @@ class _RegisterUserState extends State<RegisterUser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -108,7 +111,7 @@ _userName() {
         right: 20,
       ),
       child: TextField(
-        controller: _emailController,
+        controller: _nameController,
         decoration: InputDecoration(
           labelText: "Name",
           focusedBorder: OutlineInputBorder(
@@ -173,7 +176,8 @@ _userName() {
         right: 20,
       ),
       child: TextField(
-        controller: _emailController,
+        controller: _confirmPasswordController,
+        obscureText: true,
         decoration: InputDecoration(
           labelText: "Confirm Password",
           focusedBorder: OutlineInputBorder(
