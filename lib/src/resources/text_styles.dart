@@ -39,6 +39,12 @@ const TextStyle goToSignUp = TextStyle(
   fontWeight: FontWeight.normal,
 );
 
+const TextStyle createAccount = TextStyle(
+  color: Colors.black,
+  fontSize: size_24,
+  fontWeight: FontWeight.w500,
+);
+
 const TextStyle goToSignUpBlue = TextStyle(
   color: PrimrayColor,
   fontSize: size_16,

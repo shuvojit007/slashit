@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/text_styles.dart';
-import 'package:slashit/src/view/auth/login_business.dart';
-import 'package:slashit/src/view/auth/register_user.dart';
+import 'package:slashit/src/view/auth/login_shopper.dart';
 
-class LoginShopper extends StatefulWidget {
-  static const routeName = "/login_shopper";
+class RegisterUser extends StatefulWidget {
+  static const routeName = "/register";
   @override
-  _LoginShopperState createState() => _LoginShopperState();
+  _RegisterUserState createState() => _RegisterUserState();
 }
 
-class _LoginShopperState extends State<LoginShopper> {
+class _RegisterUserState extends State<RegisterUser> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   ProgressDialog _pr;
@@ -43,31 +42,23 @@ class _LoginShopperState extends State<LoginShopper> {
                   icon: Icon(Icons.keyboard_backspace, color: PrimrayColor),
                   onPressed: () => Navigator.pop(context))),
           SizedBox(height: 20),
-          Padding(
-            padding: EdgeInsets.only(left: 20, bottom: 10),
-            child: Text(
-              "Login",
-              style: loginTitle,
-            ),
-          ),
+          Center(
+              child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text("Create Account", style: createAccount),
+            ],
+          )),
+          SizedBox(height: 30),
+          _userName(),
           SizedBox(height: 30),
           _userEmail(),
           SizedBox(height: 16),
           _userPass(),
-          SizedBox(height: 24),
-          GestureDetector(
-            onTap: () => {},
-            child: Padding(
-                padding: EdgeInsets.only(left: 20),
-                child: Text("Forget Password ?", style: forgotPass)),
-          ),
+          SizedBox(height: 20),
+           _userConfirmPass(),
           SizedBox(height: 20),
           _signInButton(),
-          SizedBox(height: 24),
-          GestureDetector(
-            onTap: () => Navigator.pushNamed(context, RegisterUser.routeName),
-            child: Center(child: Text("Sign Up", style: SignupStyle)),
-          ),
           SizedBox(height: 10),
           Container(
             margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
@@ -77,10 +68,10 @@ class _LoginShopperState extends State<LoginShopper> {
               child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text("Business account ? Sign in ", style: goToSignUp),
+              Text("Already have an account ? Sign in ", style: goToSignUp),
               GestureDetector(
                 onTap: () =>
-                    Navigator.pushNamed(context, LoginBusiness.routeName),
+                    Navigator.pushNamed(context, LoginShopper.routeName),
                 child: Text("here", style: goToSignUpBlue),
               )
             ],
@@ -90,6 +81,27 @@ class _LoginShopperState extends State<LoginShopper> {
     );
   }
 
+_userName() {
+    return Padding(
+      padding: EdgeInsets.only(
+        left: 20,
+        right: 20,
+      ),
+      child: TextField(
+        controller: _emailController,
+        decoration: InputDecoration(
+          labelText: "Name",
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: PrimrayColor, width: 2.0),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.black, width: 2.0),
+          ),
+        ),
+        cursorColor: appbartitle,
+      ),
+    );
+  }
   _userEmail() {
     return Padding(
       padding: EdgeInsets.only(
@@ -134,6 +146,27 @@ class _LoginShopperState extends State<LoginShopper> {
       ),
     );
   }
+  _userConfirmPass() {
+    return Padding(
+      padding: EdgeInsets.only(
+        left: 20,
+        right: 20,
+      ),
+      child: TextField(
+        controller: _emailController,
+        decoration: InputDecoration(
+          labelText: "Confirm Password",
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: PrimrayColor, width: 2.0),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.black, width: 2.0),
+          ),
+        ),
+        cursorColor: appbartitle,
+      ),
+    );
+  }
 
   _signInButton() {
     return Center(
@@ -142,7 +175,7 @@ class _LoginShopperState extends State<LoginShopper> {
       height: 45.0,
       child: RaisedButton(
           onPressed: _onFormSubmitted,
-          child: Text('Sign In', style: SignInStyle),
+          child: Text('Register', style: SignInStyle),
           color: PrimrayColor,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20.0))),
