@@ -222,13 +222,6 @@ class _RegisterUserState extends State<RegisterUser> {
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.black, width: 2.0),
           ),
-          // prefixIcon: Align(
-          //   alignment: Alignment.centerRight,
-          //   child: Padding(
-          //     padding: EdgeInsets.only(right: 10),
-          //     child: Icon(Icons.remove_red_eye),
-          //     ),
-          // ),
         ),
         cursorColor: appbartitle,
       ),
