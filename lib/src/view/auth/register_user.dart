@@ -23,13 +23,21 @@ class _RegisterUserState extends State<RegisterUser> {
     'password': '',
     'confirmPassword': '',
   };
+
+  //state value initilize
   bool _isDisabled;
+  bool _showPassword;
+  bool _showConfirmPassword;
+
+
   @override
   void initState() {
     _pr = ProgressDialog(context, type: ProgressDialogType.Normal);
     // TODO: implement initState
     super.initState();
     _isDisabled = true;
+    _showPassword = true;
+    _showConfirmPassword = true;
   }
 
   @override
@@ -43,14 +51,14 @@ class _RegisterUserState extends State<RegisterUser> {
     setState(() {
       _inputObj[type] = text;
     });
-    if (_inputObj['email'] == '' || _inputObj['password'] != _inputObj['confirmPassword'] ||  _inputObj['password']=='') {
+    if (_inputObj['email'] == '' ||
+        _inputObj['password'] != _inputObj['confirmPassword'] ||
+        _inputObj['password'] == '') {
       setState(() {
         _isDisabled = true;
       });
       print('email');
-
-    }
-    else {
+    } else {
       setState(() {
         _isDisabled = false;
       });
@@ -194,15 +202,33 @@ class _RegisterUserState extends State<RegisterUser> {
           handleInput('password', text);
         },
         // onChanged: handleInput,
-        obscureText: true,
+        obscureText: _showPassword,
         decoration: InputDecoration(
           labelText: "Password",
+          // prefixIcon: Icon(Icons.security),
+          suffixIcon: IconButton(
+              icon: Icon(
+               _showPassword ?
+              Icons.remove_red_eye: Icons.visibility_off,
+            color: _showPassword ? Colors.blue : Colors.grey,
+          ),
+          onPressed: (){
+            setState(()=> _showPassword = !_showPassword);
+          } 
+          ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: PrimrayColor, width: 2.0),
           ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.black, width: 2.0),
           ),
+          // prefixIcon: Align(
+          //   alignment: Alignment.centerRight,
+          //   child: Padding(
+          //     padding: EdgeInsets.only(right: 10),
+          //     child: Icon(Icons.remove_red_eye),
+          //     ),
+          // ),
         ),
         cursorColor: appbartitle,
       ),
@@ -217,7 +243,7 @@ class _RegisterUserState extends State<RegisterUser> {
       ),
       child: TextField(
         controller: _confirmPasswordController,
-        obscureText: true,
+        obscureText: _showConfirmPassword,
         onChanged: (text) {
           handleInput('confirmPassword', text);
         },
@@ -228,6 +254,16 @@ class _RegisterUserState extends State<RegisterUser> {
           ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.black, width: 2.0),
+          ),
+          suffixIcon: IconButton(
+              icon: Icon(
+               _showConfirmPassword ?
+              Icons.remove_red_eye: Icons.visibility_off,
+            color: _showConfirmPassword ? Colors.blue : Colors.grey,
+          ),
+          onPressed: (){
+            setState(()=> _showConfirmPassword = !_showConfirmPassword);
+          } 
           ),
         ),
         cursorColor: appbartitle,
