@@ -14,14 +14,22 @@ class _RegisterUserState extends State<RegisterUser> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   ProgressDialog _pr;
-
+  var _inputObj = {
+    'name': '',
+    'email': '',
+    'password': '',
+    'confirmPassword': '',
+  };
+  bool _isDisabled;
   @override
   void initState() {
     _pr = ProgressDialog(context, type: ProgressDialogType.Normal);
     // TODO: implement initState
     super.initState();
+    _isDisabled = true;
   }
 
   @override
@@ -29,6 +37,24 @@ class _RegisterUserState extends State<RegisterUser> {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  handleInput(type, text) {
+    setState(() {
+      _inputObj[type] = text;
+    });
+    if (_inputObj['email'] == '' || _inputObj['password'] != _inputObj['confirmPassword'] ||  _inputObj['password']=='') {
+      setState(() {
+        _isDisabled = true;
+      });
+      print('email');
+
+    }
+    else {
+      setState(() {
+        _isDisabled = false;
+      });
+    }
   }
 
   @override
@@ -59,26 +85,27 @@ class _RegisterUserState extends State<RegisterUser> {
           SizedBox(height: 30),
           _userPass(),
           SizedBox(height: 30),
-           _userConfirmPass(),
+          _userConfirmPass(),
           SizedBox(height: 10),
           Container(
             padding: EdgeInsets.only(left: 20, right: 20),
-              child: Wrap(
-            children: <Widget>[
-              Text("By signing up you agree to Slashit ", style: termsAndCondition),
-              GestureDetector(
-                onTap: () =>{},
-                    // Navigator.pushNamed(context, LoginShopper.routeName),
-                child: Text("Terms of Service", style: goToSignUpBlue),
-              ),
-              Text(" and ", style: termsAndCondition),
-              GestureDetector(
-                onTap: () =>{},
-                    // Navigator.pushNamed(context, LoginShopper.routeName),
-                child: Text("Privacy Policy", style: goToSignUpBlue),
-              )
-            ],
-          ),
+            child: Wrap(
+              children: <Widget>[
+                Text("By signing up you agree to Slashit ",
+                    style: termsAndCondition),
+                GestureDetector(
+                  onTap: () => {},
+                  // Navigator.pushNamed(context, LoginShopper.routeName),
+                  child: Text("Terms of Service", style: goToSignUpBlue),
+                ),
+                Text(" and ", style: termsAndCondition),
+                GestureDetector(
+                  onTap: () => {},
+                  // Navigator.pushNamed(context, LoginShopper.routeName),
+                  child: Text("Privacy Policy", style: goToSignUpBlue),
+                )
+              ],
+            ),
           ),
           SizedBox(height: 20),
           _signInButton(),
@@ -104,7 +131,7 @@ class _RegisterUserState extends State<RegisterUser> {
     );
   }
 
-_userName() {
+  _userName() {
     return Padding(
       padding: EdgeInsets.only(
         left: 20,
@@ -112,6 +139,9 @@ _userName() {
       ),
       child: TextField(
         controller: _nameController,
+        onChanged: (text) {
+          handleInput('name', text);
+        },
         decoration: InputDecoration(
           labelText: "Name",
           focusedBorder: OutlineInputBorder(
@@ -125,6 +155,7 @@ _userName() {
       ),
     );
   }
+
   _userEmail() {
     return Padding(
       padding: EdgeInsets.only(
@@ -133,6 +164,10 @@ _userName() {
       ),
       child: TextField(
         controller: _emailController,
+        onChanged: (text) {
+          handleInput('email', text);
+        },
+        // onChanged: handleInput,
         decoration: InputDecoration(
           labelText: "Email",
           focusedBorder: OutlineInputBorder(
@@ -155,6 +190,10 @@ _userName() {
       ),
       child: TextField(
         controller: _passwordController,
+        onChanged: (text) {
+          handleInput('password', text);
+        },
+        // onChanged: handleInput,
         obscureText: true,
         decoration: InputDecoration(
           labelText: "Password",
@@ -169,6 +208,7 @@ _userName() {
       ),
     );
   }
+
   _userConfirmPass() {
     return Padding(
       padding: EdgeInsets.only(
@@ -178,6 +218,9 @@ _userName() {
       child: TextField(
         controller: _confirmPasswordController,
         obscureText: true,
+        onChanged: (text) {
+          handleInput('confirmPassword', text);
+        },
         decoration: InputDecoration(
           labelText: "Confirm Password",
           focusedBorder: OutlineInputBorder(
@@ -198,7 +241,7 @@ _userName() {
       width: 290,
       height: 45.0,
       child: RaisedButton(
-          onPressed: _onFormSubmitted,
+          onPressed: _isDisabled ? null : _onFormSubmitted,
           child: Text('Register', style: SignInStyle),
           color: PrimrayColor,
           shape: RoundedRectangleBorder(
