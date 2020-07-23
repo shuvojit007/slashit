@@ -4,6 +4,7 @@ import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/text_styles.dart';
 import 'package:slashit/src/view/auth/login_business.dart';
 import 'package:slashit/src/view/auth/register_user.dart';
+import 'package:slashit/src/view/private/upcoming.dart';
 
 class LoginShopper extends StatefulWidget {
   static const routeName = "/login_shopper";
@@ -154,11 +155,11 @@ class _LoginShopperState extends State<LoginShopper> {
       width: 290,
       height: 45.0,
       child: RaisedButton(
-          onPressed: _onFormSubmitted,
+          onPressed:  () => Navigator.pushNamed(context, UpcomingPayment.routeName),
           child: Text('Sign In', style: SignInStyle),
           color: PrimrayColor,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20.0))),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0))
+          ),
     ));
   }
 

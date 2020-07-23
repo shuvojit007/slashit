@@ -68,73 +68,74 @@ class _RegisterUserState extends State<RegisterUser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          SizedBox(height: 40),
-          Padding(
-              padding: EdgeInsets.only(top: 10, left: 10),
-              child: IconButton(
-                  icon: Icon(Icons.keyboard_backspace, color: PrimrayColor),
-                  onPressed: () => Navigator.pop(context))),
-          SizedBox(height: 20),
-          Center(
-              child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text("Create Account", style: createAccount),
-            ],
-          )),
-          SizedBox(height: 30),
-          _userName(),
-          SizedBox(height: 30),
-          _userEmail(),
-          SizedBox(height: 30),
-          _userPass(),
-          SizedBox(height: 30),
-          _userConfirmPass(),
-          SizedBox(height: 10),
-          Container(
-            padding: EdgeInsets.only(left: 20, right: 20),
-            child: Wrap(
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            SizedBox(height: 40),
+            Padding(
+                padding: EdgeInsets.only(top: 10, left: 10),
+                child: IconButton(
+                    icon: Icon(Icons.keyboard_backspace, color: PrimrayColor),
+                    onPressed: () => Navigator.pop(context))),
+            SizedBox(height: 20),
+            Center(
+                child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text("By signing up you agree to Slashit ",
-                    style: termsAndCondition),
+                Text("Create Account", style: createAccount),
+              ],
+            )),
+            SizedBox(height: 30),
+            _userName(),
+            SizedBox(height: 30),
+            _userEmail(),
+            SizedBox(height: 30),
+            _userPass(),
+            SizedBox(height: 30),
+            _userConfirmPass(),
+            SizedBox(height: 10),
+            Container(
+              padding: EdgeInsets.only(left: 20, right: 20),
+              child: Wrap(
+                children: <Widget>[
+                  Text("By signing up you agree to Slashit ",
+                      style: termsAndCondition),
+                  GestureDetector(
+                    onTap: () => {},
+                    // Navigator.pushNamed(context, LoginShopper.routeName),
+                    child: Text("Terms of Service", style: goToSignUpBlue),
+                  ),
+                  Text(" and ", style: termsAndCondition),
+                  GestureDetector(
+                    onTap: () => {},
+                    // Navigator.pushNamed(context, LoginShopper.routeName),
+                    child: Text("Privacy Policy", style: goToSignUpBlue),
+                  )
+                ],
+              ),
+            ),
+            SizedBox(height: 20),
+            _signInButton(),
+            SizedBox(height: 10),
+            Container(
+              margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
+              child: Divider(color: Colors.black26),
+            ),
+            Center(
+                child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text("Already have an account ? Sign in ", style: goToSignUp),
                 GestureDetector(
-                  onTap: () => {},
-                  // Navigator.pushNamed(context, LoginShopper.routeName),
-                  child: Text("Terms of Service", style: goToSignUpBlue),
-                ),
-                Text(" and ", style: termsAndCondition),
-                GestureDetector(
-                  onTap: () => {},
-                  // Navigator.pushNamed(context, LoginShopper.routeName),
-                  child: Text("Privacy Policy", style: goToSignUpBlue),
+                  onTap: () =>
+                      Navigator.pushNamed(context, LoginShopper.routeName),
+                  child: Text("here", style: goToSignUpBlue),
                 )
               ],
-            ),
-          ),
-          SizedBox(height: 20),
-          _signInButton(),
-          SizedBox(height: 10),
-          Container(
-            margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
-            child: Divider(color: Colors.black26),
-          ),
-          Center(
-              child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text("Already have an account ? Sign in ", style: goToSignUp),
-              GestureDetector(
-                onTap: () =>
-                    Navigator.pushNamed(context, LoginShopper.routeName),
-                child: Text("here", style: goToSignUpBlue),
-              )
-            ],
-          )),
-        ],
+            )),
+          ],
+        ),
       ),
     );
   }
