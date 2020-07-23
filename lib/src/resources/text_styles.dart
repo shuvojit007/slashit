@@ -46,7 +46,7 @@ const TextStyle termsAndCondition = TextStyle(
 );
 
 const TextStyle createAccount = TextStyle(
-  color: Colors.black,
+  color: Colors.white,
   fontSize: size_24,
   fontWeight: FontWeight.w500,
 );

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:progress_dialog/progress_dialog.dart';
-import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/text_styles.dart';
 
 class UpcomingPayment extends StatefulWidget {
@@ -11,8 +11,9 @@ class UpcomingPayment extends StatefulWidget {
 
 class _UpcomingPayment extends State<UpcomingPayment> {
   ProgressDialog _pr;
-  final List data = [{'date': '201454', 'amount': '100'}];
-
+  final List data = [
+    {'date': '201454', 'amount': '100'}
+  ];
 
   @override
   void initState() {
@@ -29,66 +30,42 @@ class _UpcomingPayment extends State<UpcomingPayment> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        appBar: AppBar(
+          title: Text("Upcoming Repayment", style: createAccount),
+          centerTitle: true,
+        ),
+        body: ListView.builder(
+          itemCount: 20,
+          itemBuilder: (context, index) => _cardView(),
+        ));
+  }
+
+  Widget _cardView() {
+    return Card(
+      elevation: 3,
+      child: Container(
+        decoration: const BoxDecoration(
+            shape: BoxShape.rectangle,
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        height: 100,
+        width: 100,
+        child: Stack(
           children: <Widget>[
-            SizedBox(height: 40),
+            const Padding(
+              child: Text("Amount"),
+              padding: const EdgeInsets.only(top: 15, left: 15),
+            ),
             Padding(
-                padding: EdgeInsets.only(top: 10, left: 10),
-                child: IconButton(
-                    icon: Icon(Icons.keyboard_backspace, color: PrimrayColor),
-                    onPressed: () => Navigator.pop(context))),
-            SizedBox(height: 20),
-            Center(
-                child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text("Upcoming Repayment", style: createAccount),
-              ],
-            )),
-            SizedBox(height: 30),
-            ListView.builder(
-                itemCount: data.length,
-                itemBuilder: (context,index)=>UpComingData(jsonObject: data[index]),
-                )
+              padding: const EdgeInsets.only(top: 15, right: 15),
+              child: Align(
+                alignment: Alignment.topRight,
+                child: Text("10 PM"),
+              ),
+            )
           ],
         ),
       ),
     );
-  }
-}
-
-
-class UpComingData extends StatefulWidget  {
- final Map<String, String> jsonObject;
-
-  UpComingData({this.jsonObject});
-
-  @override
-  _UpComingData createState() => _UpComingData();
-}
-
-class _UpComingData extends State<UpComingData> {
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Container(
-        child: Row(children: makeWidgetChildren(widget.jsonObject)),
-      ),
-    );
-  }
-
-  List<Widget> makeWidgetChildren(jsonObject) {
-    List<Widget> children = [];
-    jsonObject.keys.forEach(
-      (key) => {
-        children.add(
-          Padding(
-              child: Text('${jsonObject[key]}'), padding: EdgeInsets.all(8.0)),
-        )
-      },
-    );
-    return children;
   }
 }
