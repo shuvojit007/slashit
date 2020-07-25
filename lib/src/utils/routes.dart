@@ -3,6 +3,7 @@ import 'package:slashit/src/view/auth/login_business.dart';
 import 'package:slashit/src/view/auth/login_shopper.dart';
 import 'package:slashit/src/view/auth/register_user.dart';
 import 'package:slashit/src/view/home.dart';
+import 'package:slashit/src/view/pages/create_payment.dart';
 import 'package:slashit/src/view/private/upcoming.dart';
 import 'package:slashit/src/view/splash.dart';
 
@@ -13,7 +14,7 @@ class Routes {
   static const LOGINBUSINESS = LoginBusiness.routeName;
   static const REGISTERUSER = RegisterUser.routeName;
   static const UPCOMINGPAYMENT = UpcomingPayment.routeName;
-
+  static const CREATEPAYMENTS = CreatePayemts.routeName;
   final route = <String, WidgetBuilder>{
     Routes.HOME: (context) => Home(),
     Routes.root: (context) => Splash(),
@@ -21,5 +22,6 @@ class Routes {
     Routes.LOGINBUSINESS: (context) => LoginBusiness(),
     Routes.REGISTERUSER: (context) => RegisterUser(),
     Routes.UPCOMINGPAYMENT: (context) => UpcomingPayment(),
+    Routes.CREATEPAYMENTS: (context) => CreatePayemts(),
   };
 }

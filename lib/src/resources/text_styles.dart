@@ -56,3 +56,56 @@ const TextStyle goToSignUpBlue = TextStyle(
   fontSize: size_16,
   fontWeight: FontWeight.normal,
 );
+
+const TextStyle userTitle = TextStyle(
+  color: Colors.black,
+  fontSize: 16,
+  fontWeight: FontWeight.w600,
+);
+
+const TextStyle shopperText1 = TextStyle(
+  color: Colors.white,
+  fontSize: size_18,
+  fontWeight: FontWeight.normal,
+);
+
+const TextStyle shopperText2 = TextStyle(
+  color: Colors.black,
+  fontSize: size_32,
+  fontWeight: FontWeight.w500,
+);
+const TextStyle shopperText3 = TextStyle(
+  color: Colors.blue,
+  fontSize: size_18,
+  fontWeight: FontWeight.normal,
+);
+const TextStyle shopperText4 = TextStyle(
+  color: Colors.black87,
+  fontSize: size_18,
+  fontWeight: FontWeight.w500,
+);
+
+const TextStyle shopperText5 = TextStyle(
+  color: Colors.blue,
+  decoration: TextDecoration.underline,
+  fontSize: size_16,
+  fontWeight: FontWeight.normal,
+);
+
+const TextStyle barcodeText = TextStyle(
+  color: Colors.black87,
+  fontSize: size_16,
+  fontWeight: FontWeight.normal,
+);
+//=========business
+const TextStyle businessText1 = TextStyle(
+  color: Colors.black,
+  fontSize: size_14,
+  fontWeight: FontWeight.normal,
+);
+
+const TextStyle businessText2 = TextStyle(
+  color: Colors.black,
+  fontSize: size_16,
+  fontWeight: FontWeight.normal,
+);
