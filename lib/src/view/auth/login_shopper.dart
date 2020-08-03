@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:slashit/src/repository/user_repository.dart';
 import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/text_styles.dart';
-import 'package:slashit/src/service/graph_api.dart';
+import 'package:slashit/src/utils/showToast.dart';
+import 'package:slashit/src/utils/validators.dart';
 import 'package:slashit/src/view/auth/login_business.dart';
 import 'package:slashit/src/view/auth/register_user.dart';
 import 'package:slashit/src/view/home.dart';
@@ -22,9 +23,8 @@ class _LoginShopperState extends State<LoginShopper> {
   @override
   void initState() {
     _pr = ProgressDialog(context, type: ProgressDialogType.Normal);
-    // TODO: implement initState
-    super.initState();
     _showPassword = true;
+    super.initState();
   }
 
   @override
@@ -157,7 +157,7 @@ class _LoginShopperState extends State<LoginShopper> {
       width: 290,
       height: 45.0,
       child: RaisedButton(
-          onPressed: () => Navigator.pushNamed(context, Home.routeName),
+          onPressed: handleInput,
           child: Text('Sign In', style: SignInStyle),
           color: PrimrayColor,
           shape: RoundedRectangleBorder(
@@ -165,42 +165,20 @@ class _LoginShopperState extends State<LoginShopper> {
     ));
   }
 
-  _onFormSubmitted() {
-    return Mutation(
-      options: MutationOptions(
-        documentNode:
-            gql(GraphApi.login), // this is the mutation string you just created
-        // you can update the cache based on results
-        update: (Cache cache, QueryResult result) {
-          return cache;
-        },
-        // or do something with the result.data on completion
-        onCompleted: (dynamic resultData) {
-          LazyCacheMap map = resultData.get("Login");
-          map.forEach((key, value) {
-            print("key $key  value $value");
-          });
-        },
-      ),
-      builder: (
-        RunMutation runMutation,
-        QueryResult result,
-      ) {
-        return Center(
-            child: Container(
-          width: 290,
-          height: 45.0,
-          child: RaisedButton(
-              onPressed: () => runMutation({
-                    'email': "shuvojitkar241@gmail.com",
-                    'password': "123456798"
-                  }),
-              child: Text('Sign In', style: SignInStyle),
-              color: PrimrayColor,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0))),
-        ));
-      },
-    );
+  handleInput() async {
+    if (Validators.isValidEmail(_emailController.text) &&
+        Validators.isValidPassword(_passwordController.text)) {
+      FocusScope.of(context).requestFocus(FocusNode());
+      _pr.show();
+      bool result = await UserRepository.instance
+          .authUser(_emailController.text, _passwordController.text, true);
+      _pr.hide();
+      if (result) {
+        Navigator.pushNamedAndRemoveUntil(
+            context, Home.routeName, (route) => false);
+      }
+    } else {
+      showToastMsg("Some add valid input");
+    }
   }
 }

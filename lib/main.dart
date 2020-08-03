@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:slashit/src/di/locator.dart';
-import 'package:slashit/src/service/client.dart';
+import 'package:slashit/src/graphql/client.dart';
 import 'package:slashit/src/utils/routes.dart';
 
 Future<void> main() async {
@@ -15,11 +15,12 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
+  GraphQLConfiguration graphQLConfig = new GraphQLConfiguration();
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return GraphQLProvider(
-        client: Config.initailizeClient(),
+        client: graphQLConfig.client,
         child: MaterialApp(
           title: 'Slashit',
           theme: ThemeData(

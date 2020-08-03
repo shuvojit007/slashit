@@ -2,6 +2,7 @@ import 'package:barcode_flutter/barcode_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:slashit/src/repository/user_repository.dart';
 import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/str.dart';
 import 'package:slashit/src/resources/text_styles.dart';
@@ -61,7 +62,9 @@ class _ShopperState extends State<Shopper> {
               height: 20,
             ),
             OutlineButton(
-              onPressed: () {},
+              onPressed: () async {
+                UserRepository.instance.feachFeatures();
+              },
               shape: StadiumBorder(),
               borderSide: BorderSide(
                   color: Colors.grey, width: 1, style: BorderStyle.solid),

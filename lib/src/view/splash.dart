@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:slashit/src/di/locator.dart';
+import 'package:slashit/src/graphql/client.dart';
 import 'package:slashit/src/resources/text_styles.dart';
+import 'package:slashit/src/utils/prefmanager.dart';
 import 'package:slashit/src/view/auth/login_shopper.dart';
+
+import 'home.dart';
 
 class Splash extends StatefulWidget {
   static const routeName = "/";
@@ -24,8 +29,14 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
     controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         controller.dispose();
-        Navigator.pushNamedAndRemoveUntil(
-            context, LoginShopper.routeName, (route) => false);
+        if (locator<PrefManager>().token != null) {
+          GraphQLConfiguration.setToken(locator<PrefManager>().token);
+          Navigator.pushNamedAndRemoveUntil(
+              context, Home.routeName, (route) => false);
+        } else {
+          Navigator.pushNamedAndRemoveUntil(
+              context, LoginShopper.routeName, (route) => false);
+        }
       } else if (status == AnimationStatus.dismissed) {}
     });
   }

@@ -11,7 +11,9 @@ class Validators {
   }
 
   static isValidPassword(String password) {
-    return _passwordRegExp.hasMatch(password);
-    //return true;
+    if (!password.isEmpty && password.length > 4) {
+      return true;
+    }
+    return false;
   }
 }
