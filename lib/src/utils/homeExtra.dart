@@ -2,19 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Option {
-  const Option({this.title, this.icon});
+  const Option({this.title, this.id, this.icon});
 
   final String title;
+  final String id;
   final IconData icon;
 }
 
 const List<Option> shopper = const <Option>[
-  const Option(title: 'Transactions', icon: FontAwesomeIcons.moneyBill),
-  const Option(title: 'Sign Out', icon: FontAwesomeIcons.signOutAlt),
+  const Option(
+      title: 'Transactions',
+      id: "transactions",
+      icon: FontAwesomeIcons.moneyBill),
+  const Option(
+      title: 'Manage Cards', id: "cards", icon: FontAwesomeIcons.creditCard),
+  const Option(
+      title: 'Sign Out', id: "signout", icon: FontAwesomeIcons.signOutAlt),
 ];
 
 const List<Option> business = const <Option>[
-  const Option(title: 'Transactions', icon: FontAwesomeIcons.moneyBill),
-  const Option(title: 'Payment History', icon: FontAwesomeIcons.history),
-  const Option(title: 'Sign Out', icon: FontAwesomeIcons.signOutAlt),
+  const Option(
+      title: 'Transactions',
+      id: "transactions",
+      icon: FontAwesomeIcons.moneyBill),
+  const Option(
+      title: 'Payment History', id: "payment", icon: FontAwesomeIcons.history),
+  const Option(
+      title: 'Sign Out', id: "signout", icon: FontAwesomeIcons.signOutAlt),
 ];

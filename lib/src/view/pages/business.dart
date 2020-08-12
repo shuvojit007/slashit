@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:slashit/src/di/locator.dart';
 import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/text_styles.dart';
 import 'package:slashit/src/utils/homeExtra.dart';
+import 'package:slashit/src/utils/prefmanager.dart';
+import 'package:slashit/src/utils/userData.dart';
+import 'package:slashit/src/view/auth/login_shopper.dart';
 import 'package:slashit/src/view/pages/create_payment.dart';
+import 'package:slashit/src/widget/propic.dart';
 
 class Business extends StatefulWidget {
   @override
@@ -49,21 +54,11 @@ class _BusinessState extends State<Business> {
         width: double.infinity,
         child: Stack(
           children: <Widget>[
-            Container(
-              width: 55,
-              height: 55,
-              margin: EdgeInsets.only(top: 35, left: 5),
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                      fit: BoxFit.fill,
-                      image: NetworkImage(
-                          "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png"))),
-            ),
+            ProfileImage(),
             Container(
               margin: EdgeInsets.only(top: 55, left: 65),
               child: Text(
-                "Business, Shuvojit Kar",
+                "Business, ${locator<PrefManager>().name}",
                 style: userTitle,
               ),
             ),
@@ -71,7 +66,7 @@ class _BusinessState extends State<Business> {
               right: 1,
               bottom: 15,
               child: PopupMenuButton<Option>(
-                onSelected: (option) {},
+                onSelected: _appbarOption,
                 itemBuilder: (BuildContext context) {
                   return business.map((Option option) {
                     return PopupMenuItem<Option>(
@@ -230,5 +225,21 @@ class _BusinessState extends State<Business> {
         ],
       ),
     );
+  }
+
+  _appbarOption(Option options) async {
+    print(options.id);
+    switch (options.id) {
+      case "transactions":
+        break;
+      case "cards":
+        break;
+      case "signout":
+        print("singout ");
+        await removeUser();
+        Navigator.pushNamedAndRemoveUntil(
+            context, LoginShopper.routeName, (route) => false);
+        break;
+    }
   }
 }

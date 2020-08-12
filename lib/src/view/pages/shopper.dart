@@ -2,12 +2,17 @@ import 'package:barcode_flutter/barcode_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:slashit/src/di/locator.dart';
 import 'package:slashit/src/repository/user_repository.dart';
 import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/str.dart';
 import 'package:slashit/src/resources/text_styles.dart';
 import 'package:slashit/src/utils/homeExtra.dart';
+import 'package:slashit/src/utils/prefmanager.dart';
+import 'package:slashit/src/utils/userData.dart';
+import 'package:slashit/src/view/auth/login_shopper.dart';
 import 'package:slashit/src/widget/cardview.dart';
+import 'package:slashit/src/widget/propic.dart';
 
 class Shopper extends StatefulWidget {
   @override
@@ -122,21 +127,13 @@ class _ShopperState extends State<Shopper> {
         width: double.infinity,
         child: Stack(
           children: <Widget>[
-            Container(
-              width: 55,
-              height: 55,
-              margin: EdgeInsets.only(top: 35, left: 5),
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                      fit: BoxFit.fill,
-                      image: NetworkImage(
-                          "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png"))),
+            ProfileImage(
+              photo: locator<PrefManager>().avatar,
             ),
             Container(
               margin: EdgeInsets.only(top: 55, left: 65),
               child: Text(
-                "Shopper, Shuvojit Kar",
+                "Shopper, ${locator<PrefManager>().name}",
                 style: userTitle,
               ),
             ),
@@ -144,8 +141,9 @@ class _ShopperState extends State<Shopper> {
               right: 1,
               bottom: 15,
               child: PopupMenuButton<Option>(
-                onSelected: (option) {},
+                onSelected: _appbarOption,
                 itemBuilder: (BuildContext context) {
+                  print("shopper  ${shopper.length}");
                   return shopper.map((Option option) {
                     return PopupMenuItem<Option>(
                       value: option,
@@ -218,5 +216,20 @@ class _ShopperState extends State<Shopper> {
         ],
       ),
     );
+  }
+
+  _appbarOption(Option options) {
+    switch (options.id) {
+      case "transactions":
+        break;
+      case "cards":
+        break;
+      case "signout":
+        print("singout ");
+        removeUser();
+        Navigator.pushNamedAndRemoveUntil(
+            context, LoginShopper.routeName, (route) => false);
+        break;
+    }
   }
 }

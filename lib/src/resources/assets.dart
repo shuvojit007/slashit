@@ -10,16 +10,14 @@ class Assets {
 
   static const String BGROCKET = "assets/img/bg.png";
 
-
   static const String HOME = "assets/img/home.png";
   static const String FORUM = "assets/img/forum.png";
   static const String PROFILE = "assets/img/profile.png";
   static const String SETTINGS = "assets/img/settings.png";
-  static const String Placeholder = "assets/img/placeholder.png";
+  static const String Placeholder = "assets/images/placeholder.png";
   static const String error = "assets/img/error.png";
 
   static const String Diamond = "assets/img/diamond.png";
-
 
   static const String FACEBOOK = "assets/img/facebook.png";
   static const String INSTA = "assets/img/intagram.png";
@@ -28,7 +26,6 @@ class Assets {
 
   static const String FBLOGIN = "assets/img/fblogin.png";
   static const String GLOGIN = "assets/img/googlelogin.png";
-
 
   static const String LOGO = "assets/img/logo.png";
   static const String HINTS = "assets/img/hints.png";
@@ -40,7 +37,6 @@ class Assets {
   static const String age19 = "assets/img/age19.png";
   static const String age23 = "assets/img/age23.png";
   static const String age25 = "assets/img/age25.png";
-
 
   static const String slice1 = "assets/img/slice1.png";
   static const String slice2 = "assets/img/slice2.png";
@@ -54,12 +50,10 @@ class Assets {
   static const String burger3 = "assets/img/burger3.png";
   static const String burger4 = "assets/img/burger4.png";
 
-
   //Content Congrats Image
   static const String boy = "assets/img/boywinner.png";
   static const String girl = "assets/img/girlwinner.png";
   static const String neutral = "assets/img/neutralwinner.png";
-
 
   static const String boycrying = "assets/img/boycrying.png";
   static const String girlcrying = "assets/img/girlcrying.png";
@@ -74,5 +68,4 @@ class Assets {
 
   static const String LMORE = "assets/img/lmore.png";
   static const String PREMIUMICON = "assets/img/premiumicon.png";
-
 }

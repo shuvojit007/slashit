@@ -20,9 +20,11 @@ dependencies:
   shared_preferences: ^0.5.3+1
   flutter_bloc: ^4.0.0
   equatable: ^1.1.1
+  cached_network_image: ^2.2.0+1
   font_awesome_flutter: ^8.8.1
   barcode_flutter: ^1.1.2
   credit_card_input_form: ^1.2.0
+  flutter_paystack: ^1.0.3+1
 
 
 dev_dependencies:

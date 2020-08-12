@@ -29,11 +29,13 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
     controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         controller.dispose();
-        if (locator<PrefManager>().token != null) {
-          GraphQLConfiguration.setToken(locator<PrefManager>().token);
+        String token = locator<PrefManager>().token;
+        if (token != null && token != "null") {
+          GraphQLConfiguration.setToken(token);
           Navigator.pushNamedAndRemoveUntil(
               context, Home.routeName, (route) => false);
         } else {
+          print("TOKEN IS NULL");
           Navigator.pushNamedAndRemoveUntil(
               context, LoginShopper.routeName, (route) => false);
         }

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:slashit/src/repository/user_repository.dart';
 import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/text_styles.dart';
+import 'package:slashit/src/utils/showToast.dart';
+import 'package:slashit/src/utils/validators.dart';
 import 'package:slashit/src/view/auth/login_shopper.dart';
 
 class RegisterUser extends StatefulWidget {
@@ -12,23 +15,17 @@ class RegisterUser extends StatefulWidget {
 
 class _RegisterUserState extends State<RegisterUser> {
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _fnameController = TextEditingController();
+  final TextEditingController _lnameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
   ProgressDialog _pr;
-  var _inputObj = {
-    'name': '',
-    'email': '',
-    'password': '',
-    'confirmPassword': '',
-  };
 
   //state value initilize
   bool _isDisabled;
   bool _showPassword;
   bool _showConfirmPassword;
-
 
   @override
   void initState() {
@@ -47,24 +44,6 @@ class _RegisterUserState extends State<RegisterUser> {
     super.dispose();
   }
 
-  handleInput(type, text) {
-    setState(() {
-      _inputObj[type] = text;
-    });
-    if (_inputObj['email'] == '' ||
-        _inputObj['password'] != _inputObj['confirmPassword'] ||
-        _inputObj['password'] == '') {
-      setState(() {
-        _isDisabled = true;
-      });
-      print('email');
-    } else {
-      setState(() {
-        _isDisabled = false;
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,15 +58,17 @@ class _RegisterUserState extends State<RegisterUser> {
                     icon: Icon(Icons.keyboard_backspace, color: PrimrayColor),
                     onPressed: () => Navigator.pop(context))),
             SizedBox(height: 20),
-            Center(
-                child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text("Create Account", style: createAccount),
-              ],
-            )),
+            Padding(
+              padding: EdgeInsets.only(left: 20, bottom: 10),
+              child: Text(
+                "Create Account",
+                style: loginTitle,
+              ),
+            ),
             SizedBox(height: 30),
-            _userName(),
+            _fristName(),
+            SizedBox(height: 30),
+            _lastName(),
             SizedBox(height: 30),
             _userEmail(),
             SizedBox(height: 30),
@@ -140,26 +121,46 @@ class _RegisterUserState extends State<RegisterUser> {
     );
   }
 
-  _userName() {
+  _fristName() {
     return Padding(
       padding: EdgeInsets.only(
         left: 20,
         right: 20,
       ),
       child: TextField(
-        controller: _nameController,
-        onChanged: (text) {
-          handleInput('name', text);
-        },
+        controller: _fnameController,
         decoration: InputDecoration(
-          labelText: "Name",
+          labelText: "First Name",
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: PrimrayColor, width: 2.0),
           ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.black, width: 2.0),
           ),
-           prefixIcon: Icon(Icons.supervised_user_circle),
+          prefixIcon: Icon(Icons.supervised_user_circle),
+        ),
+        cursorColor: appbartitle,
+      ),
+    );
+  }
+
+  _lastName() {
+    return Padding(
+      padding: EdgeInsets.only(
+        left: 20,
+        right: 20,
+      ),
+      child: TextField(
+        controller: _lnameController,
+        decoration: InputDecoration(
+          labelText: "Last Name",
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: PrimrayColor, width: 2.0),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.black, width: 2.0),
+          ),
+          prefixIcon: Icon(Icons.supervised_user_circle),
         ),
         cursorColor: appbartitle,
       ),
@@ -174,10 +175,6 @@ class _RegisterUserState extends State<RegisterUser> {
       ),
       child: TextField(
         controller: _emailController,
-        onChanged: (text) {
-          handleInput('email', text);
-        },
-        // onChanged: handleInput,
         decoration: InputDecoration(
           labelText: "Email",
           focusedBorder: OutlineInputBorder(
@@ -186,7 +183,7 @@ class _RegisterUserState extends State<RegisterUser> {
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.black, width: 2.0),
           ),
-           prefixIcon: Icon(Icons.mail_outline),
+          prefixIcon: Icon(Icons.mail_outline),
         ),
         cursorColor: appbartitle,
       ),
@@ -201,24 +198,18 @@ class _RegisterUserState extends State<RegisterUser> {
       ),
       child: TextField(
         controller: _passwordController,
-        onChanged: (text) {
-          handleInput('password', text);
-        },
-        // onChanged: handleInput,
         obscureText: _showPassword,
         decoration: InputDecoration(
           labelText: "Password",
-           prefixIcon: Icon(Icons.lock_outline),
+          prefixIcon: Icon(Icons.lock_outline),
           suffixIcon: IconButton(
               icon: Icon(
-               _showPassword ?
-              Icons.remove_red_eye: Icons.visibility_off,
-            color: _showPassword ? Colors.blue : Colors.grey,
-          ),
-          onPressed: (){
-            setState(()=> _showPassword = !_showPassword);
-          } 
-          ),
+                _showPassword ? Icons.remove_red_eye : Icons.visibility_off,
+                color: _showPassword ? Colors.blue : Colors.grey,
+              ),
+              onPressed: () {
+                setState(() => _showPassword = !_showPassword);
+              }),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: PrimrayColor, width: 2.0),
           ),
@@ -240,9 +231,6 @@ class _RegisterUserState extends State<RegisterUser> {
       child: TextField(
         controller: _confirmPasswordController,
         obscureText: _showConfirmPassword,
-        onChanged: (text) {
-          handleInput('confirmPassword', text);
-        },
         decoration: InputDecoration(
           labelText: "Confirm Password",
           focusedBorder: OutlineInputBorder(
@@ -251,17 +239,17 @@ class _RegisterUserState extends State<RegisterUser> {
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.black, width: 2.0),
           ),
-           prefixIcon: Icon(Icons.lock_outline),
+          prefixIcon: Icon(Icons.lock_outline),
           suffixIcon: IconButton(
               icon: Icon(
-               _showConfirmPassword ?
-              Icons.remove_red_eye: Icons.visibility_off,
-            color: _showConfirmPassword ? Colors.blue : Colors.grey,
-          ),
-          onPressed: (){
-            setState(()=> _showConfirmPassword = !_showConfirmPassword);
-          } 
-          ),
+                _showConfirmPassword
+                    ? Icons.remove_red_eye
+                    : Icons.visibility_off,
+                color: _showConfirmPassword ? Colors.blue : Colors.grey,
+              ),
+              onPressed: () {
+                setState(() => _showConfirmPassword = !_showConfirmPassword);
+              }),
         ),
         cursorColor: appbartitle,
       ),
@@ -274,7 +262,7 @@ class _RegisterUserState extends State<RegisterUser> {
       width: 290,
       height: 45.0,
       child: RaisedButton(
-          onPressed: _isDisabled ? null : _onFormSubmitted,
+          onPressed: handleInput,
           child: Text('Register', style: SignInStyle),
           color: PrimrayColor,
           shape: RoundedRectangleBorder(
@@ -282,5 +270,42 @@ class _RegisterUserState extends State<RegisterUser> {
     ));
   }
 
-  void _onFormSubmitted() {}
+  handleInput() async {
+    if (_fnameController.text.isNotEmpty &&
+        _lnameController.text.isNotEmpty &&
+        _emailController.text.isNotEmpty &&
+        _passwordController.text.isNotEmpty &&
+        _confirmPasswordController.text.isNotEmpty) {
+      if (!Validators.isValidEmail(_emailController.text)) {
+        showToastMsgTop("Please add valid email");
+        return;
+      }
+
+      if (!Validators.isValidPassword(_passwordController.text)) {
+        showToastMsgTop("Please add valid password");
+        return;
+      }
+
+      if (_passwordController.text != _confirmPasswordController.text) {
+        showToastMsgTop("Passowd not matched");
+        return;
+      }
+
+      FocusScope.of(context).requestFocus(FocusNode());
+      _pr.show();
+
+      var userInput = {
+        "firstname": "\"${_fnameController.text}\"",
+        "lastname": "\"${_lnameController.text}\"",
+        "email": "\"${_emailController.text}\"",
+        "password": "\"${_passwordController.text}\"",
+        "role": "shopper"
+      };
+
+      await UserRepository.instance.registerUser(userInput);
+      _pr.hide();
+    } else {
+      showToastMsgTop("Please add fill up all the input");
+    }
+  }
 }

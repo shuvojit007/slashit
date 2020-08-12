@@ -8,6 +8,7 @@ import 'package:slashit/src/utils/validators.dart';
 import 'package:slashit/src/view/auth/login_business.dart';
 import 'package:slashit/src/view/auth/register_user.dart';
 import 'package:slashit/src/view/home.dart';
+import 'package:slashit/src/widget/dialog/resetPass.dart';
 
 class LoginShopper extends StatefulWidget {
   static const routeName = "/login_shopper";
@@ -41,13 +42,7 @@ class _LoginShopperState extends State<LoginShopper> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            SizedBox(height: 40),
-            Padding(
-                padding: EdgeInsets.only(top: 10, left: 10),
-                child: IconButton(
-                    icon: Icon(Icons.keyboard_backspace, color: PrimrayColor),
-                    onPressed: () => Navigator.pop(context))),
-            SizedBox(height: 20),
+            SizedBox(height: 70),
             Padding(
               padding: EdgeInsets.only(left: 20, bottom: 10),
               child: Text(
@@ -61,7 +56,7 @@ class _LoginShopperState extends State<LoginShopper> {
             _userPass(),
             SizedBox(height: 24),
             GestureDetector(
-              onTap: () => {},
+              onTap: _passwordReset,
               child: Padding(
                   padding: EdgeInsets.only(left: 20),
                   child: Text("Forget Password ?", style: forgotPass)),
@@ -171,14 +166,19 @@ class _LoginShopperState extends State<LoginShopper> {
       FocusScope.of(context).requestFocus(FocusNode());
       _pr.show();
       bool result = await UserRepository.instance
-          .authUser(_emailController.text, _passwordController.text, true);
+          .authUser(_emailController.text, _passwordController.text, false);
       _pr.hide();
       if (result) {
         Navigator.pushNamedAndRemoveUntil(
             context, Home.routeName, (route) => false);
       }
     } else {
-      showToastMsg("Some add valid input");
+      showToastMsg("Add valid input");
     }
+  }
+
+  _passwordReset() {
+    showDialog(
+        context: context, builder: (BuildContext context) => ResetPassword());
   }
 }

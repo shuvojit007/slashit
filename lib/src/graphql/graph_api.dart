@@ -29,9 +29,20 @@ class GraphApi {
 //}
 //""";
 
-  String login(String email, String password) {
+  String forgetPassword(String email) {
     return """mutation {
-  Login(email:"$email",password:"$password"){
+  ForgetPassword(email:"$email"){
+    code
+    success
+    message
+  }
+}
+""";
+  }
+
+  String login(String email, String password, bool isBusiness) {
+    return """mutation {
+  Login(email:"$email",password:"$password", isBusiness:$isBusiness){
     	code
     	success
     	message
@@ -46,6 +57,18 @@ class GraphApi {
         role
         avater
       }
+  }
+}
+""";
+  }
+
+  String register(dynamic userInput) {
+    print(userInput);
+    return """mutation{
+  Register(userInput:$userInput){
+    code
+    success
+    message
   }
 }
 """;

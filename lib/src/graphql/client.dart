@@ -4,7 +4,8 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 class GraphQLConfiguration {
   static Link link = null;
   static HttpLink httpLink = HttpLink(
-    uri: 'http://13.228.27.185:4009/',
+    // uri: 'http://13.228.27.185:4009/',
+    uri: "https://pm-gateway.herokuapp.com/",
   );
 
   static void setToken(String token) {

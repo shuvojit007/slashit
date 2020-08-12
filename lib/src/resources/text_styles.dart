@@ -11,9 +11,16 @@ const TextStyle splashText = TextStyle(
   fontWeight: FontWeight.w600,
 );
 
+const TextStyle splashText1 = TextStyle(
+  color: Colors.white,
+  fontSize: 10,
+  fontFamily: 'Poppins',
+  fontWeight: FontWeight.w600,
+);
+
 const TextStyle loginTitle = TextStyle(
   color: PrimrayColor,
-  fontSize: 28,
+  fontSize: 25,
   fontFamily: 'Poppins',
   fontWeight: FontWeight.w500,
 );
@@ -21,6 +28,13 @@ const TextStyle loginTitle = TextStyle(
 const TextStyle forgotPass = TextStyle(
   color: PrimrayColor,
   fontSize: size_14,
+  fontFamily: 'Poppins',
+  fontWeight: FontWeight.w400,
+);
+
+const TextStyle rfrdailog = TextStyle(
+  color: Colors.black,
+  fontSize: size_16,
   fontFamily: 'Poppins',
   fontWeight: FontWeight.w400,
 );
@@ -46,7 +60,7 @@ const TextStyle termsAndCondition = TextStyle(
 );
 
 const TextStyle createAccount = TextStyle(
-  color: Colors.white,
+  color: Colors.black,
   fontSize: size_24,
   fontWeight: FontWeight.w500,
 );

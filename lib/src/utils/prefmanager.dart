@@ -4,6 +4,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 class PrefManager {
   //===============Daily Streak=========//
   static const String TOKEN = "ACCESSTOKEN";
+  static const String NAME = "NAME";
+  static const String EMAIL = "EMAIL";
+  static const String ROLE = "ROLE";
+  static const String AVATAR = "AVATAR";
   static const String DailyStreak = "DailyStreak";
   static const String TodayRewared = "TodayRewared";
   static const String TodayRewardShowed = "TodayRewardShowed";
@@ -50,8 +54,25 @@ class PrefManager {
     return value;
   }
 
-  String get token => 'Bearer ' + _getFromDisk(TOKEN) ?? null;
+  //========User Information ==================//
+  String get token =>
+      (_getFromDisk(TOKEN) != null && _getFromDisk(TOKEN) != "null")
+          ? 'Bearer ' + _getFromDisk(TOKEN)
+          : null;
   set token(String value) => _saveToDisk(TOKEN, value);
+
+  String get email => _getFromDisk(EMAIL) ?? null;
+  set email(String value) => _saveToDisk(EMAIL, value);
+
+  String get role => _getFromDisk(ROLE) ?? null;
+  set role(String value) => _saveToDisk(ROLE, value);
+
+  String get name => _getFromDisk(NAME) ?? null;
+  set name(String value) => _saveToDisk(NAME, value);
+
+  String get avatar => _getFromDisk(AVATAR) ?? null;
+  set avatar(String value) => _saveToDisk(AVATAR, value);
+//========User Information ==================//
 
 //  int get SIndex => _getFromDisk(SINDEX) ?? 0;
 //  set SIndex(int value) => _saveToDisk(SINDEX, value);

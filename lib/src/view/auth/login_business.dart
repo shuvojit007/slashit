@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:slashit/src/repository/user_repository.dart';
 import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/text_styles.dart';
+import 'package:slashit/src/utils/showToast.dart';
+import 'package:slashit/src/utils/validators.dart';
+import 'package:slashit/src/widget/dialog/resetPass.dart';
+
+import '../home.dart';
 
 class LoginBusiness extends StatefulWidget {
   static const routeName = "/login_business";
@@ -13,7 +19,7 @@ class _LoginBusinessState extends State<LoginBusiness> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   ProgressDialog _pr;
- bool _showPassword;
+  bool _showPassword;
   @override
   void initState() {
     _pr = ProgressDialog(context, type: ProgressDialogType.Normal);
@@ -55,18 +61,13 @@ class _LoginBusinessState extends State<LoginBusiness> {
           _userPass(),
           SizedBox(height: 24),
           GestureDetector(
-            onTap: () => {},
+            onTap: _passwordReset,
             child: Padding(
                 padding: EdgeInsets.only(left: 20),
                 child: Text("Forget Password ?", style: forgotPass)),
           ),
           SizedBox(height: 20),
           _signInButton(),
-          SizedBox(height: 24),
-          GestureDetector(
-            onTap: () => {},
-            child: Center(child: Text("Sign Up", style: SignupStyle)),
-          ),
           SizedBox(height: 10),
         ],
       ),
@@ -116,14 +117,12 @@ class _LoginBusinessState extends State<LoginBusiness> {
           prefixIcon: Icon(Icons.lock_outline),
           suffixIcon: IconButton(
               icon: Icon(
-               _showPassword ?
-              Icons.remove_red_eye: Icons.visibility_off,
-            color: _showPassword ? Colors.blue : Colors.grey,
-          ),
-          onPressed: (){
-            setState(()=> _showPassword = !_showPassword);
-          } 
-          ),
+                _showPassword ? Icons.remove_red_eye : Icons.visibility_off,
+                color: _showPassword ? Colors.blue : Colors.grey,
+              ),
+              onPressed: () {
+                setState(() => _showPassword = !_showPassword);
+              }),
         ),
         cursorColor: appbartitle,
       ),
@@ -136,7 +135,7 @@ class _LoginBusinessState extends State<LoginBusiness> {
       width: 290,
       height: 45.0,
       child: RaisedButton(
-          onPressed: _onFormSubmitted,
+          onPressed: handleInput,
           child: Text('Sign In', style: SignInStyle),
           color: PrimrayColor,
           shape: RoundedRectangleBorder(
@@ -144,5 +143,25 @@ class _LoginBusinessState extends State<LoginBusiness> {
     ));
   }
 
-  void _onFormSubmitted() {}
+  handleInput() async {
+    if (Validators.isValidEmail(_emailController.text) &&
+        Validators.isValidPassword(_passwordController.text)) {
+      FocusScope.of(context).requestFocus(FocusNode());
+      _pr.show();
+      bool result = await UserRepository.instance
+          .authUser(_emailController.text, _passwordController.text, true);
+      _pr.hide();
+      if (result) {
+        Navigator.pushNamedAndRemoveUntil(
+            context, Home.routeName, (route) => false);
+      }
+    } else {
+      showToastMsg("Add valid input");
+    }
+  }
+
+  _passwordReset() {
+    showDialog(
+        context: context, builder: (BuildContext context) => ResetPassword());
+  }
 }
