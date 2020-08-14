@@ -11,6 +11,7 @@ import 'package:slashit/src/utils/homeExtra.dart';
 import 'package:slashit/src/utils/prefmanager.dart';
 import 'package:slashit/src/utils/userData.dart';
 import 'package:slashit/src/view/auth/login_shopper.dart';
+import 'package:slashit/src/view/shopper/debitCards.dart';
 import 'package:slashit/src/widget/cardview.dart';
 import 'package:slashit/src/widget/propic.dart';
 
@@ -95,10 +96,6 @@ class _ShopperState extends State<Shopper> {
             ),
             SizedBox(
               height: 30,
-            ),
-            RaisedButton(
-              child: Text("Add Card"),
-              onPressed: _showCard,
             ),
             SizedBox(
               height: 30,
@@ -223,6 +220,10 @@ class _ShopperState extends State<Shopper> {
       case "transactions":
         break;
       case "cards":
+        Navigator.pushNamed(
+          context,
+          DebitCards.routeName,
+        );
         break;
       case "signout":
         print("singout ");

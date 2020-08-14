@@ -18,6 +18,41 @@ const TextStyle splashText1 = TextStyle(
   fontWeight: FontWeight.w600,
 );
 
+const TextStyle debitCards = TextStyle(
+  color: Colors.black54,
+  fontSize: 20,
+  fontFamily: 'Poppins',
+  fontWeight: FontWeight.w400,
+);
+
+const TextStyle debitCards2 = TextStyle(
+  color: snaclBarClr,
+  fontSize: 16,
+  fontFamily: 'Poppins',
+  fontWeight: FontWeight.w600,
+);
+
+const TextStyle debitCards3 = TextStyle(
+  color: Colors.black54,
+  fontSize: 18,
+  letterSpacing: 5.0,
+  fontFamily: 'Poppins',
+  fontWeight: FontWeight.w700,
+);
+
+const TextStyle debitCards4 = TextStyle(
+  color: Colors.blue,
+  fontSize: size_14,
+  fontWeight: FontWeight.normal,
+);
+const TextStyle debitCards5 = TextStyle(
+  color: Colors.black54,
+  fontSize: 15,
+  fontFamily: 'Poppins',
+  fontWeight: FontWeight.w500,
+);
+
+//===============
 const TextStyle loginTitle = TextStyle(
   color: PrimrayColor,
   fontSize: 25,

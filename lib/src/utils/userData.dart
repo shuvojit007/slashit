@@ -6,7 +6,7 @@ storeUser(data) {
   String token = data['token'];
   var user = data['user'];
   if (user["email"] != null) {
-    locator<PrefManager>().email = data['email'];
+    locator<PrefManager>().email = user['email'];
     print("email ${data['email']}");
   }
 

@@ -28,15 +28,8 @@ class UserRepository {
       return false;
     } else {
       LazyCacheMap map = result.data.get("Login");
-      map.forEach((key, value) {
-        print("key $key  value $value");
-      });
-      print("result $result");
       if (map['success'] == true) {
-        //  String token = result.data['Login']['token'];
         storeUser(result.data['Login']);
-//          locator<PrefManager>().token = token;
-//          GraphQLConfiguration.setToken(token);
         showToastMsgGreen("Login succesfull");
         return true;
       } else {
