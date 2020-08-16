@@ -12,10 +12,12 @@ import 'package:slashit/src/utils/prefmanager.dart';
 import 'package:slashit/src/utils/userData.dart';
 import 'package:slashit/src/view/auth/login_shopper.dart';
 import 'package:slashit/src/view/shopper/debitCards.dart';
+import 'package:slashit/src/view/shopper/upcomingPayment.dart';
 import 'package:slashit/src/widget/cardview.dart';
 import 'package:slashit/src/widget/propic.dart';
 
 class Shopper extends StatefulWidget {
+  static const routeName = "/upcoming_payment";
   @override
   _ShopperState createState() => _ShopperState();
 }
@@ -74,9 +76,12 @@ class _ShopperState extends State<Shopper> {
               shape: StadiumBorder(),
               borderSide: BorderSide(
                   color: Colors.grey, width: 1, style: BorderStyle.solid),
-              child: Text(
-                "     Upcomming Repayments     ",
-                style: shopperText3,
+              child: RaisedButton(
+                color: null,
+                child:Text('Upcomming Repayments', style:shopperText3 ,),
+                onPressed: ()=>{
+                  Navigator.pushNamed(context,'/upcoming_payment')
+                },
               ),
             ),
             SizedBox(

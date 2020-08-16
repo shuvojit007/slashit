@@ -5,6 +5,7 @@ import 'package:slashit/src/view/auth/register_user.dart';
 import 'package:slashit/src/view/home.dart';
 import 'package:slashit/src/view/pages/create_payment.dart';
 import 'package:slashit/src/view/shopper/debitCards.dart';
+import 'package:slashit/src/view/shopper/upcomingPayment.dart';
 import 'package:slashit/src/view/splash.dart';
 import 'package:slashit/src/widget/paystack.dart';
 
@@ -19,6 +20,7 @@ class Routes {
   static const LOGINBUSINESS = LoginBusiness.routeName;
   static const REGISTERUSER = RegisterUser.routeName;
   static const CREATEPAYMENTS = CreatePayemts.routeName;
+  static const UPCOMINGPAYMENT = UpcomingPayment.routeName;
   final route = <String, WidgetBuilder>{
     Routes.HOME: (context) => Home(),
     Routes.root: (context) => Splash(),
@@ -28,5 +30,6 @@ class Routes {
     Routes.LOGINBUSINESS: (context) => LoginBusiness(),
     Routes.REGISTERUSER: (context) => RegisterUser(),
     Routes.CREATEPAYMENTS: (context) => CreatePayemts(),
+    Routes.UPCOMINGPAYMENT: (context) => UpcomingPayment(),
   };
 }
