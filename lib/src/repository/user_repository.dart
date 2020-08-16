@@ -89,22 +89,25 @@ class UserRepository {
     }
   }
 
-  Future<void> feachFeatures() async {
+  Future<Features> feachFeatures() async {
     GraphQLClient _client = GraphQLConfiguration().clientToQuery();
     QueryResult result = await _client.query(QueryOptions(
         documentNode: gql(
       GraphApi.instance.feachFeature(),
     )));
-    if (!result.hasException) {
+    if (result.hasException) {
+      print("error  ${result.exception.toString()}");
+      return null;
+    } else {
       LazyCacheMap map = result.data.get("FetchFeature");
-
-      Features features = featuresFromMap(json.encode(map));
-
-      print("Features ${features.toString()}");
-
-      print("Result  ${features.result.toString()}");
+      if (map['success'] == true) {
+        Features features = featuresFromMap(json.encode(map));
+        return features;
+      } else {
+        print("Something went wrong");
+        return null;
+      }
     }
-    print(result.exception);
   }
 
   _getErrorMessage(error) {

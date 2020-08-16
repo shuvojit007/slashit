@@ -69,7 +69,6 @@ class _UpcomingState extends State<UpcomingPayment> {
                        width: double.infinity,
                     height: 100,
                     child: Center(
-                      widthFactor: double.infinity,
                       child: Text('dfdfd', textAlign: TextAlign.right,),
                     )
                     ),

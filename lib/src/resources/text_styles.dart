@@ -158,3 +158,29 @@ const TextStyle businessText2 = TextStyle(
   fontSize: size_16,
   fontWeight: FontWeight.normal,
 );
+
+//==========Features
+const TextStyle FeaturesTitle = TextStyle(
+  color: Colors.black,
+  fontSize: size_18,
+  fontWeight: FontWeight.w600,
+);
+
+const TextStyle FeaturesPrice = TextStyle(
+  color: Colors.black87,
+  fontSize: size_15,
+  fontWeight: FontWeight.w400,
+);
+
+//==========Wallet
+const TextStyle WalletTitle = TextStyle(
+  color: Colors.black,
+  fontSize: size_16,
+  fontWeight: FontWeight.w600,
+);
+
+const TextStyle WalletPrice = TextStyle(
+  color: Colors.black87,
+  fontSize: size_14,
+  fontWeight: FontWeight.w400,
+);

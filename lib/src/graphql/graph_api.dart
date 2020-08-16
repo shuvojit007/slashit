@@ -76,20 +76,23 @@ class GraphApi {
 
   String feachFeature() {
     return """
-     query {
+    query{
         FetchFeature(limit:100,offset:0){
-          code
-          message
-          count
-          hasNext
+            code
+            message
+            count
+            success
+            hasNext 
             result{
                 id
                 price
                 desc
+                title
                 img
+                link
             }
         }
-}
+    }
     """;
   }
 }

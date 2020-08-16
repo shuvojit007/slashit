@@ -48,12 +48,14 @@ class Features {
 class Result {
   Result({
     this.id,
+    this.title,
     this.price,
     this.desc,
+    this.link,
     this.img,
   });
 
-  String id;
+  String id, title, link;
   int price;
   String desc;
   String img;
@@ -61,6 +63,8 @@ class Result {
   factory Result.fromMap(Map<String, dynamic> json) => Result(
         id: json["id"],
         price: json["price"],
+        title: json["title"],
+        link: json["link"],
         desc: json["desc"],
         img: json["img"],
       );
@@ -69,11 +73,13 @@ class Result {
         "id": id,
         "price": price,
         "desc": desc,
+        "title": title,
+        "link": link,
         "img": img,
       };
 
   @override
   String toString() {
-    return 'Result{id: $id, price: $price, desc: $desc, img: $img}';
+    return 'Result{id: $id, title: $title, link: $link, price: $price, desc: $desc, img: $img}';
   }
 }
