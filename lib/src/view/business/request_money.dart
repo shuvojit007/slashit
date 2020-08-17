@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/text_styles.dart';
+import 'package:slashit/src/view/business/barcodeScan.dart';
 
-class CreatePayemts extends StatefulWidget {
-  static const routeName = "/create_payment";
+class RequestMoney extends StatefulWidget {
+  static const routeName = "/request_money";
   @override
-  _CreatePayemtsState createState() => _CreatePayemtsState();
+  _RequestMoneyState createState() => _RequestMoneyState();
 }
 
-class _CreatePayemtsState extends State<CreatePayemts> {
+class _RequestMoneyState extends State<RequestMoney> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,9 +28,6 @@ class _CreatePayemtsState extends State<CreatePayemts> {
     return Container(
       width: double.infinity,
       margin: EdgeInsets.only(left: 15, right: 15, top: 20),
-      decoration: BoxDecoration(
-          border: Border.all(color: Colors.black87),
-          borderRadius: BorderRadius.all(Radius.circular(10))),
       child: Column(
         children: <Widget>[
           SizedBox(height: 16),
@@ -71,34 +69,12 @@ class _CreatePayemtsState extends State<CreatePayemts> {
   }
 
   _actionBtn() {
-    return Container(
-      height: 100,
-      margin: EdgeInsets.only(
-        left: 15,
-        right: 15,
-      ),
-      child: Stack(
-        children: <Widget>[
-          Align(
-            alignment: Alignment.centerLeft,
-            child: RaisedButton(
-                onPressed: () {},
-                child: Text('   Cancel   ', style: SignInStyle),
-                color: PrimrayColor,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0))),
-          ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: RaisedButton(
-                onPressed: () {},
-                child: Text('   Create  ', style: SignInStyle),
-                color: PrimrayColor,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0))),
-          )
-        ],
-      ),
-    );
+    return RaisedButton(
+        onPressed: () =>
+            Navigator.pushNamed(context, BarCodeScanning.routeName),
+        child: Text('   Create  ', style: SignInStyle),
+        color: Colors.blue,
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)));
   }
 }

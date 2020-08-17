@@ -6,7 +6,10 @@ import 'package:slashit/src/utils/homeExtra.dart';
 import 'package:slashit/src/utils/prefmanager.dart';
 import 'package:slashit/src/utils/userData.dart';
 import 'package:slashit/src/view/auth/login_shopper.dart';
-import 'package:slashit/src/view/pages/create_payment.dart';
+import 'package:slashit/src/view/business/request_money.dart';
+import 'package:slashit/src/view/business/requests.dart';
+import 'package:slashit/src/view/common/bankTransfer.dart';
+import 'package:slashit/src/view/common/transactions.dart';
 import 'package:slashit/src/widget/propic.dart';
 
 class Business extends StatefulWidget {
@@ -48,45 +51,45 @@ class _BusinessState extends State<Business> {
   }
 
   _header() {
-    return Card(
-      child: Container(
-        height: 100,
-        width: double.infinity,
-        child: Stack(
-          children: <Widget>[
-            ProfileImage(),
-            Container(
-              margin: EdgeInsets.only(top: 55, left: 65),
-              child: Text(
-                "Business, ${locator<PrefManager>().name}",
-                style: userTitle,
-              ),
+    return Container(
+      height: 100,
+      color: Colors.blue,
+      width: double.infinity,
+      child: Stack(
+        children: <Widget>[
+          ProfileImage(),
+          Container(
+            margin: EdgeInsets.only(top: 55, left: 65),
+            child: Text(
+              "Business, ${locator<PrefManager>().name}",
+              style: userTitle,
             ),
-            Positioned(
-              right: 1,
-              bottom: 15,
-              child: PopupMenuButton<Option>(
-                onSelected: _appbarOption,
-                itemBuilder: (BuildContext context) {
-                  return business.map((Option option) {
-                    return PopupMenuItem<Option>(
-                      value: option,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Icon(option.icon, size: 20.0, color: PrimrayColor),
-                          SizedBox(width: 10),
-                          Text(option.title),
-                        ],
-                      ),
-                    );
-                  }).toList();
-                },
-              ),
-            )
-          ],
-        ),
+          ),
+          Positioned(
+            right: 1,
+            bottom: 15,
+            child: PopupMenuButton<Option>(
+              onSelected: _appbarOption,
+              color: Colors.white,
+              itemBuilder: (BuildContext context) {
+                return business.map((Option option) {
+                  return PopupMenuItem<Option>(
+                    value: option,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(option.icon, size: 20.0, color: PrimrayColor),
+                        SizedBox(width: 10),
+                        Text(option.title),
+                      ],
+                    ),
+                  );
+                }).toList();
+              },
+            ),
+          )
+        ],
       ),
     );
   }
@@ -143,14 +146,13 @@ class _BusinessState extends State<Business> {
           SizedBox(
             height: 20,
           ),
-          OutlineButton(
+          RaisedButton(
             onPressed: () =>
-                Navigator.pushNamed(context, CreatePayemts.routeName),
+                Navigator.pushNamed(context, RequestMoney.routeName),
             shape: StadiumBorder(),
-            borderSide: BorderSide(
-                color: Colors.grey, width: 1, style: BorderStyle.solid),
+            color: Colors.blue,
             child: Text(
-              "     Create Payments     ",
+              "     Request Money     ",
               style: shopperText3,
             ),
           ),
@@ -161,7 +163,7 @@ class _BusinessState extends State<Business> {
 
   _recentPayments() {
     return Container(
-        height: 250,
+        height: 260,
         margin: EdgeInsets.only(left: 15, right: 15),
         decoration: BoxDecoration(border: Border.all(color: Colors.black87)),
         child: Column(
@@ -178,13 +180,19 @@ class _BusinessState extends State<Business> {
                 ),
               ),
             ),
-            Container(
-              margin: EdgeInsets.only(right: 15, top: 5),
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  "View All",
-                  style: shopperText5,
+            GestureDetector(
+              onTap: () => Navigator.pushNamed(
+                context,
+                Transactions.routeName,
+              ),
+              child: Container(
+                margin: EdgeInsets.only(right: 15, top: 5),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    "View All",
+                    style: shopperText5,
+                  ),
                 ),
               ),
             ),
@@ -231,8 +239,22 @@ class _BusinessState extends State<Business> {
     print(options.id);
     switch (options.id) {
       case "transactions":
+        Navigator.pushNamed(
+          context,
+          Transactions.routeName,
+        );
         break;
-      case "cards":
+      case "bank":
+        Navigator.pushNamed(
+          context,
+          BankTransfer.routeName,
+        );
+        break;
+      case "request":
+        Navigator.pushNamed(
+          context,
+          Requests.routeName,
+        );
         break;
       case "signout":
         print("singout ");

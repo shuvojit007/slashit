@@ -11,6 +11,8 @@ class Option {
 
 const List<Option> shopper = const <Option>[
   const Option(
+      title: 'Transfer to bank', id: "bank", icon: FontAwesomeIcons.piggyBank),
+  const Option(
       title: 'Transactions',
       id: "transactions",
       icon: FontAwesomeIcons.moneyBill),
@@ -22,11 +24,13 @@ const List<Option> shopper = const <Option>[
 
 const List<Option> business = const <Option>[
   const Option(
+      title: 'Transfer to bank', id: "bank", icon: FontAwesomeIcons.piggyBank),
+  const Option(
       title: 'Transactions',
       id: "transactions",
       icon: FontAwesomeIcons.moneyBill),
   const Option(
-      title: 'Payment History', id: "payment", icon: FontAwesomeIcons.history),
+      title: 'Requests', id: "request", icon: FontAwesomeIcons.history),
   const Option(
       title: 'Sign Out', id: "signout", icon: FontAwesomeIcons.signOutAlt),
 ];

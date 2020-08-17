@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:slashit/src/resources/text_styles.dart';
+import 'package:slashit/src/view/shopper/addMoney.dart';
 
 class WalletScreen extends StatefulWidget {
   static const routeName = "/wallet";
@@ -55,7 +56,7 @@ class _WalletScreenState extends State<WalletScreen> {
               ),
             ),
             GestureDetector(
-              onTap: () {},
+              onTap: () => Navigator.pushNamed(context, AddMoney.routeName),
               child: Align(
                 alignment: Alignment.topRight,
                 child: Padding(

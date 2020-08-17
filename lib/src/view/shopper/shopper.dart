@@ -7,7 +7,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:slashit/src/blocs/features.dart';
 import 'package:slashit/src/di/locator.dart';
 import 'package:slashit/src/models/features_model.dart';
-import 'package:slashit/src/repository/user_repository.dart';
 import 'package:slashit/src/resources/assets.dart';
 import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/str.dart';
@@ -17,7 +16,10 @@ import 'package:slashit/src/utils/prefmanager.dart';
 import 'package:slashit/src/utils/url.dart';
 import 'package:slashit/src/utils/userData.dart';
 import 'package:slashit/src/view/auth/login_shopper.dart';
+import 'package:slashit/src/view/common/bankTransfer.dart';
+import 'package:slashit/src/view/common/transactions.dart';
 import 'package:slashit/src/view/shopper/debitCards.dart';
+import 'package:slashit/src/view/shopper/repayment.dart';
 import 'package:slashit/src/view/shopper/wallet.dart';
 import 'package:slashit/src/widget/propic.dart';
 
@@ -91,9 +93,8 @@ class _ShopperState extends State<Shopper> {
               height: 20,
             ),
             OutlineButton(
-              onPressed: () async {
-                UserRepository.instance.feachFeatures();
-              },
+              onPressed: () =>
+                  Navigator.pushNamed(context, UpcommingRepayments.routeName),
               shape: StadiumBorder(),
               borderSide: BorderSide(
                   color: Colors.grey, width: 1, style: BorderStyle.solid),
@@ -143,7 +144,7 @@ class _ShopperState extends State<Shopper> {
 
   _wallet() {
     return Container(
-      height: 45,
+      height: 52,
       child: Row(
         children: <Widget>[
           Expanded(
@@ -197,48 +198,47 @@ class _ShopperState extends State<Shopper> {
   }
 
   _header() {
-    return Card(
-      child: Container(
-        height: 100,
-        width: double.infinity,
-        child: Stack(
-          children: <Widget>[
-            ProfileImage(
-              photo: locator<PrefManager>().avatar,
+    return Container(
+      height: 100,
+      color: Colors.blue,
+      width: double.infinity,
+      child: Stack(
+        children: <Widget>[
+          ProfileImage(
+            photo: locator<PrefManager>().avatar,
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 55, left: 65),
+            child: Text(
+              "Shopper, ${locator<PrefManager>().name}",
+              style: userTitle,
             ),
-            Container(
-              margin: EdgeInsets.only(top: 55, left: 65),
-              child: Text(
-                "Shopper, ${locator<PrefManager>().name}",
-                style: userTitle,
-              ),
+          ),
+          Positioned(
+            right: 1,
+            bottom: 15,
+            child: PopupMenuButton<Option>(
+              onSelected: _appbarOption,
+              itemBuilder: (BuildContext context) {
+                print("shopper  ${shopper.length}");
+                return shopper.map((Option option) {
+                  return PopupMenuItem<Option>(
+                    value: option,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(option.icon, size: 20.0, color: PrimrayColor),
+                        SizedBox(width: 10),
+                        Text(option.title),
+                      ],
+                    ),
+                  );
+                }).toList();
+              },
             ),
-            Positioned(
-              right: 1,
-              bottom: 15,
-              child: PopupMenuButton<Option>(
-                onSelected: _appbarOption,
-                itemBuilder: (BuildContext context) {
-                  print("shopper  ${shopper.length}");
-                  return shopper.map((Option option) {
-                    return PopupMenuItem<Option>(
-                      value: option,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Icon(option.icon, size: 20.0, color: PrimrayColor),
-                          SizedBox(width: 10),
-                          Text(option.title),
-                        ],
-                      ),
-                    );
-                  }).toList();
-                },
-              ),
-            )
-          ],
-        ),
+          )
+        ],
       ),
     );
   }
@@ -305,6 +305,16 @@ class _ShopperState extends State<Shopper> {
   _appbarOption(Option options) {
     switch (options.id) {
       case "transactions":
+        Navigator.pushNamed(
+          context,
+          Transactions.routeName,
+        );
+        break;
+      case "bank":
+        Navigator.pushNamed(
+          context,
+          BankTransfer.routeName,
+        );
         break;
       case "cards":
         Navigator.pushNamed(
