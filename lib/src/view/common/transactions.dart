@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:slashit/src/blocs/transactions.dart';
+import 'package:slashit/src/models/transaction.dart';
 import 'package:slashit/src/resources/text_styles.dart';
+import 'package:slashit/src/utils/timeformat.dart';
 
 class Transactions extends StatefulWidget {
   static const routeName = "/transactions";
@@ -8,77 +11,76 @@ class Transactions extends StatefulWidget {
 }
 
 class _TransactionsState extends State<Transactions> {
+  TransactionsBloc _bloc;
+
+  @override
+  void initState() {
+    _bloc = TransactionsBloc();
+    _bloc.featchAllTransctions();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _bloc.dispose();
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Transactions"),
       ),
-      body: ListView(
-        children: <Widget>[
-          _transactionsView(),
-          _transactionsView(),
-          _transactionsView(),
-          _transactionsView(),
-          _transactionsView(),
-          _transactionsView(),
-          _transactionsView(),
-          _transactionsView(),
-          _transactionsView(),
-          _transactionsView(),
-          _transactionsView(),
-          _transactionsView(),
-          _transactionsView(),
-          _transactionsView(),
-          _transactionsView(),
-          _transactionsView(),
-        ],
+      body: StreamBuilder(
+        stream: _bloc.allTransaction,
+        builder: (context, AsyncSnapshot<List<Result>> snapshot) {
+          if (snapshot.hasData) {
+            return ListView.builder(
+                scrollDirection: Axis.vertical,
+                itemCount: snapshot.data.length,
+                itemBuilder: (BuildContext ctx, int index) {
+                  return _transactionsView(snapshot.data[index]);
+                });
+          } else if (snapshot.hasError) {
+            return Text(snapshot.error.toString());
+          }
+          return Center(child: CircularProgressIndicator());
+        },
       ),
     );
   }
 
-  _transactionsView() {
+  _transactionsView(Result data) {
     return Card(
       child: Container(
-        height: 60,
+        height: 70,
         margin: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
         child: Row(
           children: <Widget>[
             Expanded(
               flex: 1,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    "June 12, 2020",
-                    style: TransactionsList1,
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    "03: 54 AM",
-                    style: TransactionsList2,
-                  )
-                ],
+              child: Text(
+                "${getDateTime(data.createdAt)}",
+                style: TransactionsList1,
               ),
             ),
             Expanded(
-              flex: 1,
+              flex: 2,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    "NGN 6,900.00",
+                    "NGN ${data.order.amount}",
                     style: TransactionsList1,
                   ),
                   SizedBox(
                     height: 10,
                   ),
                   Text(
-                    "Completed",
+                    "${_getStatus(data.status)}",
                     style: TransactionsList3,
                   )
                 ],
@@ -88,5 +90,20 @@ class _TransactionsState extends State<Transactions> {
         ),
       ),
     );
+  }
+
+  _getStatus(String status) {
+    switch (status) {
+      case "PAYMENT_SUCCESS":
+        return "Completed";
+        break;
+      case "PAYMENT_PENDING":
+        return "Pending";
+        break;
+
+      default:
+        return status;
+        break;
+    }
   }
 }

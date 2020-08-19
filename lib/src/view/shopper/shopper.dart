@@ -1,9 +1,9 @@
-import 'package:barcode_flutter/barcode_flutter.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:slashit/src/blocs/features.dart';
 import 'package:slashit/src/di/locator.dart';
 import 'package:slashit/src/models/features_model.dart';
@@ -74,7 +74,7 @@ class _ShopperState extends State<Shopper> {
               ),
             ),
             SizedBox(
-              height: 30,
+              height: 20,
             ),
             Center(
               child: Text(
@@ -90,21 +90,20 @@ class _ShopperState extends State<Shopper> {
               child: Divider(color: Colors.black26),
             ),
             SizedBox(
-              height: 20,
+              height: 10,
             ),
-            OutlineButton(
+            RaisedButton(
               onPressed: () =>
                   Navigator.pushNamed(context, UpcommingRepayments.routeName),
               shape: StadiumBorder(),
-              borderSide: BorderSide(
-                  color: Colors.grey, width: 1, style: BorderStyle.solid),
+              color: Colors.blue,
               child: Text(
                 "     Upcomming Repayments     ",
                 style: shopperText3,
               ),
             ),
             SizedBox(
-              height: 20,
+              height: 10,
             ),
             Container(
               width: 300,
@@ -114,12 +113,16 @@ class _ShopperState extends State<Shopper> {
                 style: barcodeText,
               ),
             ),
-            BarCodeImage(
-              params: Code93BarCodeParams("1234ABCDEDGH",
-                  lineWidth: 2.00, barHeight: 90.0),
+            QrImage(
+              constrainErrorBounds: true,
+              data:
+                  "{\"type\":\"installment\",\"id\" :\"${locator<PrefManager>().userID}\"}",
+              version: QrVersions.auto,
+              size: 150.0,
+              gapless: false,
             ),
             SizedBox(
-              height: 20,
+              height: 10,
             ),
             _wallet(),
             SizedBox(
@@ -163,7 +166,7 @@ class _ShopperState extends State<Shopper> {
                     height: 3,
                   ),
                   Text(
-                    "Available Balance | NGN 7.500.00",
+                    "Available Balance | NGN ${locator<PrefManager>().availableBalance}",
                     style: WalletPrice,
                   )
                 ],

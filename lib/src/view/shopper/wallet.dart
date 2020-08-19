@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:slashit/src/di/locator.dart';
 import 'package:slashit/src/resources/text_styles.dart';
+import 'package:slashit/src/utils/prefmanager.dart';
 import 'package:slashit/src/view/shopper/addMoney.dart';
 
 class WalletScreen extends StatefulWidget {
@@ -27,7 +29,8 @@ class _WalletScreenState extends State<WalletScreen> {
               ),
               QrImage(
                 constrainErrorBounds: true,
-                data: "1234567890",
+                data:
+                    "{\"type\":\"wallet\",\"id\" :\"${locator<PrefManager>().userID}\"}",
                 version: QrVersions.auto,
                 size: 250.0,
                 gapless: false,

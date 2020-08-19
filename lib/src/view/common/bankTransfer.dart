@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:slashit/src/resources/colors.dart';
 
 class BankTransfer extends StatefulWidget {
-  static const routeName = "/debitcards";
+  static const routeName = "/bank";
   @override
   _BankTransferState createState() => _BankTransferState();
 }
@@ -61,7 +61,9 @@ class _BankTransferState extends State<BankTransfer> {
               cursorColor: appbartitle,
             ),
           ),
-          SizedBox(height: 20,),
+          SizedBox(
+            height: 20,
+          ),
           RaisedButton(
             shape: StadiumBorder(),
             onPressed: () {},

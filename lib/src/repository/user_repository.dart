@@ -6,6 +6,8 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:slashit/src/graphql/client.dart';
 import 'package:slashit/src/graphql/graph_api.dart';
 import 'package:slashit/src/models/features_model.dart';
+import 'package:slashit/src/models/transaction.dart';
+import 'package:slashit/src/models/upcommingPayments.dart';
 import 'package:slashit/src/utils/showToast.dart';
 import 'package:slashit/src/utils/userData.dart';
 
@@ -103,6 +105,73 @@ class UserRepository {
       if (map['success'] == true) {
         Features features = featuresFromMap(json.encode(map));
         return features;
+      } else {
+        print("Something went wrong");
+        return null;
+      }
+    }
+  }
+
+  Future<bool> addCard(
+    String reference,
+  ) async {
+    GraphQLClient _client = GraphQLConfiguration().clientToQuery();
+    QueryResult result = await _client.mutate(MutationOptions(
+        documentNode: gql(
+      GraphApi.instance.addCard(reference),
+    )));
+    if (result.hasException) {
+      showToastMsg("Something went wrong");
+      return false;
+    } else {
+      LazyCacheMap map = result.data.get("AddCard");
+      if (map['success'] == true && map['code'] == "ADDED") {
+        showToastMsgGreen("Card successfully added");
+        return true;
+      } else {
+        showToastMsg("Something went wrong");
+        return false;
+      }
+    }
+  }
+
+  Future<UpcommingPayments> upCommingRepayments() async {
+    GraphQLClient _client = GraphQLConfiguration().clientToQuery();
+    QueryResult result = await _client.query(QueryOptions(
+        documentNode: gql(
+      GraphApi.instance.upcomingPayments(),
+    )));
+    if (result.hasException) {
+      print("error  ${result.exception.toString()}");
+      return null;
+    } else {
+      LazyCacheMap map = result.data.get("FetchOrder");
+      if (map['success'] == true) {
+        UpcommingPayments upPayments =
+            upcommingPaymentsFromMap(json.encode(map));
+        return upPayments;
+      } else {
+        print("Something went wrong");
+        return null;
+      }
+    }
+  }
+
+  Future<Transactions> fetchTransactions() async {
+    GraphQLClient _client = GraphQLConfiguration().clientToQuery();
+    QueryResult result = await _client.query(QueryOptions(
+        documentNode: gql(
+      GraphApi.instance.fetchTransactions(),
+    )));
+    if (result.hasException) {
+      print("error  ${result.exception.toString()}");
+      return null;
+    } else {
+      LazyCacheMap map = result.data.get("FetchTransaction");
+      if (map['success'] == true) {
+        Transactions transaction = transactionsFromMap(json.encode(map));
+        print(transaction.toString());
+        return transaction;
       } else {
         print("Something went wrong");
         return null;

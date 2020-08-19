@@ -5,29 +5,7 @@ class GraphApi {
   // Singleton accessor
   static GraphApi get instance => _repo;
 
-  // A private constructor. Allows us to create instances of Repository
-  // only from within the Repository class itself.
   GraphApi._();
-
-//  static String login = """mutation (\$email:String!,\$password:String!){
-//  Login(email:\$email,password:\$password){
-//    	code
-//    	success
-//    	message
-//    	token
-//    	user{
-//        firstname
-//        lastname
-//        email
-//        role
-//        createdAt
-//        isEmailVarified
-//        role
-//        avater
-//      }
-//  }
-//}
-//""";
 
   String forgetPassword(String email) {
     return """mutation {
@@ -47,16 +25,35 @@ class GraphApi {
     	success
     	message
     	token
-    	user{
-        firstname
-        lastname
-        email
-        role
-        createdAt
-        isEmailVarified
-        role
-        avater
-      }
+      user{
+          _id
+          firstname
+          lastname
+          mobile
+          avater
+          role
+          uniqueId
+          updatedAt
+          isEmailVarified
+          createdAt
+          shopper{
+            spendLimit
+            availableBalance
+            cards{
+              _id
+              exp_month
+              exp_year
+            }
+          }
+          business{
+            bankName
+            bankNumber
+            verificationImg
+          }
+          email
+          address
+          status
+    }
   }
 }
 """;
@@ -93,6 +90,130 @@ class GraphApi {
             }
         }
     }
+    """;
+  }
+
+  //=====================Card===========//
+
+  String addCard(String reference) {
+    return """mutation {
+  AddCard(reference:"$reference"){
+    code
+    success
+    message
+  }
+}
+""";
+  }
+
+  String fetchCards() {
+    return """
+   query{
+  FetchCard{
+    code
+    message
+    count
+    result{
+      _id
+      exp_month
+      exp_year
+      card_type
+      last4
+      preferred
+    }
+  }
+}
+    """;
+  }
+
+  //========= Shopper ========//
+  String upcomingPayments() {
+    return """
+ query{
+  FetchOrder(limit:100,offset:0){
+    code
+    message
+    count
+    hasNext
+    success
+    result{
+      orderId
+      title
+      attachment
+      note
+      shippingAddress
+      createdAt
+      desc
+      quantity
+      totalLateFee
+      business{
+        business{
+          businessName
+        }
+      }
+      amount
+      status
+      type
+      isRequested
+      authorizationCode
+      currency
+      transactions{
+        _id
+        transactionId
+        status
+        installment
+        createdAt
+        paymentDate
+        reference
+        isRequested
+        createdAt
+      }
+  
+    }
+  }
+}
+    """;
+  }
+
+  //===============Transactions
+
+  String fetchTransactions() {
+    return """
+ query {
+  FetchTransaction(limit:100,offset:0,){
+    code
+    message
+    success
+    result{
+      _id
+      transactionId
+      reference
+      status
+      installment
+      paymentDate
+      createdAt
+      order{
+        createdAt
+        orderId
+        attachment
+        title
+        note
+        shippingAddress
+        desc
+        quantity
+        amount
+        status
+        createdAt
+        totalLateFee
+        currency
+        authorizationCode
+        orderId
+        isRequested
+        type
+      }
+    }
+  }
+}
     """;
   }
 }

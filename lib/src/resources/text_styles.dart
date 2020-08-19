@@ -245,10 +245,23 @@ const TextStyle OrderInfo3 = TextStyle(
   fontWeight: FontWeight.w500,
 );
 
+const TextStyle OrderInfo4 = TextStyle(
+  color: Colors.black87,
+  fontSize: size_16,
+  fontFamily: 'Poppins',
+  fontWeight: FontWeight.w500,
+);
+
+const TextStyle OrderInfo5 = TextStyle(
+  color: Colors.black87,
+  fontSize: size_15,
+  fontFamily: 'Poppins',
+  fontWeight: FontWeight.w400,
+);
 //==============Transactions LIst
 const TextStyle TransactionsList1 = TextStyle(
   color: Colors.black,
-  fontSize: size_16,
+  fontSize: 17,
   fontFamily: 'Poppins',
   fontWeight: FontWeight.w400,
 );

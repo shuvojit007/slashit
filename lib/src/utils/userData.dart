@@ -7,12 +7,25 @@ storeUser(data) {
   var user = data['user'];
   if (user["email"] != null) {
     locator<PrefManager>().email = user['email'];
-    print("email ${data['email']}");
+    print("email ${user['email']}");
+  }
+
+  if (user["_id"] != null) {
+    locator<PrefManager>().userID = user['_id'];
+    print("_id ${user['_id']}");
   }
 
   if (user["role"] != null) {
     locator<PrefManager>().role = user['role'];
     print("role ${user['role']}");
+
+    if (user["role"] == "shopper") {
+      var shopper = user["shopper"];
+      if (shopper["availableBalance"] != null) {
+        locator<PrefManager>().availableBalance = shopper["availableBalance"];
+        print("availableBalance  ${shopper["availableBalance"]}");
+      }
+    }
   }
 
   if (user["firstname"] != null && user["lastname"] != null) {

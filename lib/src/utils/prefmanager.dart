@@ -8,11 +8,8 @@ class PrefManager {
   static const String EMAIL = "EMAIL";
   static const String ROLE = "ROLE";
   static const String AVATAR = "AVATAR";
-  static const String DailyStreak = "DailyStreak";
-  static const String TodayRewared = "TodayRewared";
-  static const String TodayRewardShowed = "TodayRewardShowed";
-  static const String TodayUsedTime = "TodayUsedTime";
-  static const String LastDayUsed = "LastDayUsed";
+  static const String USERID = "USERID";
+  static const String AVAILABLEBALANCE = "AVAILABLEBALANCE";
 
   static PrefManager _instance;
   static SharedPreferences _preferences;
@@ -72,6 +69,12 @@ class PrefManager {
 
   String get avatar => _getFromDisk(AVATAR) ?? null;
   set avatar(String value) => _saveToDisk(AVATAR, value);
+
+  String get userID => _getFromDisk(USERID) ?? null;
+  set userID(String value) => _saveToDisk(USERID, value);
+
+  int get availableBalance => _getFromDisk(AVAILABLEBALANCE) ?? null;
+  set availableBalance(int value) => _saveToDisk(AVAILABLEBALANCE, value);
 //========User Information ==================//
 
 //  int get SIndex => _getFromDisk(SINDEX) ?? 0;

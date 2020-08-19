@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_paystack/flutter_paystack.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:slashit/src/di/locator.dart';
+import 'package:slashit/src/repository/user_repository.dart';
 import 'package:slashit/src/resources/text_styles.dart';
 import 'package:slashit/src/utils/prefmanager.dart';
 
@@ -25,10 +27,20 @@ class _DebitCardsState extends State<DebitCards> {
   int _expiryMonth = 0;
   int _expiryYear = 0;
 
+  ProgressDialog _pr;
+
   @override
   void initState() {
+    _pr = ProgressDialog(context, type: ProgressDialogType.Normal);
     PaystackPlugin.initialize(publicKey: paystackPublicKey);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _pr.hide();
+    // TODO: implement dispose
+    super.dispose();
   }
 
   @override
@@ -196,11 +208,14 @@ class _DebitCardsState extends State<DebitCards> {
         ),
       );
       print('Response = $response');
-      //  setState(() => _inProgress = false);
-      //_updateStatus(response.reference, '$response');
+      print('Response  reff = ${response.reference}');
+      _pr.show();
+      await UserRepository.instance.addCard(response.reference.toString());
+      _pr.hide();
     } catch (e) {
-      //   setState(() => _inProgress = false);
-      // _showMessage("Check console for error");
+      if (_pr.isShowing()) {
+        _pr.hide();
+      }
       rethrow;
     }
   }
@@ -212,7 +227,6 @@ class _DebitCardsState extends State<DebitCards> {
     } else {
       platform = 'Android';
     }
-
     return 'ChargedFrom${platform}_${DateTime.now().millisecondsSinceEpoch}';
   }
 
