@@ -317,3 +317,26 @@ const TextStyle RequestDetials5 = TextStyle(
   fontFamily: 'Poppins',
   fontWeight: FontWeight.normal,
 );
+
+//========TransactionDetails
+const TextStyle TransactionDetials1 = TextStyle(
+  color: Colors.black,
+  fontSize: 16,
+  fontFamily: 'Poppins',
+  fontWeight: FontWeight.normal,
+);
+
+const TextStyle TransactionDetials2 = TextStyle(
+  color: Colors.black,
+  fontSize: 17,
+  fontFamily: 'Poppins',
+  fontWeight: FontWeight.normal,
+);
+const TextStyle TransactionDetials3 = TextStyle(
+  color: Colors.green,
+  backgroundColor: Colors.lightGreenAccent,
+  fontSize: 14,
+  height: 3,
+  fontFamily: 'Poppins',
+  fontWeight: FontWeight.normal,
+);

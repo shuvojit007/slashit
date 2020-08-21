@@ -10,8 +10,16 @@ class TransactionsBloc {
 
   featchAllTransctions() async {
     print("featchAllTransctions");
-    Transactions transaction =
-        await UserRepository.instance.fetchTransactions();
+    TransactionsModel transaction =
+        await UserRepository.instance.fetchTransactions(100);
+    List<Result> res = transaction.result;
+    _transactionFetcher.sink.add(res);
+  }
+
+  featchAllTransctionsWithLimit(int limit) async {
+    print("featchAllTransctions");
+    TransactionsModel transaction =
+        await UserRepository.instance.fetchTransactions(8);
     List<Result> res = transaction.result;
     _transactionFetcher.sink.add(res);
   }

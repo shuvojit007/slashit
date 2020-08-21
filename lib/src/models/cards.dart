@@ -30,6 +30,11 @@ class Cards {
         "count": count,
         "result": List<dynamic>.from(result.map((x) => x.toMap())),
       };
+
+  @override
+  String toString() {
+    return 'Cards{code: $code, message: $message, count: $count, result: $result}';
+  }
 }
 
 class Result {
@@ -66,4 +71,9 @@ class Result {
         "last4": last4,
         "preferred": preferred,
       };
+
+  @override
+  String toString() {
+    return 'Result{id: $id, expMonth: $expMonth, expYear: $expYear, cardType: $cardType, last4: $last4, preferred: $preferred}';
+  }
 }

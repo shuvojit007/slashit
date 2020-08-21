@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:slashit/src/blocs/paymentReq.dart';
+import 'package:slashit/src/models/paymentReq.dart';
 import 'package:slashit/src/resources/text_styles.dart';
+import 'package:slashit/src/utils/timeformat.dart';
 import 'package:slashit/src/view/business/requestDetails.dart';
 
 class Requests extends StatefulWidget {
@@ -9,37 +12,53 @@ class Requests extends StatefulWidget {
 }
 
 class _RequestsState extends State<Requests> {
+  PaymentReqBloc _bloc;
+
+  @override
+  void initState() {
+    _bloc = PaymentReqBloc();
+    _bloc.fetchAllPaymentReq();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _bloc.dispose();
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Requests"),
       ),
-      body: ListView(
-        children: <Widget>[
-          _requestView(),
-          _requestView(),
-          _requestView(),
-          _requestView(),
-          _requestView(),
-          _requestView(),
-          _requestView(),
-          _requestView(),
-          _requestView(),
-          _requestView(),
-          _requestView(),
-          _requestView()
-        ],
+      body: StreamBuilder(
+        stream: _bloc.allPaymentReq,
+        builder: (context, AsyncSnapshot<List<Result>> snapshot) {
+          if (snapshot.hasData) {
+            return ListView.builder(
+                scrollDirection: Axis.vertical,
+                itemCount: snapshot.data.length,
+                itemBuilder: (BuildContext ctx, int index) {
+                  return _requestView(snapshot.data[index]);
+                });
+          } else if (snapshot.hasError) {
+            return Text(snapshot.error.toString());
+          }
+          return Center(child: CircularProgressIndicator());
+        },
       ),
     );
   }
 
-  _requestView() {
+  _requestView(Result data) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, RequestDetails.routeName),
+      onTap: () => _goToRequestDetails(data),
       child: Card(
         child: Container(
-          height: 60,
+          height: 80,
           margin: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
           child: Row(
             children: <Widget>[
@@ -50,14 +69,14 @@ class _RequestsState extends State<Requests> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      "Pair of Shoe (Title)",
+                      "${data.title}",
                       style: RequestesList1,
                     ),
                     SizedBox(
                       height: 10,
                     ),
                     Text(
-                      "NGN 1,0000.00",
+                      "NGN ${data.amount}",
                       style: TransactionsList2,
                     )
                   ],
@@ -70,7 +89,7 @@ class _RequestsState extends State<Requests> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      "June 21",
+                      "${getTime(data.createdAt)}",
                       style: TransactionsList1,
                     ),
                   ],
@@ -81,5 +100,15 @@ class _RequestsState extends State<Requests> {
         ),
       ),
     );
+  }
+
+  _goToRequestDetails(data) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => RequestDetails(
+                  data: data,
+                )));
+    ;
   }
 }

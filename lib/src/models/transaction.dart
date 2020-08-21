@@ -4,13 +4,13 @@
 
 import 'dart:convert';
 
-Transactions transactionsFromMap(String str) =>
-    Transactions.fromMap(json.decode(str));
+TransactionsModel transactionsFromMap(String str) =>
+    TransactionsModel.fromMap(json.decode(str));
 
-String transactionsToMap(Transactions data) => json.encode(data.toMap());
+String transactionsToMap(TransactionsModel data) => json.encode(data.toMap());
 
-class Transactions {
-  Transactions({
+class TransactionsModel {
+  TransactionsModel({
     this.code,
     this.message,
     this.success,
@@ -22,7 +22,8 @@ class Transactions {
   bool success;
   List<Result> result;
 
-  factory Transactions.fromMap(Map<String, dynamic> json) => Transactions(
+  factory TransactionsModel.fromMap(Map<String, dynamic> json) =>
+      TransactionsModel(
         code: json["code"],
         message: json["message"],
         success: json["success"],
@@ -35,11 +36,6 @@ class Transactions {
         "success": success,
         "result": List<dynamic>.from(result.map((x) => x.toMap())),
       };
-
-  @override
-  String toString() {
-    return 'Transactions{code: $code, message: $message, success: $success, result: $result}';
-  }
 }
 
 class Result {
@@ -51,6 +47,7 @@ class Result {
     this.installment,
     this.paymentDate,
     this.createdAt,
+    this.shopper,
     this.order,
   });
 
@@ -61,6 +58,7 @@ class Result {
   int installment;
   String paymentDate;
   String createdAt;
+  Shopper shopper;
   Order order;
 
   factory Result.fromMap(Map<String, dynamic> json) => Result(
@@ -71,6 +69,7 @@ class Result {
         installment: json["installment"],
         paymentDate: json["paymentDate"],
         createdAt: json["createdAt"],
+        shopper: Shopper.fromMap(json["shopper"]),
         order: Order.fromMap(json["order"]),
       );
 
@@ -82,13 +81,9 @@ class Result {
         "installment": installment,
         "paymentDate": paymentDate,
         "createdAt": createdAt,
+        "shopper": shopper.toMap(),
         "order": order.toMap(),
       };
-
-  @override
-  String toString() {
-    return 'Result{id: $id, transactionId: $transactionId, reference: $reference, status: $status, installment: $installment, paymentDate: $paymentDate, createdAt: $createdAt, order: $order}';
-  }
 }
 
 class Order {
@@ -161,9 +156,32 @@ class Order {
         "isRequested": isRequested,
         "type": type,
       };
+}
 
-  @override
-  String toString() {
-    return 'Order{createdAt: $createdAt, orderId: $orderId, attachment: $attachment, title: $title, note: $note, shippingAddress: $shippingAddress, desc: $desc, quantity: $quantity, amount: $amount, status: $status, totalLateFee: $totalLateFee, currency: $currency, authorizationCode: $authorizationCode, isRequested: $isRequested, type: $type}';
-  }
+class Shopper {
+  Shopper({
+    this.firstname,
+    this.lastname,
+    this.email,
+    this.id,
+  });
+
+  String firstname;
+  String lastname;
+  String email;
+  String id;
+
+  factory Shopper.fromMap(Map<String, dynamic> json) => Shopper(
+        firstname: json["firstname"],
+        lastname: json["lastname"],
+        email: json["email"],
+        id: json["_id"],
+      );
+
+  Map<String, dynamic> toMap() => {
+        "firstname": firstname,
+        "lastname": lastname,
+        "email": email,
+        "_id": id,
+      };
 }

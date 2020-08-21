@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:slashit/src/blocs/upcommingPayment.dart';
 import 'package:slashit/src/models/upcommingPayments.dart';
@@ -62,42 +60,32 @@ class _UpcommingRepaymentsState extends State<UpcommingRepayments> {
         height: 100,
         margin: EdgeInsets.only(left: 10, right: 10),
         child: Card(
-          child: Row(
+          child: Stack(
             children: <Widget>[
               Container(
-                width: 10,
-                color: colors[new Random().nextInt(3)],
-              ),
-              Expanded(
-                child: Stack(
+                margin: EdgeInsets.only(left: 10, top: 10),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.only(left: 10, top: 10),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text("# ${data.orderId}", style: Repayments1),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            "${getDateTime(data.createdAt)}",
-                            style: Repayments2,
-                          )
-                        ],
-                      ),
+                    Text("# ${data.orderId}", style: Repayments1),
+                    SizedBox(
+                      height: 5,
                     ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 10.0),
-                        child: Text(
-                          "NGN ${data.amount}",
-                          style: Repayments3,
-                        ),
-                      ),
+                    Text(
+                      "${getDateTime(data.createdAt)}",
+                      style: Repayments2,
                     )
                   ],
+                ),
+              ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 10.0),
+                  child: Text(
+                    "NGN ${data.amount}",
+                    style: Repayments3,
+                  ),
                 ),
               )
             ],
@@ -114,6 +102,5 @@ class _UpcommingRepaymentsState extends State<UpcommingRepayments> {
             builder: (context) => OrderInfo(
                   data: data,
                 )));
-    ;
   }
 }

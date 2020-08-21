@@ -1,5 +1,11 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:progress_dialog/progress_dialog.dart';
+import 'package:slashit/src/repository/user_repository.dart';
 import 'package:slashit/src/resources/text_styles.dart';
+import 'package:slashit/src/utils/showToast.dart';
 
 class AddMoney extends StatefulWidget {
   static const routeName = "/addMoney";
@@ -8,6 +14,23 @@ class AddMoney extends StatefulWidget {
 }
 
 class _AddMoneyState extends State<AddMoney> {
+  TextEditingController _controller = TextEditingController();
+
+  ProgressDialog _pr;
+  @override
+  void initState() {
+    _pr = ProgressDialog(context, type: ProgressDialogType.Normal);
+
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,19 +40,30 @@ class _AddMoneyState extends State<AddMoney> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text(
-                "0.00",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 25,
-                  fontWeight: FontWeight.w600,
+              Container(
+                width: 200,
+                child: TextField(
+                  autofocus: true,
+                  controller: _controller,
+                  textAlign: TextAlign.center,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    WhitelistingTextInputFormatter.digitsOnly
+                  ],
+                  decoration: InputDecoration.collapsed(
+                      hintText: "0.00", border: InputBorder.none),
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 25,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
               SizedBox(
                 height: 50,
               ),
               RaisedButton(
-                onPressed: () {},
+                onPressed: addMoney,
                 color: Colors.blue,
                 shape: StadiumBorder(),
                 child: Text(
@@ -66,5 +100,22 @@ class _AddMoneyState extends State<AddMoney> {
         ),
       ),
     );
+  }
+
+  addMoney() async {
+    if (_controller.text.isEmpty) {
+      showToastMsgTop("Please add valid input");
+      return;
+    }
+
+    if (!RegExp(r'[+-]?([0-9]*[.])?[0-9]+').hasMatch(_controller.text)) {
+      showToastMsgTop("Please add valid input");
+      return;
+    }
+    FocusScope.of(context).unfocus();
+    _pr.show();
+    await UserRepository.instance.addMony(double.parse(_controller.text));
+    await UserRepository.instance.fetchUser();
+    _pr.hide();
   }
 }

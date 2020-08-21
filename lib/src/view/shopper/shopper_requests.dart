@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:slashit/src/blocs/transactions.dart';
-import 'package:slashit/src/models/transaction.dart';
+import 'package:slashit/src/blocs/paymentReq.dart';
+import 'package:slashit/src/models/paymentReq.dart';
 import 'package:slashit/src/resources/text_styles.dart';
 import 'package:slashit/src/utils/timeformat.dart';
-import 'package:slashit/src/view/common/transactionsDetails.dart';
+import 'package:slashit/src/view/business/requestDetails.dart';
 
-class Transactions extends StatefulWidget {
-  static const routeName = "/transactions";
+class ShopperRequests extends StatefulWidget {
+  static const routeName = "/shopper_requests";
   @override
-  _TransactionsState createState() => _TransactionsState();
+  _ShopperRequeststate createState() => _ShopperRequeststate();
 }
 
-class _TransactionsState extends State<Transactions> {
-  TransactionsBloc _bloc;
+class _ShopperRequeststate extends State<ShopperRequests> {
+  PaymentReqBloc _bloc;
 
   @override
   void initState() {
-    _bloc = TransactionsBloc();
-    _bloc.featchAllTransctions();
+    _bloc = PaymentReqBloc();
+    _bloc.fetchAllPaymentReq();
     super.initState();
   }
 
@@ -32,17 +32,17 @@ class _TransactionsState extends State<Transactions> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Transactions"),
+        title: Text("Requests"),
       ),
       body: StreamBuilder(
-        stream: _bloc.allTransaction,
+        stream: _bloc.allPaymentReq,
         builder: (context, AsyncSnapshot<List<Result>> snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(
                 scrollDirection: Axis.vertical,
                 itemCount: snapshot.data.length,
                 itemBuilder: (BuildContext ctx, int index) {
-                  return _transactionsView(snapshot.data[index]);
+                  return _requestView(snapshot.data[index]);
                 });
           } else if (snapshot.hasError) {
             return Text(snapshot.error.toString());
@@ -53,39 +53,45 @@ class _TransactionsState extends State<Transactions> {
     );
   }
 
-  _transactionsView(Result data) {
+  _requestView(Result data) {
     return GestureDetector(
-      onTap: () => _goToTransactionDetails(data),
+      onTap: () => _goToRequestDetails(data),
       child: Card(
         child: Container(
-          height: 70,
+          height: 80,
           margin: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
           child: Row(
             children: <Widget>[
               Expanded(
                 flex: 1,
-                child: Text(
-                  "${getDateTime(data.createdAt)}",
-                  style: TransactionsList1,
-                ),
-              ),
-              Expanded(
-                flex: 2,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      "NGN ${data.order.amount}",
-                      style: TransactionsList1,
+                      "${data.title}",
+                      style: RequestesList1,
                     ),
                     SizedBox(
                       height: 10,
                     ),
                     Text(
-                      "${_getStatus(data.status)}",
-                      style: TransactionsList3,
+                      "NGN ${data.amount}",
+                      style: TransactionsList2,
                     )
+                  ],
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      "${getTime(data.createdAt)}",
+                      style: TransactionsList1,
+                    ),
                   ],
                 ),
               )
@@ -96,33 +102,13 @@ class _TransactionsState extends State<Transactions> {
     );
   }
 
-  _goToTransactionDetails(data) {
+  _goToRequestDetails(data) {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => TransactionDetails(
+            builder: (context) => RequestDetails(
                   data: data,
                 )));
     ;
-  }
-
-  _getStatus(String status) {
-    switch (status) {
-      case "PAYMENT_SUCCESS":
-        return "Completed";
-        break;
-      case "PAYMENT_PENDING":
-        return "Pending";
-        break;
-      case "PAYOUT_SUCCESS":
-        return "Completed";
-        break;
-      case "PAYOUT_PENDING":
-        return "Pending";
-        break;
-      default:
-        return status;
-        break;
-    }
   }
 }

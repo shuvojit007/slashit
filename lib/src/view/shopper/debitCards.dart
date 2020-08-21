@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:slashit/src/blocs/cards.dart';
 import 'package:slashit/src/di/locator.dart';
+import 'package:slashit/src/models/cards.dart';
 import 'package:slashit/src/repository/user_repository.dart';
 import 'package:slashit/src/resources/text_styles.dart';
 import 'package:slashit/src/utils/prefmanager.dart';
@@ -18,28 +20,26 @@ class _DebitCardsState extends State<DebitCards> {
   int count = 3;
 
   String paystackPublicKey = 'pk_test_316f780a38daae0c1cc86c2696dd20fdad714a17';
-
-  int _radioValue = 0;
-  CheckoutMethod _method;
-  bool _inProgress = false;
   String _cardNumber;
   String _cvv;
   int _expiryMonth = 0;
   int _expiryYear = 0;
 
   ProgressDialog _pr;
-
+  CardsBloc _bloc;
   @override
   void initState() {
     _pr = ProgressDialog(context, type: ProgressDialogType.Normal);
     PaystackPlugin.initialize(publicKey: paystackPublicKey);
+    _bloc = CardsBloc();
+    _bloc.featchAllCards();
     super.initState();
   }
 
   @override
   void dispose() {
     _pr.hide();
-    // TODO: implement dispose
+    _bloc.dispose();
     super.dispose();
   }
 
@@ -47,13 +47,21 @@ class _DebitCardsState extends State<DebitCards> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _header(),
-      body: ListView(
-        children: <Widget>[
-          _body(true),
-          _body(false),
-          _body(false),
-          _body(false),
-        ],
+      body: StreamBuilder(
+        stream: _bloc.allCards,
+        builder: (context, AsyncSnapshot<List<Result>> snapshot) {
+          if (snapshot.hasData) {
+            return ListView.builder(
+                scrollDirection: Axis.vertical,
+                itemCount: snapshot.data.length,
+                itemBuilder: (BuildContext ctx, int index) {
+                  return _body(snapshot.data[index]);
+                });
+          } else if (snapshot.hasError) {
+            return Text(snapshot.error.toString());
+          }
+          return Center(child: CircularProgressIndicator());
+        },
       ),
       floatingActionButton: Visibility(
         visible: true,
@@ -98,20 +106,20 @@ class _DebitCardsState extends State<DebitCards> {
     );
   }
 
-  _body(bool flag) {
+  _body(Result data) {
     return Card(
       margin: EdgeInsets.all(10),
       elevation: 1,
       child: Container(
-        height: 100,
+        height: 80,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            _cardView("7009"),
+            _cardView("${data.last4}"),
             SizedBox(
               width: 10,
             ),
-            if (flag) ...[
+            if (data.preferred) ...[
               Expanded(
                 child: Center(
                   child: Text(
@@ -127,7 +135,7 @@ class _DebitCardsState extends State<DebitCards> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       OutlineButton(
-                        onPressed: () {},
+                        onPressed: () => _setPrefferdCard(data.id),
                         shape: StadiumBorder(),
                         borderSide: const BorderSide(
                             color: Colors.grey,
@@ -141,9 +149,12 @@ class _DebitCardsState extends State<DebitCards> {
                       SizedBox(
                         height: 3,
                       ),
-                      Text(
-                        "Remove Card",
-                        style: debitCards5,
+                      GestureDetector(
+                        onTap: () => _deleteCard(data.id),
+                        child: Text(
+                          "Remove Card",
+                          style: debitCards5,
+                        ),
                       )
                     ]),
               )
@@ -152,6 +163,24 @@ class _DebitCardsState extends State<DebitCards> {
         ),
       ),
     );
+  }
+
+  _setPrefferdCard(String id) async {
+    _pr.show();
+    bool result = await UserRepository.instance.setPrefferdCard(id);
+    if (result) {
+      await _bloc.featchAllCards();
+    }
+    _pr.hide();
+  }
+
+  _deleteCard(String id) async {
+    _pr.show();
+    bool result = await UserRepository.instance.deleteCard(id);
+    if (result) {
+      await _bloc.featchAllCards();
+    }
+    _pr.hide();
   }
 
   _cardView(String card) {
@@ -210,7 +239,11 @@ class _DebitCardsState extends State<DebitCards> {
       print('Response = $response');
       print('Response  reff = ${response.reference}');
       _pr.show();
-      await UserRepository.instance.addCard(response.reference.toString());
+      bool result =
+          await UserRepository.instance.addCard(response.reference.toString());
+      if (result) {
+        await _bloc.featchAllCards();
+      }
       _pr.hide();
     } catch (e) {
       if (_pr.isShowing()) {

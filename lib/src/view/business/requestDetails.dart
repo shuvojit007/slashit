@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:slashit/src/models/paymentReq.dart';
 import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/text_styles.dart';
 
 class RequestDetails extends StatefulWidget {
   static const routeName = "/requestDetails";
+  Result data;
+
+  RequestDetails({this.data});
+
   @override
   _RequestDetailsState createState() => _RequestDetailsState();
 }
@@ -33,21 +38,21 @@ class _RequestDetailsState extends State<RequestDetails> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    "NGN 1,200.00",
+                    "NGN ${widget.data.amount}",
                     style: RequestDetials1,
                   ),
                   SizedBox(
                     height: 5,
                   ),
                   Text(
-                    "Created Jun 21, 2020 5:38 PM",
+                    "Created ${widget.data.createdAt}",
                     style: RequestDetials2,
                   ),
                   SizedBox(
                     height: 5,
                   ),
                   Text(
-                    "T257L24870X",
+                    "${widget.data.orderId}",
                     style: RequestDetials3,
                   ),
                 ],
@@ -66,23 +71,25 @@ class _RequestDetailsState extends State<RequestDetails> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    "Title : Shuvojit Kar",
+                    "Title : ${widget.data.title}",
                     style: RequestDetials4,
                   ),
                   SizedBox(
                     height: 10,
                   ),
                   Text(
-                    "Descriptions : Lorasem ipsum asdasd asdew asdasd wreva qweqwe ",
+                    "Descriptions : ${widget.data.desc}",
                     style: RequestDetials4,
                   ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    "Customer : sh@gmail.com",
-                    style: RequestDetials4,
-                  ),
+                  if (widget.data.shopper != null) ...[
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      "Customer : ${widget.data.shopper.email}",
+                      style: RequestDetials4,
+                    ),
+                  ],
                   SizedBox(
                     height: 10,
                   ),
@@ -94,7 +101,7 @@ class _RequestDetailsState extends State<RequestDetails> {
                     height: 10,
                   ),
                   Text(
-                    "Note : This is Note ",
+                    "Note : ${widget.data.note}",
                     style: RequestDetials4,
                   ),
                 ],
@@ -104,12 +111,23 @@ class _RequestDetailsState extends State<RequestDetails> {
               height: 20,
             ),
             Text(
-              "Payment was successful",
+              "Payment was ${_getStatus(widget.data.status)}",
               style: RequestDetials5,
             ),
           ],
         ),
       ),
     );
+  }
+
+  _getStatus(String status) {
+    switch (status) {
+      case "PENDING":
+        return "pending";
+      case "COMPLETED":
+        return "successful";
+      default:
+        return status;
+    }
   }
 }

@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:slashit/src/blocs/transactions.dart';
 import 'package:slashit/src/di/locator.dart';
+import 'package:slashit/src/models/transaction.dart';
 import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/text_styles.dart';
 import 'package:slashit/src/utils/homeExtra.dart';
 import 'package:slashit/src/utils/prefmanager.dart';
+import 'package:slashit/src/utils/timeformat.dart';
 import 'package:slashit/src/utils/userData.dart';
 import 'package:slashit/src/view/auth/login_shopper.dart';
 import 'package:slashit/src/view/business/request_money.dart';
-import 'package:slashit/src/view/business/requests.dart';
+import 'package:slashit/src/view/business/requestsList.dart';
 import 'package:slashit/src/view/common/bankTransfer.dart';
 import 'package:slashit/src/view/common/transactions.dart';
 import 'package:slashit/src/widget/propic.dart';
@@ -18,7 +21,21 @@ class Business extends StatefulWidget {
 }
 
 class _BusinessState extends State<Business> {
-  int value = 5000;
+  TransactionsBloc _bloc;
+  @override
+  void initState() {
+    _bloc = TransactionsBloc();
+    _bloc.featchAllTransctionsWithLimit(5);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _bloc.dispose();
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -123,7 +140,7 @@ class _BusinessState extends State<Business> {
           ),
           Center(
             child: Text(
-              "NGN $value",
+              "NGN ${locator<PrefManager>().availableBalance}",
               style: shopperText2,
             ),
           ),
@@ -173,10 +190,21 @@ class _BusinessState extends State<Business> {
               removeTop: true,
               child: Container(
                 height: 220,
-                child: ListView(
-                  children: List<Widget>.generate(12, (index) {
-                    return _data();
-                  }),
+                child: StreamBuilder(
+                  stream: _bloc.allTransaction,
+                  builder: (context, AsyncSnapshot<List<Result>> snapshot) {
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (BuildContext ctx, int index) {
+                            return _data(snapshot.data[index]);
+                          });
+                    } else if (snapshot.hasError) {
+                      return Text(snapshot.error.toString());
+                    }
+                    return Center(child: CircularProgressIndicator());
+                  },
                 ),
               ),
             ),
@@ -200,7 +228,7 @@ class _BusinessState extends State<Business> {
         ));
   }
 
-  _data() {
+  _data(Result data) {
     return Container(
       width: double.infinity,
       margin: EdgeInsets.only(bottom: 5, top: 5, left: 5),
@@ -210,14 +238,14 @@ class _BusinessState extends State<Business> {
           Expanded(
             flex: 1,
             child: Text(
-              "JUNE 26",
+              "${getTime(data.createdAt)}",
               style: businessText2,
             ),
           ),
           Expanded(
             flex: 2,
             child: Text(
-              "Sneakers & jeans",
+              "${data.order.title}",
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: businessText2,
@@ -226,7 +254,7 @@ class _BusinessState extends State<Business> {
           Expanded(
             flex: 1,
             child: Text(
-              "NGN 1200",
+              "NGN ${data.order.amount}",
               style: businessText2,
             ),
           )

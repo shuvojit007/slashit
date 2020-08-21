@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/text_styles.dart';
-import 'package:slashit/src/view/business/barcodeScan.dart';
+import 'package:slashit/src/utils/showToast.dart';
+
+import 'barcodeScan.dart';
 
 class RequestMoney extends StatefulWidget {
   static const routeName = "/request_money";
@@ -10,6 +12,20 @@ class RequestMoney extends StatefulWidget {
 }
 
 class _RequestMoneyState extends State<RequestMoney> {
+  TextEditingController _title = TextEditingController();
+  TextEditingController _desc = TextEditingController();
+  TextEditingController _amount = TextEditingController();
+  TextEditingController _note = TextEditingController();
+
+  @override
+  void dispose() {
+    _title?.dispose();
+    _desc?.dispose();
+    _amount?.dispose();
+    _note?.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,29 +47,27 @@ class _RequestMoneyState extends State<RequestMoney> {
       child: Column(
         children: <Widget>[
           SizedBox(height: 16),
-          _inputFields("Title"),
+          _inputFields("Title", _title),
           SizedBox(height: 16),
-          _inputFields("Description"),
+          _inputFields("Description", _desc),
           SizedBox(height: 16),
-          _inputFields("Customer"),
+          _inputFields("Amount", _amount),
           SizedBox(height: 16),
-          _inputFields("Amount"),
-          SizedBox(height: 16),
-          _inputFields("Note"),
+          _inputFields("Note", _note),
           SizedBox(height: 16),
         ],
       ),
     );
   }
 
-  _inputFields(String name) {
+  _inputFields(String name, TextEditingController _con) {
     return Padding(
       padding: EdgeInsets.only(
         left: 20,
         right: 20,
       ),
       child: TextField(
-        controller: null,
+        controller: _con,
         decoration: InputDecoration(
           labelText: name,
           focusedBorder: OutlineInputBorder(
@@ -70,11 +84,34 @@ class _RequestMoneyState extends State<RequestMoney> {
 
   _actionBtn() {
     return RaisedButton(
-        onPressed: () =>
-            Navigator.pushNamed(context, BarCodeScanning.routeName),
+        onPressed: () => _createPaymentReq(),
         child: Text('   Create  ', style: SignInStyle),
         color: Colors.blue,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)));
+  }
+
+  _createPaymentReq() {
+    if (_title.text.isNotEmpty &&
+        _note.text.isNotEmpty &&
+        _desc.text.isNotEmpty &&
+        _amount.text.isNotEmpty) {
+      var data = {
+        "title": "${_title.text}",
+        "note": "${_note.text}",
+        "desc": "${_desc.text}",
+        "amount": int.parse(_amount.text)
+      };
+
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => BarCodeScanning(
+                    data: data,
+                  )));
+      print(data["title"]);
+    } else {
+      showToastMsg("Please fill up the form");
+    }
   }
 }

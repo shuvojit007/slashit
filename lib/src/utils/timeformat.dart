@@ -5,3 +5,9 @@ String getDateTime(String time) {
       new DateTime.fromMillisecondsSinceEpoch(int.parse(time)),
       format: DateTimeFormats.american);
 }
+
+String getTime(String time) {
+  return DateTimeFormat.format(
+      new DateTime.fromMillisecondsSinceEpoch(int.parse(time)),
+      format: DateTimeFormats.european);
+}

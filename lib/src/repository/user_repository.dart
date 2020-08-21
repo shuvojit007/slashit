@@ -5,7 +5,9 @@ import 'dart:convert';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:slashit/src/graphql/client.dart';
 import 'package:slashit/src/graphql/graph_api.dart';
+import 'package:slashit/src/models/cards.dart';
 import 'package:slashit/src/models/features_model.dart';
+import 'package:slashit/src/models/paymentReq.dart';
 import 'package:slashit/src/models/transaction.dart';
 import 'package:slashit/src/models/upcommingPayments.dart';
 import 'package:slashit/src/utils/showToast.dart';
@@ -112,29 +114,6 @@ class UserRepository {
     }
   }
 
-  Future<bool> addCard(
-    String reference,
-  ) async {
-    GraphQLClient _client = GraphQLConfiguration().clientToQuery();
-    QueryResult result = await _client.mutate(MutationOptions(
-        documentNode: gql(
-      GraphApi.instance.addCard(reference),
-    )));
-    if (result.hasException) {
-      showToastMsg("Something went wrong");
-      return false;
-    } else {
-      LazyCacheMap map = result.data.get("AddCard");
-      if (map['success'] == true && map['code'] == "ADDED") {
-        showToastMsgGreen("Card successfully added");
-        return true;
-      } else {
-        showToastMsg("Something went wrong");
-        return false;
-      }
-    }
-  }
-
   Future<UpcommingPayments> upCommingRepayments() async {
     GraphQLClient _client = GraphQLConfiguration().clientToQuery();
     QueryResult result = await _client.query(QueryOptions(
@@ -157,11 +136,11 @@ class UserRepository {
     }
   }
 
-  Future<Transactions> fetchTransactions() async {
+  Future<TransactionsModel> fetchTransactions(int limit) async {
     GraphQLClient _client = GraphQLConfiguration().clientToQuery();
     QueryResult result = await _client.query(QueryOptions(
         documentNode: gql(
-      GraphApi.instance.fetchTransactions(),
+      GraphApi.instance.fetchTransactions(limit),
     )));
     if (result.hasException) {
       print("error  ${result.exception.toString()}");
@@ -169,7 +148,8 @@ class UserRepository {
     } else {
       LazyCacheMap map = result.data.get("FetchTransaction");
       if (map['success'] == true) {
-        Transactions transaction = transactionsFromMap(json.encode(map));
+        print(json.encode(result.data.get("FetchTransaction")));
+        TransactionsModel transaction = transactionsFromMap(json.encode(map));
         print(transaction.toString());
         return transaction;
       } else {
@@ -179,31 +159,175 @@ class UserRepository {
     }
   }
 
-  _getErrorMessage(error) {
-    String errorMessage = "Something went wrong";
-    switch (error.code) {
-      case "ERROR_INVALID_EMAIL":
-        errorMessage = "Your email address appears to be malformed.";
-        break;
-      case "ERROR_WRONG_PASSWORD":
-        errorMessage = "Your password is wrong.";
-        break;
-      case "ERROR_USER_NOT_FOUND":
-        errorMessage = "User with this email doesn't exist.";
-        break;
-      case "ERROR_USER_DISABLED":
-        errorMessage = "User with this email has been disabled.";
-        break;
-      case "ERROR_TOO_MANY_REQUESTS":
-        errorMessage = "Too many requests. Try again later.";
-        break;
-      case "ERROR_OPERATION_NOT_ALLOWED":
-        errorMessage = "Signing in with Email and Password is not enabled.";
-        break;
-      default:
-        errorMessage = "An undefined Error happened.";
+  Future<void> fetchUser() async {
+    GraphQLClient _client = GraphQLConfiguration().clientToQuery();
+    QueryResult result = await _client.query(QueryOptions(
+        documentNode: gql(
+      GraphApi.instance.fetchUser(),
+    )));
+    if (result.hasException) {
+      print("error  ${result.exception.toString()}");
+    } else {
+      LazyCacheMap map = result.data.get("FetchUserById");
+      if (map['success'] == true) {
+        updateUser(result.data['FetchUserById']);
+      } else {
+        print("Something went wrong");
+      }
     }
+  }
 
-    return errorMessage;
+  //============Cards =============//
+  Future<Cards> fetchCards() async {
+    GraphQLClient _client = GraphQLConfiguration().clientToQuery();
+    QueryResult result = await _client.query(QueryOptions(
+        documentNode: gql(
+      GraphApi.instance.fetchCards(),
+    )));
+    if (result.hasException) {
+      print("error  ${result.exception.toString()}");
+      return null;
+    } else {
+      LazyCacheMap map = result.data.get("FetchCard");
+      if (map['code'] == "OK") {
+        Cards cards = cardsFromMap(json.encode(map));
+        print(cards.toString());
+        return cards;
+      } else {
+        print("Something went wrong");
+        return null;
+      }
+    }
+  }
+
+  Future<bool> addCard(
+    String reference,
+  ) async {
+    try {
+      GraphQLClient _client = GraphQLConfiguration().clientToQuery();
+      QueryResult result = await _client.mutate(MutationOptions(
+          documentNode: gql(
+        GraphApi.instance.addCard(reference),
+      )));
+      if (result.hasException) {
+        showToastMsg("Something went wrong");
+        return false;
+      } else {
+        LazyCacheMap map = result.data.get("AddCard");
+        if (map['success'] == true && map['code'] == "ADDED") {
+          showToastMsgGreen("Card successfully added");
+          return true;
+        } else {
+          showToastMsg("Something went wrong");
+          return false;
+        }
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> setPrefferdCard(
+    String id,
+  ) async {
+    try {
+      GraphQLClient _client = GraphQLConfiguration().clientToQuery();
+      QueryResult result = await _client.mutate(MutationOptions(
+          documentNode: gql(
+        GraphApi.instance.setPrefferdCard(id),
+      )));
+      if (result.hasException) {
+        showToastMsg("Something went wrong");
+        return false;
+      } else {
+        LazyCacheMap map = result.data.get("SetPreferredCard");
+        if (map['success'] == true) {
+          return true;
+        } else {
+          showToastMsg("Something went wrong");
+          return false;
+        }
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> deleteCard(
+    String id,
+  ) async {
+    try {
+      GraphQLClient _client = GraphQLConfiguration().clientToQuery();
+      QueryResult result = await _client.mutate(MutationOptions(
+          documentNode: gql(
+        GraphApi.instance.deleteCard(id),
+      )));
+      if (result.hasException) {
+        showToastMsg("Something went wrong");
+        return false;
+      } else {
+        LazyCacheMap map = result.data.get("DeleteCard");
+        if (map['success'] == true) {
+          return true;
+        } else {
+          showToastMsg("Something went wrong");
+          return false;
+        }
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
+//============Add Money =============//
+
+  Future<bool> addMony(
+    double money,
+  ) async {
+    try {
+      GraphQLClient _client = GraphQLConfiguration().clientToQuery();
+      QueryResult result = await _client.mutate(MutationOptions(
+          documentNode: gql(
+        GraphApi.instance.addMony(money),
+      )));
+      if (result.hasException) {
+        showToastMsg("Something went wrong");
+        return false;
+      } else {
+        LazyCacheMap map = result.data.get("RechargeWallet");
+        if (map['success'] == true) {
+          showToastMsgGreen(map['message']);
+          return true;
+        } else {
+          showToastMsg("Something went wrong");
+          return false;
+        }
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
+  //============business ========/
+  Future<PaymentReq> fetchPaymentReq() async {
+    GraphQLClient _client = GraphQLConfiguration().clientToQuery();
+    QueryResult result = await _client.query(QueryOptions(
+        documentNode: gql(
+      GraphApi.instance.fetchPaymentreq(),
+    )));
+    if (result.hasException) {
+      print("error  ${result.exception.toString()}");
+      return null;
+    } else {
+      LazyCacheMap map = result.data.get("FetchPaymentReq");
+      if (map['success'] == true) {
+        PaymentReq paymentReq = paymentReqFromMap(json.encode(map));
+        print(paymentReq.toString());
+        return paymentReq;
+      } else {
+        print("Something went wrong");
+        return null;
+      }
+    }
   }
 }

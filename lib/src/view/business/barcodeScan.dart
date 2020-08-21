@@ -4,10 +4,13 @@ import 'package:barcode_scan/platform_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:slashit/src/view/shopper/addMoney.dart';
 
 class BarCodeScanning extends StatefulWidget {
   static const routeName = "/barCode";
+  var data;
+
+  BarCodeScanning({this.data});
+
   @override
   _BarCodeScanningState createState() => _BarCodeScanningState();
 }
@@ -27,6 +30,13 @@ class _BarCodeScanningState extends State<BarCodeScanning> {
     ..removeWhere((e) => e == BarcodeFormat.unknown);
 
   List<BarcodeFormat> selectedFormats = [..._possibleFormats];
+
+  @override
+  void initState() {
+    print(widget.data.toString());
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +151,7 @@ class _BarCodeScanningState extends State<BarCodeScanning> {
               ),
             ),
             GestureDetector(
-              onTap: () => Navigator.pushNamed(context, AddMoney.routeName),
+              onTap: () => {},
               child: Align(
                 alignment: Alignment.topRight,
                 child: Padding(

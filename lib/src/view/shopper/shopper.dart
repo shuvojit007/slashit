@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ import 'package:slashit/src/view/common/bankTransfer.dart';
 import 'package:slashit/src/view/common/transactions.dart';
 import 'package:slashit/src/view/shopper/debitCards.dart';
 import 'package:slashit/src/view/shopper/repayment.dart';
+import 'package:slashit/src/view/shopper/shopper_requests.dart';
 import 'package:slashit/src/view/shopper/wallet.dart';
 import 'package:slashit/src/widget/propic.dart';
 
@@ -78,7 +80,7 @@ class _ShopperState extends State<Shopper> {
             ),
             Center(
               child: Text(
-                "NGN $value",
+                "NGN ${locator<PrefManager>().spendLimit}",
                 style: shopperText2,
               ),
             ),
@@ -217,6 +219,20 @@ class _ShopperState extends State<Shopper> {
               style: userTitle,
             ),
           ),
+          if (locator<PrefManager>().role == "shopper") ...[
+            Positioned(
+              right: 50,
+              bottom: 25,
+              child: GestureDetector(
+                onTap: () =>
+                    Navigator.pushNamed(context, ShopperRequests.routeName),
+                child: Badge(
+                  badgeContent: Text("3"),
+                  child: Icon(FontAwesomeIcons.bell),
+                ),
+              ),
+            ),
+          ],
           Positioned(
             right: 1,
             bottom: 15,

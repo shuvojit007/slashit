@@ -47,6 +47,7 @@ class GraphApi {
           }
           business{
             bankName
+            availableBalance
             bankNumber
             verificationImg
           }
@@ -101,6 +102,28 @@ class GraphApi {
     code
     success
     message
+  }
+}
+""";
+  }
+
+  String setPrefferdCard(String id) {
+    return """mutation{
+  SetPreferredCard(id:"$id"){
+    success
+    message
+    code
+  }
+}
+""";
+  }
+
+  String deleteCard(String id) {
+    return """mutation{
+  DeleteCard(id:"$id"){
+    success
+    message
+    code
   }
 }
 """;
@@ -175,12 +198,35 @@ class GraphApi {
     """;
   }
 
+  String fetchUser() {
+    return """
+query{
+  FetchUserById{
+    code
+    success
+  
+    user{
+      firstname
+      lastname
+      email
+      role
+      avater
+      shopper{
+       availableBalance
+        spendLimit
+      }
+    }
+  }
+}
+    """;
+  }
+
   //===============Transactions
 
-  String fetchTransactions() {
+  String fetchTransactions(int limit) {
     return """
  query {
-  FetchTransaction(limit:100,offset:0,){
+  FetchTransaction(limit:$limit,offset:0,){
     code
     message
     success
@@ -192,6 +238,12 @@ class GraphApi {
       installment
       paymentDate
       createdAt
+      shopper{
+        firstname
+        lastname
+        email
+        _id
+      }
       order{
         createdAt
         orderId
@@ -210,6 +262,52 @@ class GraphApi {
         orderId
         isRequested
         type
+      }
+    }
+  }
+}
+    """;
+  }
+
+  String addMony(double amount) {
+    return """mutation{
+  RechargeWallet(amount:$amount){
+    code
+    success
+    message
+  
+  }
+}
+""";
+  }
+
+  //=========Business===========//
+  String fetchPaymentreq() {
+    return """
+query{
+  FetchPaymentReq(limit:100,offset:0){
+    code
+    success
+    count
+    message
+    result{
+      id
+      title
+      note
+      desc
+      amount
+      attachment
+      orderId
+    	createdAt
+      status
+      shopper{
+        email
+        firstname
+        lastname
+        mobile
+        address
+        avater
+        role
       }
     }
   }

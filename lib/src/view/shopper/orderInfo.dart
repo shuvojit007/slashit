@@ -124,7 +124,7 @@ class _OrderInfoState extends State<OrderInfo> {
                           height: 5,
                         ),
                         Text(
-                          "${getDateTime(transaction.createdAt)}",
+                          "${getDateTime(transaction.paymentDate)}",
                           style: Repayments2,
                         )
                       ],
