@@ -3,7 +3,7 @@ import 'package:slashit/src/blocs/paymentReq.dart';
 import 'package:slashit/src/models/paymentReq.dart';
 import 'package:slashit/src/resources/text_styles.dart';
 import 'package:slashit/src/utils/timeformat.dart';
-import 'package:slashit/src/view/business/requestDetails.dart';
+import 'package:slashit/src/view/common/requestDetails.dart';
 
 class Requests extends StatefulWidget {
   static const routeName = "/requests";

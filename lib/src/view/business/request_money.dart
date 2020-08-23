@@ -96,20 +96,15 @@ class _RequestMoneyState extends State<RequestMoney> {
         _note.text.isNotEmpty &&
         _desc.text.isNotEmpty &&
         _amount.text.isNotEmpty) {
-      var data = {
-        "title": "${_title.text}",
-        "note": "${_note.text}",
-        "desc": "${_desc.text}",
-        "amount": int.parse(_amount.text)
-      };
-
       Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => BarCodeScanning(
-                    data: data,
+                    title: _title.text,
+                    note: _note.text,
+                    desc: _desc.text,
+                    amount: int.parse(_amount.text),
                   )));
-      print(data["title"]);
     } else {
       showToastMsg("Please fill up the form");
     }

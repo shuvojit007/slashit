@@ -13,6 +13,7 @@ import 'package:slashit/src/view/business/request_money.dart';
 import 'package:slashit/src/view/business/requestsList.dart';
 import 'package:slashit/src/view/common/bankTransfer.dart';
 import 'package:slashit/src/view/common/transactions.dart';
+import 'package:slashit/src/view/common/transactionsDetails.dart';
 import 'package:slashit/src/widget/propic.dart';
 
 class Business extends StatefulWidget {
@@ -229,36 +230,39 @@ class _BusinessState extends State<Business> {
   }
 
   _data(Result data) {
-    return Container(
-      width: double.infinity,
-      margin: EdgeInsets.only(bottom: 5, top: 5, left: 5),
-      color: creemWhite,
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            flex: 1,
-            child: Text(
-              "${getTime(data.createdAt)}",
-              style: businessText2,
+    return GestureDetector(
+      onTap: () => _goToTransactionDetails(data),
+      child: Container(
+        width: double.infinity,
+        margin: EdgeInsets.only(bottom: 5, top: 5, left: 5),
+        color: creemWhite,
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              flex: 1,
+              child: Text(
+                "${getTime(data.createdAt)}",
+                style: businessText2,
+              ),
             ),
-          ),
-          Expanded(
-            flex: 2,
-            child: Text(
-              "${data.order.title}",
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: businessText2,
+            Expanded(
+              flex: 2,
+              child: Text(
+                "${data.order.title}",
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: businessText2,
+              ),
             ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Text(
-              "NGN ${data.order.amount}",
-              style: businessText2,
-            ),
-          )
-        ],
+            Expanded(
+              flex: 1,
+              child: Text(
+                "NGN ${data.order.amount}",
+                style: businessText2,
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -291,5 +295,14 @@ class _BusinessState extends State<Business> {
             context, LoginShopper.routeName, (route) => false);
         break;
     }
+  }
+
+  _goToTransactionDetails(data) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => TransactionDetails(
+                  data: data,
+                )));
   }
 }

@@ -9,6 +9,7 @@ import 'package:slashit/src/models/cards.dart';
 import 'package:slashit/src/repository/user_repository.dart';
 import 'package:slashit/src/resources/text_styles.dart';
 import 'package:slashit/src/utils/prefmanager.dart';
+import 'package:slashit/src/widget/dialog/removecard.dart';
 
 class DebitCards extends StatefulWidget {
   static const routeName = "/debitcards";
@@ -17,7 +18,7 @@ class DebitCards extends StatefulWidget {
 }
 
 class _DebitCardsState extends State<DebitCards> {
-  int count = 3;
+  int count = 0;
 
   String paystackPublicKey = 'pk_test_316f780a38daae0c1cc86c2696dd20fdad714a17';
   String _cardNumber;
@@ -27,6 +28,7 @@ class _DebitCardsState extends State<DebitCards> {
 
   ProgressDialog _pr;
   CardsBloc _bloc;
+
   @override
   void initState() {
     _pr = ProgressDialog(context, type: ProgressDialogType.Normal);
@@ -51,26 +53,36 @@ class _DebitCardsState extends State<DebitCards> {
         stream: _bloc.allCards,
         builder: (context, AsyncSnapshot<List<Result>> snapshot) {
           if (snapshot.hasData) {
-            return ListView.builder(
-                scrollDirection: Axis.vertical,
-                itemCount: snapshot.data.length,
-                itemBuilder: (BuildContext ctx, int index) {
-                  return _body(snapshot.data[index]);
-                });
+            return Stack(
+              children: <Widget>[
+                Expanded(
+                  child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (BuildContext ctx, int index) {
+                        return _body(snapshot.data[index]);
+                      }),
+                ),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Container(
+                    margin: EdgeInsets.only(right: 20, bottom: 20),
+                    child: Visibility(
+                      visible: count < 4 ? true : false,
+                      child: FloatingActionButton(
+                        onPressed: () => _handleCheckout(context),
+                        child: Icon(Icons.add),
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            );
           } else if (snapshot.hasError) {
             return Text(snapshot.error.toString());
           }
           return Center(child: CircularProgressIndicator());
         },
-      ),
-      floatingActionButton: Visibility(
-        visible: true,
-        child: FloatingActionButton(
-          onPressed: () {
-            _handleCheckout(context);
-          },
-          child: Icon(Icons.add),
-        ),
       ),
     );
   }
@@ -81,26 +93,12 @@ class _DebitCardsState extends State<DebitCards> {
       child: Container(
         height: 100,
         width: double.infinity,
-        child: Stack(
-          children: <Widget>[
-            GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: Padding(
-                padding: EdgeInsets.only(left: 20, top: 50),
-                child: Text("Cancel", style: debitCards),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {},
-              child: Align(
-                alignment: Alignment.topRight,
-                child: Padding(
-                  padding: EdgeInsets.only(right: 20, top: 50),
-                  child: Text("Save", style: debitCards),
-                ),
-              ),
-            ),
-          ],
+        child: GestureDetector(
+          onTap: () => Navigator.pop(context),
+          child: Padding(
+            padding: EdgeInsets.only(left: 20, top: 50),
+            child: Text("Cancel", style: debitCards),
+          ),
         ),
       ),
     );
@@ -111,7 +109,7 @@ class _DebitCardsState extends State<DebitCards> {
       margin: EdgeInsets.all(10),
       elevation: 1,
       child: Container(
-        height: 80,
+        height: 90,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
@@ -150,7 +148,13 @@ class _DebitCardsState extends State<DebitCards> {
                         height: 3,
                       ),
                       GestureDetector(
-                        onTap: () => _deleteCard(data.id),
+                        onTap: () => showDialog(
+                          context: context,
+                          builder: (BuildContext context) => RemoveCard(
+                            pushData: _deleteCard,
+                            id: data.id,
+                          ),
+                        ),
                         child: Text(
                           "Remove Card",
                           style: debitCards5,
@@ -244,7 +248,9 @@ class _DebitCardsState extends State<DebitCards> {
       if (result) {
         await _bloc.featchAllCards();
       }
-      _pr.hide();
+      if (_pr.isShowing()) {
+        _pr.hide();
+      }
     } catch (e) {
       if (_pr.isShowing()) {
         _pr.hide();

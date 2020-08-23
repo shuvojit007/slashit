@@ -103,7 +103,6 @@ class _TransactionsState extends State<Transactions> {
             builder: (context) => TransactionDetails(
                   data: data,
                 )));
-    ;
   }
 
   _getStatus(String status) {

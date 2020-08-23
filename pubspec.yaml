@@ -22,7 +22,6 @@ dependencies:
   equatable: ^1.1.1
   cached_network_image: ^2.2.0+1
   font_awesome_flutter: ^8.8.1
-  barcode_flutter: ^1.1.2
   flutter_paystack: ^1.0.3+1
   url_launcher: ^5.5.0
   qr_flutter: ^3.2.0
@@ -30,6 +29,8 @@ dependencies:
   date_time_format: ^1.0.0+4
   barcode_widget: ^1.5.0
   badges : ^1.1.1
+  dio: ^3.0.9
+  flutter_typeahead: ^1.8.8
 
 
 

@@ -3,11 +3,16 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:slashit/src/blocs/features.dart';
+import 'package:slashit/src/blocs/wallet/wallet_bloc.dart';
+import 'package:slashit/src/blocs/wallet/wallet_bloc_event.dart';
+import 'package:slashit/src/blocs/wallet/wallet_bloc_state.dart';
 import 'package:slashit/src/di/locator.dart';
 import 'package:slashit/src/models/features_model.dart';
+import 'package:slashit/src/repository/user_repository.dart';
 import 'package:slashit/src/resources/assets.dart';
 import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/str.dart';
@@ -24,6 +29,7 @@ import 'package:slashit/src/view/shopper/repayment.dart';
 import 'package:slashit/src/view/shopper/shopper_requests.dart';
 import 'package:slashit/src/view/shopper/wallet.dart';
 import 'package:slashit/src/widget/propic.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'featuresList.dart';
 
@@ -34,20 +40,31 @@ class Shopper extends StatefulWidget {
 
 class _ShopperState extends State<Shopper> {
   int value = 5000;
+  int count = 0;
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   FeaturesBloc _bloc;
+
   @override
   void initState() {
+    BlocProvider.of<WalletBloc>(context).add(GetWallet());
     _bloc = FeaturesBloc();
     _bloc.featchAllFeatures();
+
+    _getPaymentReqCount();
     super.initState();
   }
 
   @override
   void dispose() {
     _bloc.dispose();
-    // TODO: implement dispose
     super.dispose();
+  }
+
+  _getPaymentReqCount() async {
+    int data = await UserRepository.instance.fetchPaymentReqCount();
+    setState(() {
+      count = data;
+    });
   }
 
   @override
@@ -167,10 +184,25 @@ class _ShopperState extends State<Shopper> {
                   SizedBox(
                     height: 3,
                   ),
-                  Text(
-                    "Available Balance | NGN ${locator<PrefManager>().availableBalance}",
-                    style: WalletPrice,
-                  )
+                  BlocBuilder(
+                      bloc: BlocProvider.of<WalletBloc>(context),
+                      builder: (BuildContext ctx, WalletBlocState state) {
+                        if (state is WalletBlocLoaded) {
+                          return Text(
+                            "Available Balance | NGN ${locator<PrefManager>().availableBalance}",
+                            style: WalletPrice,
+                          );
+                        } else {
+                          return Text(
+                            "Available Balance | NGN 0",
+                            style: WalletPrice,
+                          );
+                        }
+                      }),
+//                  Text(
+//                    "Available Balance | NGN ${locator<PrefManager>().availableBalance}",
+//                    style: WalletPrice,
+//                  )
                 ],
               ),
             ),
@@ -219,19 +251,10 @@ class _ShopperState extends State<Shopper> {
               style: userTitle,
             ),
           ),
-          if (locator<PrefManager>().role == "shopper") ...[
-            Positioned(
-              right: 50,
-              bottom: 25,
-              child: GestureDetector(
-                onTap: () =>
-                    Navigator.pushNamed(context, ShopperRequests.routeName),
-                child: Badge(
-                  badgeContent: Text("3"),
-                  child: Icon(FontAwesomeIcons.bell),
-                ),
-              ),
-            ),
+          if (count != 0) ...[
+            counterWidget()
+          ] else ...[
+            zerocounterWidget(),
           ],
           Positioned(
             right: 1,
@@ -304,18 +327,21 @@ class _ShopperState extends State<Shopper> {
               ),
             );
           } else {
-            return Container(
-              margin: EdgeInsets.all(5),
-              child: CachedNetworkImage(
-                  imageUrl: "${URL.S3_URL}${snapshot.data[index].img}",
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => CircularProgressIndicator(),
-                  errorWidget: (context, url, error) => Image.asset(
-                        Assets.Placeholder,
-                        width: 100,
-                        fit: BoxFit.cover,
-                        height: 100,
-                      )),
+            return GestureDetector(
+              onTap: () => _launchURL(snapshot.data[index].link),
+              child: Container(
+                margin: EdgeInsets.all(5),
+                child: CachedNetworkImage(
+                    imageUrl: "${URL.S3_URL}${snapshot.data[index].img}",
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => Image.asset(
+                          Assets.Placeholder,
+                          width: 100,
+                          fit: BoxFit.cover,
+                          height: 100,
+                        )),
+              ),
             );
           }
         });
@@ -348,5 +374,41 @@ class _ShopperState extends State<Shopper> {
             context, LoginShopper.routeName, (route) => false);
         break;
     }
+  }
+
+  _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      print("Could not launch $url");
+    }
+  }
+
+  counterWidget() {
+    return Positioned(
+      right: 50,
+      bottom: 25,
+      child: GestureDetector(
+        onTap: () => Navigator.pushNamed(context, ShopperRequests.routeName),
+        child: Badge(
+          badgeContent: Text("${count}"),
+          child: Icon(
+            FontAwesomeIcons.bell,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+
+  zerocounterWidget() {
+    return Positioned(
+      right: 50,
+      bottom: 25,
+      child: GestureDetector(
+        onTap: () => Navigator.pushNamed(context, ShopperRequests.routeName),
+        child: Icon(FontAwesomeIcons.bell, color: Colors.white),
+      ),
+    );
   }
 }

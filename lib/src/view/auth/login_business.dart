@@ -38,38 +38,40 @@ class _LoginBusinessState extends State<LoginBusiness> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          SizedBox(height: 40),
-          Padding(
-              padding: EdgeInsets.only(top: 10, left: 10),
-              child: IconButton(
-                  icon: Icon(Icons.keyboard_backspace, color: PrimrayColor),
-                  onPressed: () => Navigator.pop(context))),
-          SizedBox(height: 20),
-          Padding(
-            padding: EdgeInsets.only(left: 20, bottom: 10),
-            child: Text(
-              "Help your customer pay you easily",
-              style: loginTitle,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            SizedBox(height: 40),
+            Padding(
+                padding: EdgeInsets.only(top: 10, left: 10),
+                child: IconButton(
+                    icon: Icon(Icons.keyboard_backspace, color: PrimrayColor),
+                    onPressed: () => Navigator.pop(context))),
+            SizedBox(height: 20),
+            Padding(
+              padding: EdgeInsets.only(left: 20, bottom: 10),
+              child: Text(
+                "Help your customer pay you easily",
+                style: loginTitle,
+              ),
             ),
-          ),
-          SizedBox(height: 30),
-          _userEmail(),
-          SizedBox(height: 16),
-          _userPass(),
-          SizedBox(height: 24),
-          GestureDetector(
-            onTap: _passwordReset,
-            child: Padding(
-                padding: EdgeInsets.only(left: 20),
-                child: Text("Forget Password ?", style: forgotPass)),
-          ),
-          SizedBox(height: 20),
-          _signInButton(),
-          SizedBox(height: 10),
-        ],
+            SizedBox(height: 30),
+            _userEmail(),
+            SizedBox(height: 16),
+            _userPass(),
+            SizedBox(height: 24),
+            GestureDetector(
+              onTap: _passwordReset,
+              child: Padding(
+                  padding: EdgeInsets.only(left: 20),
+                  child: Text("Forget Password ?", style: forgotPass)),
+            ),
+            SizedBox(height: 20),
+            _signInButton(),
+            SizedBox(height: 10),
+          ],
+        ),
       ),
     );
   }

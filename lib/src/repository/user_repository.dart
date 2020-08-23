@@ -330,4 +330,185 @@ class UserRepository {
       }
     }
   }
+
+  Future<PaymentReq> fetchPaymentReqShopper() async {
+    GraphQLClient _client = GraphQLConfiguration().clientToQuery();
+    QueryResult result = await _client.query(QueryOptions(
+        documentNode: gql(
+      GraphApi.instance.fetchPaymentreqShopper(),
+    )));
+    if (result.hasException) {
+      print("error  ${result.exception.toString()}");
+      return null;
+    } else {
+      LazyCacheMap map = result.data.get("FetchPaymentReq");
+      if (map['success'] == true) {
+        PaymentReq paymentReq = paymentReqFromMap(json.encode(map));
+        print(paymentReq.toString());
+        return paymentReq;
+      } else {
+        print("Something went wrong");
+        return null;
+      }
+    }
+  }
+
+  Future<int> fetchPaymentReqCount() async {
+    GraphQLClient _client = GraphQLConfiguration().clientToQuery();
+    QueryResult result = await _client.query(QueryOptions(
+        documentNode: gql(
+      GraphApi.instance.fetchPaymentreqCount(),
+    )));
+    if (result.hasException) {
+      print("error  ${result.exception.toString()}");
+      return 0;
+    } else {
+      LazyCacheMap map = result.data.get("FetchPaymentReq");
+      if (map['success'] == true) {
+        return map['count'];
+      } else {
+        print("Something went wrong");
+        return 0;
+      }
+    }
+  }
+
+  Future<bool> createPaymentReq(
+    dynamic paymentInput,
+    bool fromWallet,
+  ) async {
+    try {
+      GraphQLClient _client = GraphQLConfiguration().clientToQuery();
+      QueryResult result = await _client.mutate(MutationOptions(
+          documentNode: gql(
+        GraphApi.instance.createPaymentReq(paymentInput, fromWallet),
+      )));
+      if (result.hasException) {
+        showToastMsg("Something went wrong");
+        return false;
+      } else {
+        LazyCacheMap map = result.data.get("CreatePaymentReq");
+        if (map['success'] == true) {
+          showToastMsgGreen(map['message']);
+          print(map['orderId']);
+          return true;
+        } else {
+          showToastMsgGreen(map['message']);
+          return false;
+        }
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<String> createPaymentReqCopy(
+    dynamic paymentInput,
+    bool fromWallet,
+  ) async {
+    try {
+      GraphQLClient _client = GraphQLConfiguration().clientToQuery();
+      QueryResult result = await _client.mutate(MutationOptions(
+          documentNode: gql(
+        GraphApi.instance.createPaymentReq(paymentInput, fromWallet),
+      )));
+      if (result.hasException) {
+        showToastMsg("Something went wrong");
+        return null;
+      } else {
+        LazyCacheMap map = result.data.get("CreatePaymentReq");
+        if (map['success'] == true) {
+          showToastMsgGreen(map['message']);
+
+          return map['orderId'];
+        } else {
+          showToastMsgGreen(map['message']);
+          return null;
+        }
+      }
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<bool> acceptPaymentReq(
+    String orderId,
+  ) async {
+    try {
+      GraphQLClient _client = GraphQLConfiguration().clientToQuery();
+      QueryResult result = await _client.mutate(MutationOptions(
+          documentNode: gql(
+        GraphApi.instance.acceptPaymentReq(orderId),
+      )));
+      if (result.hasException) {
+        showToastMsg("Something went wrong");
+        return false;
+      } else {
+        LazyCacheMap map = result.data.get("AcceptPaymentReq");
+        if (map['success'] == true) {
+          showToastMsgGreen(map['message']);
+          return true;
+        } else {
+          showToastMsg(map['message']);
+          return false;
+        }
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> rejectPaymentReq(
+    String orderId,
+  ) async {
+    try {
+      GraphQLClient _client = GraphQLConfiguration().clientToQuery();
+      QueryResult result = await _client.mutate(MutationOptions(
+          documentNode: gql(
+        GraphApi.instance.rejectPaymentReq(orderId),
+      )));
+      if (result.hasException) {
+        showToastMsg("Something went wrong");
+        return false;
+      } else {
+        LazyCacheMap map = result.data.get("RejectPaymentReq");
+        if (map['success'] == true) {
+          showToastMsgGreen(map['message']);
+          return true;
+        } else {
+          showToastMsg(map['message']);
+          return false;
+        }
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
+  //===========BANK================//
+  Future<bool> withdrawBalance(
+      int amount, String accountNumber, String bankCode) async {
+    try {
+      GraphQLClient _client = GraphQLConfiguration().clientToQuery();
+      QueryResult result = await _client.mutate(MutationOptions(
+          documentNode: gql(
+        GraphApi.instance.withDrawBalance(amount, accountNumber, bankCode),
+      )));
+      if (result.hasException) {
+        showToastMsg("Something went wrong");
+        return false;
+      } else {
+        LazyCacheMap map = result.data.get("WithdrawBalance");
+        if (map['success'] == true) {
+          showToastMsgGreen(map['message']);
+          return true;
+        } else {
+          showToastMsg(map['message']);
+          return false;
+        }
+      }
+    } catch (e) {
+      return false;
+    }
+  }
 }

@@ -21,7 +21,7 @@ class _TransactionDetailsState extends State<TransactionDetails> {
       body: Column(
         children: <Widget>[
           SizedBox(
-            height: 10,
+            height: 15,
           ),
           Center(
             child: Text(
@@ -29,15 +29,18 @@ class _TransactionDetailsState extends State<TransactionDetails> {
               style: TransactionDetials1,
             ),
           ),
+          SizedBox(
+            height: 25,
+          ),
           Container(
-            height: 50,
+            height: 30,
             margin: EdgeInsets.only(left: 20, right: 20),
             child: Row(
               children: <Widget>[
                 Expanded(
                   flex: 1,
                   child: Text(
-                    "Transaction",
+                    "Transaction Id",
                     style: TransactionDetials2,
                   ),
                 ),
@@ -58,7 +61,14 @@ class _TransactionDetailsState extends State<TransactionDetails> {
             height: 10,
           ),
           Container(
-            height: 50,
+            margin: EdgeInsets.only(
+              left: 20,
+              right: 20,
+            ),
+            child: Divider(color: Colors.black26),
+          ),
+          Container(
+            height: 30,
             margin: EdgeInsets.only(left: 20, right: 20),
             child: Row(
               children: <Widget>[
@@ -73,9 +83,19 @@ class _TransactionDetailsState extends State<TransactionDetails> {
                   flex: 1,
                   child: Align(
                     alignment: Alignment.centerRight,
-                    child: Text(
-                      "  ${widget.data.status}  ",
-                      style: TransactionDetials3,
+                    child: Container(
+                      height: 25,
+                      width: 150,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.rectangle,
+                          color: Color(0xFFDEFFDF),
+                          borderRadius: BorderRadius.all(Radius.circular(5))),
+                      child: Center(
+                        child: Text(
+                          "  ${widget.data.status}  ",
+                          style: TransactionDetials3,
+                        ),
+                      ),
                     ),
                   ),
                 )
@@ -86,7 +106,14 @@ class _TransactionDetailsState extends State<TransactionDetails> {
             height: 10,
           ),
           Container(
-            height: 50,
+            margin: EdgeInsets.only(
+              left: 20,
+              right: 20,
+            ),
+            child: Divider(color: Colors.black26),
+          ),
+          Container(
+            height: 30,
             margin: EdgeInsets.only(left: 20, right: 20),
             child: Row(
               children: <Widget>[
@@ -109,6 +136,48 @@ class _TransactionDetailsState extends State<TransactionDetails> {
                 )
               ],
             ),
+          ),
+          Container(
+            margin: EdgeInsets.only(
+              left: 20,
+              right: 20,
+            ),
+            child: Divider(color: Colors.black26),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Container(
+            height: 30,
+            margin: EdgeInsets.only(left: 20, right: 20),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  flex: 1,
+                  child: Text(
+                    "Order # ",
+                    style: TransactionDetials2,
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      "${widget.data.order.orderId} ",
+                      style: TransactionDetials4,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(
+              left: 20,
+              right: 20,
+            ),
+            child: Divider(color: Colors.black26),
           ),
         ],
       ),

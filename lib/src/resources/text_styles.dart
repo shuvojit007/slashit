@@ -20,7 +20,7 @@ const TextStyle splashText1 = TextStyle(
 
 const TextStyle debitCards = TextStyle(
   color: Colors.black54,
-  fontSize: 20,
+  fontSize: 17,
   fontFamily: 'Poppins',
   fontWeight: FontWeight.w400,
 );
@@ -261,13 +261,13 @@ const TextStyle OrderInfo5 = TextStyle(
 //==============Transactions LIst
 const TextStyle TransactionsList1 = TextStyle(
   color: Colors.black,
-  fontSize: 17,
+  fontSize: 15,
   fontFamily: 'Poppins',
   fontWeight: FontWeight.w400,
 );
 const TextStyle TransactionsList2 = TextStyle(
   color: Colors.black,
-  fontSize: size_15,
+  fontSize: size_14,
   fontFamily: 'Poppins',
   fontWeight: FontWeight.w400,
 );
@@ -320,23 +320,28 @@ const TextStyle RequestDetials5 = TextStyle(
 
 //========TransactionDetails
 const TextStyle TransactionDetials1 = TextStyle(
-  color: Colors.black,
-  fontSize: 16,
+  color: Colors.grey,
+  fontSize: 19,
   fontFamily: 'Poppins',
-  fontWeight: FontWeight.normal,
+  fontWeight: FontWeight.w400,
 );
 
 const TextStyle TransactionDetials2 = TextStyle(
   color: Colors.black,
   fontSize: 17,
   fontFamily: 'Poppins',
-  fontWeight: FontWeight.normal,
+  fontWeight: FontWeight.w400,
+);
+const TextStyle TransactionDetials4 = TextStyle(
+  color: Colors.blue,
+  fontSize: 17,
+  fontFamily: 'Poppins',
+  fontWeight: FontWeight.w400,
 );
 const TextStyle TransactionDetials3 = TextStyle(
   color: Colors.green,
-  backgroundColor: Colors.lightGreenAccent,
+  backgroundColor: Color(0xFFDEFFDF),
   fontSize: 14,
-  height: 3,
   fontFamily: 'Poppins',
   fontWeight: FontWeight.normal,
 );

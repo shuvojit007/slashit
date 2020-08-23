@@ -111,7 +111,7 @@ class _RequestDetailsState extends State<RequestDetails> {
               height: 20,
             ),
             Text(
-              "Payment was ${_getStatus(widget.data.status)}",
+              _getStatus(widget.data.status),
               style: RequestDetials5,
             ),
           ],
@@ -123,11 +123,15 @@ class _RequestDetailsState extends State<RequestDetails> {
   _getStatus(String status) {
     switch (status) {
       case "PENDING":
-        return "pending";
+        return "Payment is pending";
       case "COMPLETED":
-        return "successful";
+        return "Payment was completed";
+      case "APPROVED":
+        return "Payment was approved";
+      case "DENIED":
+        return "Payment was denied";
       default:
-        return status;
+        return "Payment is ${status.toLowerCase()}";
     }
   }
 }

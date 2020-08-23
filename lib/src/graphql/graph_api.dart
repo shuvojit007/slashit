@@ -314,4 +314,95 @@ query{
 }
     """;
   }
+
+  String fetchPaymentreqShopper() {
+    return """
+query{
+  FetchPaymentReq(limit:100,offset:0,status:PENDING){
+    code
+    success
+    count
+    message
+    result{
+      id
+      title
+      note
+      desc
+      amount
+      attachment
+      orderId
+    	createdAt
+      status
+      shopper{
+        email
+        firstname
+        lastname
+        mobile
+        address
+        avater
+        role
+      }
+    }
+  }
+}
+    """;
+  }
+
+  String fetchPaymentreqCount() {
+    return """
+query{
+  FetchPaymentReq(limit:100000,offset:0,status:PENDING){
+    count
+    success
+  }
+}
+    """;
+  }
+
+  String acceptPaymentReq(String id) {
+    return """mutation{
+  AcceptPaymentReq(orderId:"$id"){
+    code
+    success
+    message
+  }
+}
+""";
+  }
+
+  String createPaymentReq(dynamic paymentInput, bool fromwallet) {
+    return """mutation {
+  CreatePaymentReq(paymentInput:$paymentInput,fromWallet:$fromwallet){
+    code
+    message
+    success
+    orderId
+  }
+}
+""";
+  }
+
+  String rejectPaymentReq(String id) {
+    return """mutation{
+  RejectPaymentReq(orderId:"$id"){
+    code
+    success
+    message
+  }
+}
+""";
+  }
+
+  //=============Bank========//
+
+  String withDrawBalance(int amount, String accountNumber, String bankCode) {
+    return """mutation{
+  WithdrawBalance(amount:$amount,accountNumber:"$accountNumber",bankCode:"$bankCode"){
+    code
+    success
+    message
+  }
+}
+""";
+  }
 }

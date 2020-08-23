@@ -1,15 +1,21 @@
+import 'dart:convert';
+
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:barcode_scan/model/scan_result.dart';
 import 'package:barcode_scan/platform_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:progress_dialog/progress_dialog.dart';
+import 'package:slashit/src/repository/user_repository.dart';
+import 'package:slashit/src/utils/showToast.dart';
+import 'package:slashit/src/view/business/business.dart';
 
 class BarCodeScanning extends StatefulWidget {
   static const routeName = "/barCode";
-  var data;
-
-  BarCodeScanning({this.data});
+  String title, note, desc;
+  int amount;
+  BarCodeScanning({this.title, this.note, this.desc, this.amount});
 
   @override
   _BarCodeScanningState createState() => _BarCodeScanningState();
@@ -31,11 +37,11 @@ class _BarCodeScanningState extends State<BarCodeScanning> {
 
   List<BarcodeFormat> selectedFormats = [..._possibleFormats];
 
+  ProgressDialog _pr;
+
   @override
   void initState() {
-    print(widget.data.toString());
-    // TODO: implement initState
-    super.initState();
+    _pr = ProgressDialog(context, type: ProgressDialogType.Normal);
   }
 
   @override
@@ -106,30 +112,47 @@ class _BarCodeScanningState extends State<BarCodeScanning> {
         ),
       );
 
-      var result = await BarcodeScanner.scan(options: options);
+      scanResult = await BarcodeScanner.scan(options: options);
 
-      setState(() => scanResult = result);
-      print(
-          "QR CODE REUSLT ++> format = ${scanResult.format}  rawcontent = ${scanResult.rawContent}   formatNote = ${scanResult.formatNote}   ");
-    } on PlatformException catch (e) {
-      var result = ScanResult(
-        type: ResultType.Error,
-        format: BarcodeFormat.unknown,
-      );
+      List value = json.decode(scanResult.rawContent).values.toList();
+      List key = json.decode(scanResult.rawContent).keys.toList();
 
-      if (e.code == BarcodeScanner.cameraAccessDenied) {
-        setState(() {
-          result.rawContent = 'The user did not grant the camera permission!';
-        });
+      if ((key.length == 2 && value.length == 2) &&
+          (key[0] == "type" && key[1] == "id")) {
+        _pr.show();
+        var paymentInput = {
+          "title": "\"${widget.title}\"",
+          "desc": "\"${widget.desc}\"",
+          "amount": "${widget.amount}",
+          "note": "\"${widget.note}\"",
+          "shopper": "\"${value[1]}\"",
+        };
+
+        bool result = await UserRepository.instance.createPaymentReq(
+            paymentInput, (key[0] == "installment") ? false : true);
+        _pr.hide();
+        if (result) {
+          _goTobusinessPage();
+        }
       } else {
-        result.rawContent = 'Unknown error: $e';
+        showToastMsg("Please scan a valid QR code");
       }
-      setState(() {
-        scanResult = result;
-      });
-
-      print(scanResult.toString());
+    } on PlatformException catch (e) {
+      if (e.code == BarcodeScanner.cameraAccessDenied) {
+        showToastMsg('The user did not grant the camera permission!');
+      } else {
+        showToastMsg('Unknown error: $e');
+      }
     }
+  }
+
+  _goTobusinessPage() {
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Business(),
+        ),
+        ModalRoute.withName('/business'));
   }
 
   _header() {
@@ -151,7 +174,7 @@ class _BarCodeScanningState extends State<BarCodeScanning> {
               ),
             ),
             GestureDetector(
-              onTap: () => {},
+              onTap: () => _copyLink(),
               child: Align(
                 alignment: Alignment.topRight,
                 child: Padding(
@@ -172,12 +195,31 @@ class _BarCodeScanningState extends State<BarCodeScanning> {
     );
   }
 
+  _copyLink() async {
+    print("copy Link");
+    var paymentInput = {
+      "title": "\"${widget.title}\"",
+      "desc": "\"${widget.desc}\"",
+      "amount": "${widget.amount}",
+      "note": "\"${widget.note}\""
+    };
+    _pr.show();
+    String orderId =
+        await UserRepository.instance.createPaymentReqCopy(paymentInput, true);
+    if (orderId != null) {
+      String link =
+          "https://ez-pm.herokuapp.com/pay-auth/${orderId}?invite=true";
+      await Clipboard.setData(new ClipboardData(text: link));
+      showToastMsg("Linked copied on the clipboard");
+    }
+    _pr.hide();
+  }
+
   @override
   void dispose() {
     _flashOffController?.dispose();
     _flashOnController?.dispose();
     _cancelController?.dispose();
-    // TODO: implement dispose
     super.dispose();
   }
 }

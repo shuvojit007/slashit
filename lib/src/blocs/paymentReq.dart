@@ -15,6 +15,14 @@ class PaymentReqBloc {
     _paymentReqFetcher.sink.add(res);
   }
 
+  fetchAllPaymentReqshopper() async {
+    print("fetchAllPaymentReq");
+    PaymentReq paymentReq =
+        await UserRepository.instance.fetchPaymentReqShopper();
+    List<Result> res = paymentReq.result;
+    _paymentReqFetcher.sink.add(res);
+  }
+
   dispose() {
     _paymentReqFetcher.close();
   }
