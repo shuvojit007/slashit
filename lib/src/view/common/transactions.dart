@@ -76,14 +76,14 @@ class _TransactionsState extends State<Transactions> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      "NGN ${data.order.amount}",
+                      "NGN ${data.amount}",
                       style: TransactionsList1,
                     ),
                     SizedBox(
                       height: 10,
                     ),
                     Text(
-                      "${_getStatus(data.status)}",
+                      "${_getStatus(data.status.toString())}",
                       style: TransactionsList3,
                     )
                   ],

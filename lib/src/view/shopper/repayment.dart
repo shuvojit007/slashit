@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:slashit/src/blocs/upcommingPayment.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:slashit/src/blocs/repayment/repayment_bloc.dart';
+import 'package:slashit/src/blocs/repayment/repayment_bloc_event.dart';
+import 'package:slashit/src/blocs/repayment/repayment_bloc_state.dart';
 import 'package:slashit/src/models/upcommingPayments.dart';
 import 'package:slashit/src/resources/text_styles.dart';
 import 'package:slashit/src/utils/timeformat.dart';
@@ -13,44 +16,37 @@ class UpcommingRepayments extends StatefulWidget {
 
 class _UpcommingRepaymentsState extends State<UpcommingRepayments> {
   List<Color> colors = [Colors.blue, Colors.green, Colors.yellow, Colors.red];
-  RepaymentsBloc _bloc;
+  RepaymentBloc _bloc;
 
   @override
   void initState() {
-    _bloc = RepaymentsBloc();
-    _bloc.featchAllRepayments();
+    _bloc = BlocProvider.of<RepaymentBloc>(context);
+    BlocProvider.of<RepaymentBloc>(context).add(GetRepayment());
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    _bloc.dispose();
-    // TODO: implement dispose
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Upcoming Repayment"),
-        ),
-        body: StreamBuilder(
-          stream: _bloc.allRepayments,
-          builder: (context, AsyncSnapshot<List<Result>> snapshot) {
-            if (snapshot.hasData) {
-              return ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (BuildContext ctx, int index) {
-                    return _cardView(snapshot.data[index]);
-                  });
-            } else if (snapshot.hasError) {
-              return Text(snapshot.error.toString());
-            }
+      appBar: AppBar(
+        title: Text("Upcoming Repayment"),
+      ),
+      body: BlocBuilder(
+        bloc: _bloc,
+        builder: (BuildContext context, RepaymentBlocState state) {
+          if (state is RepaymentBlocLoaded) {
+            return ListView.builder(
+                scrollDirection: Axis.vertical,
+                itemCount: state.res.length,
+                itemBuilder: (BuildContext ctx, int index) {
+                  return _cardView(state.res[index]);
+                });
+          } else {
             return Center(child: CircularProgressIndicator());
-          },
-        ));
+          }
+        },
+      ),
+    );
   }
 
   _cardView(Result data) {

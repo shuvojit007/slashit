@@ -7,6 +7,8 @@ import 'package:slashit/src/repository/user_repository.dart';
 import 'package:slashit/src/resources/text_styles.dart';
 import 'package:slashit/src/utils/timeformat.dart';
 import 'package:slashit/src/view/common/requestDetails.dart';
+import 'package:slashit/src/widget/dialog/acceptrequests.dart';
+import 'package:slashit/src/widget/dialog/rejectrequests.dart';
 
 class ShopperRequests extends StatefulWidget {
   static const routeName = "/shopper_requests";
@@ -62,7 +64,7 @@ class _ShopperRequeststate extends State<ShopperRequests> {
   _requestView(Result data) {
     return Card(
       child: Container(
-        height: 90,
+        height: 100,
         margin: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
         child: Row(
           children: <Widget>[
@@ -112,19 +114,31 @@ class _ShopperRequeststate extends State<ShopperRequests> {
                           size: 35,
                           color: Colors.red,
                         ),
-                        onPressed: () => _rejectPaymentReq(data.orderId),
+                        onPressed: () => showDialog(
+                          context: context,
+                          builder: (BuildContext context) => RejectRequests(
+                            pushData: _rejectPaymentReq,
+                            id: data.orderId,
+                          ),
+                        ),
                       ),
                       SizedBox(
                         width: 25,
                       ),
                       IconButton(
-                        icon: Icon(
-                          FontAwesomeIcons.checkCircle,
-                          size: 35,
-                          color: Colors.green,
-                        ),
-                        onPressed: () => _acceptPayment(data.orderId),
-                      )
+                          icon: Icon(
+                            FontAwesomeIcons.checkCircle,
+                            size: 35,
+                            color: Colors.green,
+                          ),
+                          onPressed: () => showDialog(
+                                context: context,
+                                builder: (BuildContext context) =>
+                                    AcceptRequest(
+                                  pushData: _acceptPayment,
+                                  id: data.orderId,
+                                ),
+                              ))
                     ],
                   )
                 ],

@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:progress_dialog/progress_dialog.dart';
+import 'package:slashit/src/blocs/repayment/repayment_bloc.dart';
+import 'package:slashit/src/blocs/repayment/repayment_bloc_event.dart';
 import 'package:slashit/src/models/upcommingPayments.dart';
+import 'package:slashit/src/repository/user_repository.dart';
 import 'package:slashit/src/resources/text_styles.dart';
 import 'package:slashit/src/utils/timeformat.dart';
+import 'package:slashit/src/view/shopper/shTranscDetails.dart';
 
 class OrderInfo extends StatefulWidget {
   static const routeName = "/orderInfo";
@@ -15,10 +21,58 @@ class OrderInfo extends StatefulWidget {
 
 class _OrderInfoState extends State<OrderInfo> {
   List<Color> colors = [Colors.blue, Colors.green, Colors.yellow, Colors.red];
+  bool status1, status2, status3, status4;
+  ProgressDialog _pr;
   @override
   void initState() {
-    // TODO: implement initState
+    _pr = ProgressDialog(context, type: ProgressDialogType.Normal);
+
+    status1 = _checkTransactionStatus(widget.data.transactions[0]);
+    status2 = _checkTransactionStatus(widget.data.transactions[1]);
+    status3 = _checkTransactionStatus(widget.data.transactions[2]);
+    status4 = _checkTransactionStatus(widget.data.transactions[3]);
+
     super.initState();
+  }
+
+  _payNow(String id, int index) async {
+    _pr.show();
+    bool status = await UserRepository.instance.payNow(id);
+
+    if (status) {
+      setState(() {
+        if (index == 0) status1 = true;
+        if (index == 1) status2 = true;
+        if (index == 2) status3 = true;
+        if (index == 3) status4 = true;
+      });
+      BlocProvider.of<RepaymentBloc>(context).add(GetRepayment());
+      if (_pr.isShowing()) _pr.hide();
+    }
+    if (_pr.isShowing()) _pr.hide();
+  }
+
+  bool _checkTransactionStatus(Transaction transaction) {
+    if (transaction.status == "PAYMENT_SUCCESS") return true;
+    if (transaction.status == "PAYMENT_SUCCESS") return true;
+    return false;
+  }
+
+  bool getStatus(int pos) {
+    switch (pos) {
+      case 0:
+        return status1;
+        break;
+      case 1:
+        return status2;
+        break;
+      case 2:
+        return status3;
+        break;
+      case 3:
+        return status4;
+        break;
+    }
   }
 
   @override
@@ -88,7 +142,7 @@ class _OrderInfoState extends State<OrderInfo> {
               height: 50,
             ),
             for (int i = 0; i < widget.data.transactions.length; i++)
-              _transactions(widget.data.transactions[i]),
+              _transactions(widget.data, widget.data.transactions[i], i),
             SizedBox(
               height: 10,
             ),
@@ -99,7 +153,8 @@ class _OrderInfoState extends State<OrderInfo> {
     );
   }
 
-  Widget _transactions(Transaction transaction) {
+  Widget _transactions(Result result, Transaction transaction, int i) {
+    print(transaction.status);
     return Container(
       height: 80,
       margin: EdgeInsets.only(left: 10, right: 10),
@@ -113,21 +168,30 @@ class _OrderInfoState extends State<OrderInfo> {
             Expanded(
               child: Stack(
                 children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.only(left: 10, top: 10),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(_getName(transaction.installment),
-                            style: Repayments1),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          "${getDateTime(transaction.paymentDate)}",
-                          style: Repayments2,
-                        )
-                      ],
+                  GestureDetector(
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ShopperTranscDetails(
+                                  transaction: transaction,
+                                  result: result,
+                                ))),
+                    child: Container(
+                      margin: EdgeInsets.only(left: 10, top: 10),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(_getName(transaction.installment),
+                              style: Repayments1),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            "${getDateTime(transaction.paymentDate)}",
+                            style: Repayments2,
+                          )
+                        ],
+                      ),
                     ),
                   ),
                   Align(
@@ -141,15 +205,14 @@ class _OrderInfoState extends State<OrderInfo> {
                             "NGN ${(widget.data.amount / 4)}",
                             style: Repayments3,
                           ),
-                          if (transaction.status == "PAYMENT_SUCCESS") ...[
+                          if (getStatus(i)) ...[
                             Text("PAID",
                                 style: TextStyle(
                                     color: Colors.blue,
                                     fontWeight: FontWeight.w600))
-                          ],
-                          if (transaction.status == "PAYMENT_PENDING") ...[
+                          ] else ...[
                             RaisedButton(
-                              onPressed: () {},
+                              onPressed: () => _payNow(transaction.id, i),
                               color: Colors.blue,
                               shape: StadiumBorder(),
                               child: Text(

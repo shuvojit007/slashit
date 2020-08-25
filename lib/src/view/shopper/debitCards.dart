@@ -240,16 +240,17 @@ class _DebitCardsState extends State<DebitCards> {
           ),
         ),
       );
-      print('Response = $response');
-      print('Response  reff = ${response.reference}');
-      _pr.show();
-      bool result =
-          await UserRepository.instance.addCard(response.reference.toString());
-      if (result) {
-        await _bloc.featchAllCards();
-      }
-      if (_pr.isShowing()) {
-        _pr.hide();
+
+      if (response.reference != null) {
+        _pr.show();
+        bool result = await UserRepository.instance
+            .addCard(response.reference.toString());
+        if (result) {
+          await _bloc.featchAllCards();
+        }
+        if (_pr.isShowing()) {
+          _pr.hide();
+        }
       }
     } catch (e) {
       if (_pr.isShowing()) {

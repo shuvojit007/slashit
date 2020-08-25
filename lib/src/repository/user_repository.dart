@@ -149,7 +149,8 @@ class UserRepository {
       LazyCacheMap map = result.data.get("FetchTransaction");
       if (map['success'] == true) {
         print(json.encode(result.data.get("FetchTransaction")));
-        TransactionsModel transaction = transactionsFromMap(json.encode(map));
+        TransactionsModel transaction =
+            transactionsModelFromMap(json.encode(map));
         print(transaction.toString());
         return transaction;
       } else {
@@ -174,6 +175,33 @@ class UserRepository {
       } else {
         print("Something went wrong");
       }
+    }
+  }
+
+  Future<bool> payNow(
+    String id,
+  ) async {
+    try {
+      GraphQLClient _client = GraphQLConfiguration().clientToQuery();
+      QueryResult result = await _client.mutate(MutationOptions(
+          documentNode: gql(
+        GraphApi.instance.payNow(id),
+      )));
+      if (result.hasException) {
+        showToastMsg(result.exception.toString());
+        return false;
+      } else {
+        LazyCacheMap map = result.data.get("Paynow");
+        if (map['success'] == true && map['code'] == "OK") {
+          showToastMsgGreen(map['message']);
+          return true;
+        } else {
+          showToastMsg(map['message']);
+          return false;
+        }
+      }
+    } catch (e) {
+      return false;
     }
   }
 

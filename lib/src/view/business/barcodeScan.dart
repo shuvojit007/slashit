@@ -207,10 +207,9 @@ class _BarCodeScanningState extends State<BarCodeScanning> {
     String orderId =
         await UserRepository.instance.createPaymentReqCopy(paymentInput, true);
     if (orderId != null) {
-      String link =
-          "https://ez-pm.herokuapp.com/pay-auth/${orderId}?invite=true";
+      String link = "https://ez-pm.herokuapp.com/request-order/${orderId}";
       await Clipboard.setData(new ClipboardData(text: link));
-      showToastMsg("Linked copied on the clipboard");
+      showToastMsg("Link copied on the clipboard");
     }
     _pr.hide();
   }

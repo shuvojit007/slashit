@@ -1,16 +1,17 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-class RemoveCard extends StatefulWidget {
+class AcceptRequest extends StatefulWidget {
   Function pushData;
   String id;
 
-  RemoveCard({this.pushData, this.id});
+  AcceptRequest({this.pushData, this.id});
+
   @override
-  _RemoveCardState createState() => _RemoveCardState();
+  _AcceptRequestState createState() => _AcceptRequestState();
 }
 
-class _RemoveCardState extends State<RemoveCard> {
+class _AcceptRequestState extends State<AcceptRequest> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -30,7 +31,7 @@ class _RemoveCardState extends State<RemoveCard> {
               Container(
                 padding: EdgeInsets.only(left: 10, right: 10),
                 child: Text(
-                  "Are you sure you want to remove this card.",
+                  "Are you sure you want to accept this requests.",
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 16),
                 ),
@@ -54,7 +55,7 @@ class _RemoveCardState extends State<RemoveCard> {
                     color: Colors.blue,
                     onPressed: () =>
                         {Navigator.pop(context), widget.pushData(widget.id)},
-                    child: Text("REMOVE CARD"),
+                    child: Text("ACCEPT"),
                   ),
                 ],
               )

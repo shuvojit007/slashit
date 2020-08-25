@@ -1,4 +1,3 @@
-import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +11,6 @@ import 'package:slashit/src/blocs/wallet/wallet_bloc_event.dart';
 import 'package:slashit/src/blocs/wallet/wallet_bloc_state.dart';
 import 'package:slashit/src/di/locator.dart';
 import 'package:slashit/src/models/features_model.dart';
-import 'package:slashit/src/repository/user_repository.dart';
 import 'package:slashit/src/resources/assets.dart';
 import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/str.dart';
@@ -50,7 +48,7 @@ class _ShopperState extends State<Shopper> {
     _bloc = FeaturesBloc();
     _bloc.featchAllFeatures();
 
-    _getPaymentReqCount();
+    // _getPaymentReqCount();
     super.initState();
   }
 
@@ -58,13 +56,6 @@ class _ShopperState extends State<Shopper> {
   void dispose() {
     _bloc.dispose();
     super.dispose();
-  }
-
-  _getPaymentReqCount() async {
-    int data = await UserRepository.instance.fetchPaymentReqCount();
-    setState(() {
-      count = data;
-    });
   }
 
   @override
@@ -251,11 +242,11 @@ class _ShopperState extends State<Shopper> {
               style: userTitle,
             ),
           ),
-          if (count != 0) ...[
-            counterWidget()
-          ] else ...[
-            zerocounterWidget(),
-          ],
+//          if (count != 0) ...[
+//            counterWidget()
+//          ] else ...[
+//            zerocounterWidget(),
+//          ],
           Positioned(
             right: 1,
             bottom: 15,
@@ -355,6 +346,9 @@ class _ShopperState extends State<Shopper> {
           Transactions.routeName,
         );
         break;
+      case "request":
+        Navigator.pushNamed(context, ShopperRequests.routeName);
+        break;
       case "bank":
         Navigator.pushNamed(
           context,
@@ -384,31 +378,31 @@ class _ShopperState extends State<Shopper> {
     }
   }
 
-  counterWidget() {
-    return Positioned(
-      right: 50,
-      bottom: 25,
-      child: GestureDetector(
-        onTap: () => Navigator.pushNamed(context, ShopperRequests.routeName),
-        child: Badge(
-          badgeContent: Text("${count}"),
-          child: Icon(
-            FontAwesomeIcons.bell,
-            color: Colors.white,
-          ),
-        ),
-      ),
-    );
-  }
-
-  zerocounterWidget() {
-    return Positioned(
-      right: 50,
-      bottom: 25,
-      child: GestureDetector(
-        onTap: () => Navigator.pushNamed(context, ShopperRequests.routeName),
-        child: Icon(FontAwesomeIcons.bell, color: Colors.white),
-      ),
-    );
-  }
+//  counterWidget() {
+//    return Positioned(
+//      right: 50,
+//      bottom: 25,
+//      child: GestureDetector(
+//        onTap: () => Navigator.pushNamed(context, ShopperRequests.routeName),
+//        child: Badge(
+//          badgeContent: Text("${count}"),
+//          child: Icon(
+//            FontAwesomeIcons.bell,
+//            color: Colors.white,
+//          ),
+//        ),
+//      ),
+//    );
+//  }
+//
+//  zerocounterWidget() {
+//    return Positioned(
+//      right: 50,
+//      bottom: 25,
+//      child: GestureDetector(
+//        onTap: () => Navigator.pushNamed(context, ShopperRequests.routeName),
+//        child: Icon(FontAwesomeIcons.bell, color: Colors.white),
+//      ),
+//    );
+//  }
 }

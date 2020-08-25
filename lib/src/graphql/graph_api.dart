@@ -168,6 +168,7 @@ class GraphApi {
       createdAt
       desc
       quantity
+      amount
       totalLateFee
       business{
         business{
@@ -179,6 +180,7 @@ class GraphApi {
       type
       isRequested
       authorizationCode
+      totalLateFee
       currency
       transactions{
         _id
@@ -188,8 +190,10 @@ class GraphApi {
         createdAt
         paymentDate
         reference
+        amount
         isRequested
         createdAt
+      
       }
   
     }
@@ -221,14 +225,26 @@ query{
     """;
   }
 
+  String payNow(String id) {
+    return """mutation{
+  Paynow(id:"$id"){
+    code
+    success
+    message
+  }
+}
+""";
+  }
+
   //===============Transactions
 
   String fetchTransactions(int limit) {
     return """
- query {
-  FetchTransaction(limit:$limit,offset:0,){
+  query {
+  FetchTransaction(limit:100,offset:0,){
     code
     message
+    count
     success
     result{
       _id
@@ -237,12 +253,21 @@ query{
       status
       installment
       paymentDate
+      amount
       createdAt
       shopper{
         firstname
         lastname
         email
         _id
+        
+      }
+      business{
+        business{
+          bankName
+        	bankNumber
+          businessName
+        }
       }
       order{
         createdAt

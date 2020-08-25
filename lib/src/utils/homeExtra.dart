@@ -19,6 +19,8 @@ const List<Option> shopper = const <Option>[
   const Option(
       title: 'Manage Cards', id: "cards", icon: FontAwesomeIcons.creditCard),
   const Option(
+      title: 'Requests', id: "request", icon: FontAwesomeIcons.history),
+  const Option(
       title: 'Sign Out', id: "signout", icon: FontAwesomeIcons.signOutAlt),
 ];
 
