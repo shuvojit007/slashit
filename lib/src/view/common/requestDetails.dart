@@ -19,8 +19,9 @@ class _RequestDetailsState extends State<RequestDetails> {
     return Scaffold(
       backgroundColor: creemWhite,
       appBar: AppBar(
-        title: Text("Requests"),
-        centerTitle: true,
+        title: Text("Requests", style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.black),
       ),
       body: SingleChildScrollView(
         child: Column(

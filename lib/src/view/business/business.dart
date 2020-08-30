@@ -5,6 +5,7 @@ import 'package:slashit/src/models/transaction.dart';
 import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/text_styles.dart';
 import 'package:slashit/src/utils/homeExtra.dart';
+import 'package:slashit/src/utils/innerDrawer.dart';
 import 'package:slashit/src/utils/prefmanager.dart';
 import 'package:slashit/src/utils/timeformat.dart';
 import 'package:slashit/src/utils/userData.dart';
@@ -14,7 +15,6 @@ import 'package:slashit/src/view/business/requestsList.dart';
 import 'package:slashit/src/view/common/bankTransfer.dart';
 import 'package:slashit/src/view/common/transactions.dart';
 import 'package:slashit/src/view/common/transactionsDetails.dart';
-import 'package:slashit/src/widget/propic.dart';
 
 class Business extends StatefulWidget {
   @override
@@ -23,6 +23,8 @@ class Business extends StatefulWidget {
 
 class _BusinessState extends State<Business> {
   TransactionsBloc _bloc;
+  final GlobalKey<InnerDrawerState> _innerDrawerKey =
+      GlobalKey<InnerDrawerState>();
   @override
   void initState() {
     _bloc = TransactionsBloc();
@@ -39,75 +41,111 @@ class _BusinessState extends State<Business> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
+    return InnerDrawer(
+      key: _innerDrawerKey,
+      onTapClose: true,
+      swipe: false,
+      colorTransitionChild: Colors.black54,
+      colorTransitionScaffold: Colors.transparent,
+      offset: IDOffset.horizontal(0.0),
+      rightAnimationType: InnerDrawerAnimation.quadratic,
+      rightChild: Container(
+        color: Colors.white,
+        padding: EdgeInsets.only(left: 10),
         child: Column(
           children: <Widget>[
-            _header(),
             SizedBox(
-              height: 20,
+              height: 50,
             ),
-            _body(),
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-              margin: EdgeInsets.only(left: 15, right: 5, bottom: 5),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Recents,",
-                  style: shopperText4,
+            for (Option option in business) ...[
+              _menuWidget(option),
+              SizedBox(
+                height: 10,
+              ),
+            ]
+          ],
+        ),
+      ),
+      scaffold: Scaffold(
+        backgroundColor: Colors.white,
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              _header(),
+              SizedBox(
+                height: 20,
+              ),
+              _body(),
+              SizedBox(
+                height: 20,
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 15, right: 5, bottom: 5),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Recents,",
+                    style: shopperText4,
+                  ),
                 ),
               ),
-            ),
-            _recentPayments(),
-          ],
+              _recentPayments(),
+            ],
+          ),
         ),
       ),
     );
   }
 
   _header() {
-    return Container(
-      height: 100,
-      color: Colors.blue,
-      width: double.infinity,
-      child: Stack(
-        children: <Widget>[
-          ProfileImage(),
-          Container(
-            margin: EdgeInsets.only(top: 55, left: 65),
-            child: Text(
-              "Business, ${locator<PrefManager>().name}",
-              style: userTitle,
+    return Card(
+      margin: EdgeInsets.all(0),
+      child: Container(
+        height: 85,
+        color: Colors.white,
+        width: double.infinity,
+        child: Stack(
+          children: <Widget>[
+//          ProfileImage( photo: locator<PrefManager>().avatar,),
+            Container(
+              margin: EdgeInsets.only(top: 45, left: 20),
+              child: Text(
+                "Business, ${locator<PrefManager>().name}",
+                style: userTitle,
+              ),
             ),
-          ),
-          Positioned(
-            right: 1,
-            bottom: 15,
-            child: PopupMenuButton<Option>(
-              onSelected: _appbarOption,
-              color: Colors.white,
-              itemBuilder: (BuildContext context) {
-                return business.map((Option option) {
-                  return PopupMenuItem<Option>(
-                    value: option,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(option.icon, size: 20.0, color: PrimrayColor),
-                        SizedBox(width: 10),
-                        Text(option.title),
-                      ],
-                    ),
-                  );
-                }).toList();
-              },
-            ),
-          )
-        ],
+            Positioned(
+                right: 10,
+                top: 45,
+                child: GestureDetector(
+                  onTap: () {
+                    _innerDrawerKey.currentState.open();
+                  },
+                  child: Icon(Icons.menu),
+                )
+//            PopupMenuButton<Option>(
+//              onSelected: _appbarOption,
+//              color: Colors.white,
+//              itemBuilder: (BuildContext context) {
+//                return business.map((Option option) {
+//                  return PopupMenuItem<Option>(
+//                    value: option,
+//                    child: Row(
+//                      mainAxisSize: MainAxisSize.min,
+//                      crossAxisAlignment: CrossAxisAlignment.center,
+//                      children: <Widget>[
+//                        Icon(option.icon, size: 20.0, color: PrimrayColor),
+//                        SizedBox(width: 10),
+//                        Text(option.title),
+//                      ],
+//                    ),
+//                  );
+//                }).toList();
+//              },
+//            ),
+                )
+          ],
+        ),
       ),
     );
   }
@@ -117,9 +155,9 @@ class _BusinessState extends State<Business> {
       width: double.infinity,
       height: 280,
       margin: EdgeInsets.only(left: 15, right: 15),
-      decoration: BoxDecoration(
-          border: Border.all(color: Colors.black87),
-          borderRadius: BorderRadius.all(Radius.circular(10))),
+//      decoration: BoxDecoration(
+//          border: Border.all(color: Colors.black87),
+//          borderRadius: BorderRadius.all(Radius.circular(10))),
       child: Column(
         children: <Widget>[
           Container(
@@ -194,13 +232,15 @@ class _BusinessState extends State<Business> {
                 child: StreamBuilder(
                   stream: _bloc.allTransaction,
                   builder: (context, AsyncSnapshot<List<Result>> snapshot) {
-                    if (snapshot.hasData) {
+                    if (snapshot.hasData && snapshot.data.length > 0) {
                       return ListView.builder(
                           scrollDirection: Axis.vertical,
                           itemCount: snapshot.data.length,
                           itemBuilder: (BuildContext ctx, int index) {
                             return _data(snapshot.data[index]);
                           });
+                    } else if (snapshot.hasData) {
+                      return Center(child: Text("No recent transaction"));
                     } else if (snapshot.hasError) {
                       return Text(snapshot.error.toString());
                     }
@@ -263,6 +303,24 @@ class _BusinessState extends State<Business> {
             )
           ],
         ),
+      ),
+    );
+  }
+
+  _menuWidget(Option option) {
+    return GestureDetector(
+      onTap: () => _appbarOption(option),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Icon(option.icon, size: 15.0, color: Colors.black),
+          SizedBox(width: 10),
+          Text(
+            option.title,
+            style: menuText,
+          ),
+        ],
       ),
     );
   }

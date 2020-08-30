@@ -79,8 +79,10 @@ class _OrderInfoState extends State<OrderInfo> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Order # ${widget.data.orderId}"),
-        centerTitle: true,
+        title: Text("Order # ${widget.data.orderId}",
+            style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.black),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -155,80 +157,81 @@ class _OrderInfoState extends State<OrderInfo> {
 
   Widget _transactions(Result result, Transaction transaction, int i) {
     print(transaction.status);
-    return Container(
-      height: 80,
-      margin: EdgeInsets.only(left: 10, right: 10),
-      child: Card(
-        child: Row(
-          children: <Widget>[
-            Container(
-              width: 10,
-              color: colors[transaction.installment - 1],
-            ),
-            Expanded(
-              child: Stack(
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ShopperTranscDetails(
-                                  transaction: transaction,
-                                  result: result,
-                                ))),
-                    child: Container(
-                      margin: EdgeInsets.only(left: 10, top: 10),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(_getName(transaction.installment),
-                              style: Repayments1),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            "${getDateTime(transaction.paymentDate)}",
-                            style: Repayments2,
-                          )
-                        ],
-                      ),
+    return GestureDetector(
+      onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ShopperTranscDetails(
+                    transaction: transaction,
+                    result: result,
+                  ))),
+      child: Container(
+        height: 80,
+        margin: EdgeInsets.only(left: 10, right: 10),
+        child: Card(
+          child: Row(
+            children: <Widget>[
+              Container(
+                width: 10,
+                color: colors[transaction.installment - 1],
+              ),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ShopperTranscDetails(
+                                transaction: transaction,
+                                result: result,
+                              ))),
+                  child: Container(
+                    margin: EdgeInsets.only(left: 10, top: 10),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(_getName(transaction.installment),
+                            style: Repayments1),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          "${getDateTime(transaction.paymentDate)}",
+                          style: Repayments2,
+                        )
+                      ],
                     ),
                   ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Container(
-                      padding: const EdgeInsets.only(right: 10.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            "NGN ${(widget.data.amount / 4)}",
-                            style: Repayments3,
-                          ),
-                          if (getStatus(i)) ...[
-                            Text("PAID",
-                                style: TextStyle(
-                                    color: Colors.blue,
-                                    fontWeight: FontWeight.w600))
-                          ] else ...[
-                            RaisedButton(
-                              onPressed: () => _payNow(transaction.id, i),
-                              color: Colors.blue,
-                              shape: StadiumBorder(),
-                              child: Text(
-                                "Pay Now",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            )
-                          ],
-                        ],
-                      ),
-                    ),
-                  )
-                ],
+                ),
               ),
-            )
-          ],
+              Container(
+                padding: const EdgeInsets.only(right: 10.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      "NGN ${(widget.data.amount / 4)}",
+                      style: Repayments3,
+                    ),
+                    if (getStatus(i)) ...[
+                      Text("PAID",
+                          style: TextStyle(
+                              color: Colors.blue, fontWeight: FontWeight.w600))
+                    ] else ...[
+                      RaisedButton(
+                        onPressed: () => _payNow(transaction.id, i),
+                        color: Colors.blue,
+                        shape: StadiumBorder(),
+                        child: Text(
+                          "Pay Now",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      )
+                    ],
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

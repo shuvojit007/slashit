@@ -25,7 +25,10 @@ class _ShopperTranscDetailsState extends State<ShopperTranscDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Transaction Details"),
+        title:
+            Text("Transaction Details", style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.black),
       ),
       body: Column(
         children: <Widget>[

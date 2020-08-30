@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:barcode_scan/model/scan_result.dart';
@@ -6,7 +7,9 @@ import 'package:barcode_scan/platform_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:graphql/utilities.dart' show multipartFileFrom;
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:share/share.dart';
 import 'package:slashit/src/repository/user_repository.dart';
 import 'package:slashit/src/utils/showToast.dart';
 import 'package:slashit/src/view/business/business.dart';
@@ -15,7 +18,8 @@ class BarCodeScanning extends StatefulWidget {
   static const routeName = "/barCode";
   String title, note, desc;
   int amount;
-  BarCodeScanning({this.title, this.note, this.desc, this.amount});
+  File file;
+  BarCodeScanning({this.title, this.note, this.desc, this.amount, this.file});
 
   @override
   _BarCodeScanningState createState() => _BarCodeScanningState();
@@ -99,7 +103,7 @@ class _BarCodeScanningState extends State<BarCodeScanning> {
     try {
       var options = ScanOptions(
         strings: {
-          "cancel": _cancelController.text,
+          "cancel": "  X  ",
           "flash_on": _flashOnController.text,
           "flash_off": _flashOffController.text,
         },
@@ -120,16 +124,22 @@ class _BarCodeScanningState extends State<BarCodeScanning> {
       if ((key.length == 2 && value.length == 2) &&
           (key[0] == "type" && key[1] == "id")) {
         _pr.show();
+
+        String url = "";
+        if (widget.file != null) {
+          url = await _uploadImage();
+        }
         var paymentInput = {
           "title": "\"${widget.title}\"",
           "desc": "\"${widget.desc}\"",
           "amount": "${widget.amount}",
           "note": "\"${widget.note}\"",
+          "attachment": "\"${url}\"",
           "shopper": "\"${value[1]}\"",
         };
 
         bool result = await UserRepository.instance.createPaymentReq(
-            paymentInput, (key[0] == "installment") ? false : true);
+            paymentInput, (key[0] == "installment") ? "INSTALLMENT" : "WALLET");
         _pr.hide();
         if (result) {
           _goTobusinessPage();
@@ -179,7 +189,7 @@ class _BarCodeScanningState extends State<BarCodeScanning> {
                 alignment: Alignment.topRight,
                 child: Padding(
                   padding: EdgeInsets.only(right: 20, top: 50),
-                  child: Text("Copy Link",
+                  child: Text("Share Link",
                       style: const TextStyle(
                         color: Colors.black,
                         fontSize: 18,
@@ -197,19 +207,25 @@ class _BarCodeScanningState extends State<BarCodeScanning> {
 
   _copyLink() async {
     print("copy Link");
+    String url = "";
+    if (widget.file != null) {
+      url = await _uploadImage();
+    }
+
     var paymentInput = {
       "title": "\"${widget.title}\"",
       "desc": "\"${widget.desc}\"",
       "amount": "${widget.amount}",
+      "attachment": "\"${url}\"",
       "note": "\"${widget.note}\""
     };
+
     _pr.show();
-    String orderId =
-        await UserRepository.instance.createPaymentReqCopy(paymentInput, true);
+    String orderId = await UserRepository.instance
+        .createPaymentReqCopy(paymentInput, "WALLET_INSTALLMENT");
     if (orderId != null) {
       String link = "https://ez-pm.herokuapp.com/request-order/${orderId}";
-      await Clipboard.setData(new ClipboardData(text: link));
-      showToastMsg("Link copied on the clipboard");
+      Share.share(link);
     }
     _pr.hide();
   }
@@ -220,5 +236,10 @@ class _BarCodeScanningState extends State<BarCodeScanning> {
     _flashOnController?.dispose();
     _cancelController?.dispose();
     super.dispose();
+  }
+
+  Future<String> _uploadImage() async {
+    final muiltiPartFile = await multipartFileFrom(widget.file);
+    return await UserRepository.instance.uploadImage(muiltiPartFile);
   }
 }

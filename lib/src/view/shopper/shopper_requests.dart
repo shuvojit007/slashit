@@ -40,7 +40,9 @@ class _ShopperRequeststate extends State<ShopperRequests> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Requests"),
+        title: Text("Requests", style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.black),
       ),
       body: StreamBuilder(
         stream: _bloc.allPaymentReq,

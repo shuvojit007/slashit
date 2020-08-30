@@ -12,10 +12,10 @@ import 'package:slashit/src/blocs/wallet/wallet_bloc_state.dart';
 import 'package:slashit/src/di/locator.dart';
 import 'package:slashit/src/models/features_model.dart';
 import 'package:slashit/src/resources/assets.dart';
-import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/str.dart';
 import 'package:slashit/src/resources/text_styles.dart';
 import 'package:slashit/src/utils/homeExtra.dart';
+import 'package:slashit/src/utils/innerDrawer.dart';
 import 'package:slashit/src/utils/prefmanager.dart';
 import 'package:slashit/src/utils/url.dart';
 import 'package:slashit/src/utils/userData.dart';
@@ -26,7 +26,6 @@ import 'package:slashit/src/view/shopper/debitCards.dart';
 import 'package:slashit/src/view/shopper/repayment.dart';
 import 'package:slashit/src/view/shopper/shopper_requests.dart';
 import 'package:slashit/src/view/shopper/wallet.dart';
-import 'package:slashit/src/widget/propic.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'featuresList.dart';
@@ -36,10 +35,12 @@ class Shopper extends StatefulWidget {
   _ShopperState createState() => _ShopperState();
 }
 
-class _ShopperState extends State<Shopper> {
+class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
   int value = 5000;
   int count = 0;
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<InnerDrawerState> _innerDrawerKey =
+      GlobalKey<InnerDrawerState>();
   FeaturesBloc _bloc;
 
   @override
@@ -48,7 +49,6 @@ class _ShopperState extends State<Shopper> {
     _bloc = FeaturesBloc();
     _bloc.featchAllFeatures();
 
-    // _getPaymentReqCount();
     super.initState();
   }
 
@@ -60,97 +60,125 @@ class _ShopperState extends State<Shopper> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: scaffoldKey,
-      body: SingleChildScrollView(
+    return InnerDrawer(
+      key: _innerDrawerKey,
+      onTapClose: true,
+      swipe: false,
+      colorTransitionChild: Colors.black54,
+      colorTransitionScaffold: Colors.transparent,
+      offset: IDOffset.horizontal(-0.1),
+      rightAnimationType: InnerDrawerAnimation.quadratic,
+      rightChild: Container(
+        color: Colors.white,
+        padding: EdgeInsets.only(left: 10),
         child: Column(
           children: <Widget>[
-            _header(),
             SizedBox(
-              height: 20,
-            ),
-            Container(
-              width: double.infinity,
-              height: 35,
-              margin: EdgeInsets.only(left: 5, right: 5),
-              decoration: BoxDecoration(
-                  color: Colors.blue,
-                  borderRadius: BorderRadius.all(Radius.circular(10))),
-              child: Center(
-                child: Text(
-                  "Spend up to",
-                  style: shopperText1,
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Center(
-              child: Text(
-                "NGN ${locator<PrefManager>().spendLimit}",
-                style: shopperText2,
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(
-                left: 20,
-                right: 20,
-              ),
-              child: Divider(color: Colors.black26),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            RaisedButton(
-              onPressed: () =>
-                  Navigator.pushNamed(context, UpcommingRepayments.routeName),
-              shape: StadiumBorder(),
-              color: Colors.blue,
-              child: Text(
-                "     Upcomming Repayments     ",
-                style: shopperText3,
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              width: 300,
               height: 50,
-              child: Text(
-                Str.barcode,
-                style: barcodeText,
+            ),
+            for (Option option in shopper) ...[
+              _menuWidget(option),
+              SizedBox(
+                height: 10,
               ),
-            ),
-            QrImage(
-              constrainErrorBounds: true,
-              data:
-                  "{\"type\":\"installment\",\"id\" :\"${locator<PrefManager>().userID}\"}",
-              version: QrVersions.auto,
-              size: 150.0,
-              gapless: false,
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            _wallet(),
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-              margin: EdgeInsets.only(left: 10, right: 5),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Features",
-                  style: shopperText4,
-                ),
-              ),
-            ),
-            _features(),
+            ]
           ],
         ),
+      ),
+      scaffold: Scaffold(
+          backgroundColor: Colors.white, key: scaffoldKey, body: _body()),
+    );
+  }
+
+  Widget _body() {
+    return SingleChildScrollView(
+      child: Column(
+        children: <Widget>[
+          _header(),
+          SizedBox(
+            height: 20,
+          ),
+          Container(
+            height: 35,
+            margin: EdgeInsets.only(left: 5, right: 5),
+            decoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.all(Radius.circular(10))),
+            child: Center(
+              child: Text(
+                "Spend Limit",
+                style: shopperText1,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Center(
+            child: Text(
+              "NGN ${locator<PrefManager>().spendLimit}",
+              style: shopperText2,
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(
+              left: 20,
+              right: 20,
+            ),
+            child: Divider(color: Colors.black26),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          RaisedButton(
+            onPressed: () =>
+                Navigator.pushNamed(context, UpcommingRepayments.routeName),
+            shape: StadiumBorder(),
+            color: Colors.blue,
+            child: Text(
+              "     Upcoming Repayments     ",
+              style: shopperText3,
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Container(
+            width: 300,
+            height: 50,
+            child: Text(
+              Str.barcode,
+              style: barcodeText,
+            ),
+          ),
+          QrImage(
+            embeddedImage: AssetImage("assets/images/slashit.jpeg"),
+            constrainErrorBounds: true,
+            data:
+                "{\"type\":\"installment\",\"id\" :\"${locator<PrefManager>().userID}\"}",
+            version: QrVersions.auto,
+            size: 200.0,
+            gapless: false,
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          _wallet(),
+          SizedBox(
+            height: 20,
+          ),
+          Container(
+            margin: EdgeInsets.only(left: 10, right: 5),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Featured",
+                style: shopperText4,
+              ),
+            ),
+          ),
+          _features(),
+        ],
       ),
     );
   }
@@ -226,73 +254,100 @@ class _ShopperState extends State<Shopper> {
   }
 
   _header() {
-    return Container(
-      height: 100,
-      color: Colors.blue,
-      width: double.infinity,
-      child: Stack(
-        children: <Widget>[
-          ProfileImage(
-            photo: locator<PrefManager>().avatar,
-          ),
-          Container(
-            margin: EdgeInsets.only(top: 55, left: 65),
-            child: Text(
-              "Shopper, ${locator<PrefManager>().name}",
-              style: userTitle,
+    return Card(
+      margin: EdgeInsets.all(0),
+      child: Container(
+        height: 85,
+        color: Colors.white,
+        width: double.infinity,
+        child: Stack(
+          children: <Widget>[
+//          ProfileImage(
+//            photo: locator<PrefManager>().avatar,
+//          ),
+            Container(
+              margin: EdgeInsets.only(top: 45, left: 20),
+              child: Text(
+                "Shopper, ${locator<PrefManager>().name}",
+                style: userTitle,
+              ),
             ),
-          ),
 //          if (count != 0) ...[
 //            counterWidget()
 //          ] else ...[
 //            zerocounterWidget(),
 //          ],
-          Positioned(
-            right: 1,
-            bottom: 15,
-            child: PopupMenuButton<Option>(
-              onSelected: _appbarOption,
-              itemBuilder: (BuildContext context) {
-                print("shopper  ${shopper.length}");
-                return shopper.map((Option option) {
-                  return PopupMenuItem<Option>(
-                    value: option,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(option.icon, size: 20.0, color: PrimrayColor),
-                        SizedBox(width: 10),
-                        Text(option.title),
-                      ],
-                    ),
-                  );
-                }).toList();
-              },
-            ),
-          )
+            Positioned(
+                right: 10,
+                top: 45,
+                child: GestureDetector(
+                  onTap: () {
+                    _innerDrawerKey.currentState.open();
+                  },
+                  child: Icon(Icons.menu),
+                )
+
+//              PopupMenuButton<Option>(
+//                onSelected: _appbarOption,
+//                itemBuilder: (BuildContext context) {
+//                  print("shopper  ${shopper.length}");
+//                  return shopper.map((Option option) {
+//                    return PopupMenuItem<Option>(
+//                        value: option, child: Text(option.title)
+//
+////                    Row(
+////                      mainAxisSize: MainAxisSize.min,
+////                      crossAxisAlignment: CrossAxisAlignment.center,
+////                      children: <Widget>[
+////                        Icon(option.icon, size: 20.0, color: PrimrayColor),
+////                        SizedBox(width: 10),
+////                        Text(option.title),
+////                      ],
+////                    ),
+//                        );
+//                  }).toList();
+//                },
+//              ),
+                )
+          ],
+        ),
+      ),
+    );
+  }
+
+  _menuWidget(Option option) {
+    return GestureDetector(
+      onTap: () => _appbarOption(option),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Icon(option.icon, size: 15.0, color: Colors.black),
+          SizedBox(width: 10),
+          Text(
+            option.title,
+            style: menuText,
+          ),
         ],
       ),
     );
   }
 
   _features() {
-    return Container(
-      width: double.infinity,
-      height: 160,
-      margin: EdgeInsets.only(left: 10, right: 10),
-      decoration: BoxDecoration(border: Border.all(color: Colors.black87)),
-      child: StreamBuilder(
-        stream: _bloc.allFeatures,
-        builder: (context, AsyncSnapshot<List<Result>> snapshot) {
-          if (snapshot.hasData) {
-            return _featuresView(snapshot);
-          } else if (snapshot.hasError) {
-            return Text(snapshot.error.toString());
-          }
-          return Center(child: CircularProgressIndicator());
-        },
-      ),
+    return StreamBuilder(
+      stream: _bloc.allFeatures,
+      builder: (context, AsyncSnapshot<List<Result>> snapshot) {
+        if (snapshot.hasData) {
+          return Container(
+              width: double.infinity,
+              height: 160,
+              margin: EdgeInsets.only(left: 10, right: 10),
+              child: _featuresView(snapshot));
+        } else if (snapshot.hasError) {
+          return Text(snapshot.error.toString());
+        }
+        return Center(child: CircularProgressIndicator());
+      },
     );
   }
 
@@ -371,6 +426,7 @@ class _ShopperState extends State<Shopper> {
   }
 
   _launchURL(String url) async {
+    print(url);
     if (await canLaunch(url)) {
       await launch(url);
     } else {

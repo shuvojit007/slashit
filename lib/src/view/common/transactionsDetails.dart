@@ -144,7 +144,7 @@ class _TransactionDetailsState extends State<TransactionDetails> {
                   Expanded(
                     flex: 1,
                     child: Text(
-                      "Marchent ",
+                      "Merchant ",
                       style: TransactionDetials2,
                     ),
                   ),

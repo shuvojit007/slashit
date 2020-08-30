@@ -102,12 +102,12 @@ class _LoginShopperState extends State<LoginShopper> {
         decoration: InputDecoration(
           labelText: "Email",
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: PrimrayColor, width: 2.0),
+            borderSide: BorderSide(color: PrimrayColor, width: 1.0),
           ),
           enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.black, width: 2.0),
+            borderSide: BorderSide(color: Colors.black, width: 1.0),
           ),
-          prefixIcon: Icon(Icons.mail_outline),
+          //    prefixIcon: Icon(Icons.mail_outline),
         ),
         cursorColor: appbartitle,
       ),
@@ -126,12 +126,12 @@ class _LoginShopperState extends State<LoginShopper> {
         decoration: InputDecoration(
           labelText: "Password",
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: PrimrayColor, width: 2.0),
+            borderSide: BorderSide(color: PrimrayColor, width: 1.0),
           ),
           enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.black, width: 2.0),
+            borderSide: BorderSide(color: Colors.black, width: 1.0),
           ),
-          prefixIcon: Icon(Icons.lock_outline),
+          //  prefixIcon: Icon(Icons.lock_outline),
           suffixIcon: IconButton(
               icon: Icon(
                 _showPassword ? Icons.remove_red_eye : Icons.visibility_off,

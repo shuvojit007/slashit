@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:slashit/src/models/bank.dart';
 import 'package:slashit/src/repository/user_repository.dart';
@@ -68,31 +67,12 @@ class _BankTransferState extends State<BankTransfer> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Bank Transfer"),
+        title: Text("Bank Transfer", style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.black),
       ),
       body: Column(
         children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(
-              left: 20,
-              right: 20,
-              top: 20,
-            ),
-            child: TextField(
-              controller: _accountNumber,
-              decoration: InputDecoration(
-                labelText: "Account Number",
-                focusedBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: PrimrayColor, width: 2.0),
-                ),
-                enabledBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.black, width: 2.0),
-                ),
-                prefixIcon: Icon(FontAwesomeIcons.moneyCheck),
-              ),
-              cursorColor: appbartitle,
-            ),
-          ),
           Padding(
             padding: EdgeInsets.only(
               left: 20,
@@ -112,7 +92,7 @@ class _BankTransferState extends State<BankTransfer> {
                   enabledBorder: const OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black, width: 2.0),
                   ),
-                  prefixIcon: Icon(Icons.account_balance),
+                  // prefixIcon: Icon(Icons.account_balance),
                 ),
               ),
               suggestionsCallback: (pattern) async {
@@ -121,16 +101,35 @@ class _BankTransferState extends State<BankTransfer> {
               },
               itemBuilder: (context, suggestion) {
                 return ListTile(
-                  leading: Icon(Icons.account_balance),
-                  title: Text(suggestion.name),
-                  subtitle: Text("code : ${suggestion.code}"),
-                );
+                    leading: Icon(Icons.account_balance),
+                    title: Text(suggestion.name));
               },
               onSuggestionSelected: (suggestion) {
                 bankDetails = suggestion;
                 _bankController.text = suggestion.name;
                 _bankController.notifyListeners();
               },
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(
+              left: 20,
+              right: 20,
+              top: 20,
+            ),
+            child: TextField(
+              controller: _accountNumber,
+              decoration: InputDecoration(
+                labelText: "Account Number",
+                focusedBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(color: PrimrayColor, width: 2.0),
+                ),
+                enabledBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.black, width: 2.0),
+                ),
+                //   prefixIcon: Icon(FontAwesomeIcons.moneyCheck),
+              ),
+              cursorColor: appbartitle,
             ),
           ),
           Padding(
@@ -153,7 +152,7 @@ class _BankTransferState extends State<BankTransfer> {
                 enabledBorder: const OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.black, width: 2.0),
                 ),
-                prefixIcon: Icon(FontAwesomeIcons.moneyBill),
+                //  prefixIcon: Icon(FontAwesomeIcons.moneyBill),
               ),
               cursorColor: appbartitle,
             ),

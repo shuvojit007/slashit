@@ -34,7 +34,9 @@ class _FeaturesListState extends State<FeaturesList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Features List"),
+        title: Text("Features List", style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.black),
       ),
       body: StreamBuilder(
         stream: _bloc.allFeatures,

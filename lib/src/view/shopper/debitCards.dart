@@ -52,23 +52,22 @@ class _DebitCardsState extends State<DebitCards> {
       body: StreamBuilder(
         stream: _bloc.allCards,
         builder: (context, AsyncSnapshot<List<Result>> snapshot) {
+          print("snapshot ${snapshot.hasData}");
           if (snapshot.hasData) {
             return Stack(
               children: <Widget>[
-                Expanded(
-                  child: ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (BuildContext ctx, int index) {
-                        return _body(snapshot.data[index]);
-                      }),
-                ),
+                ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (BuildContext ctx, int index) {
+                      return _body(snapshot.data[index]);
+                    }),
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Container(
                     margin: EdgeInsets.only(right: 20, bottom: 20),
                     child: Visibility(
-                      visible: count < 4 ? true : false,
+                      visible: snapshot.data.length < 4 ? true : false,
                       child: FloatingActionButton(
                         onPressed: () => _handleCheckout(context),
                         child: Icon(Icons.add),
@@ -78,12 +77,23 @@ class _DebitCardsState extends State<DebitCards> {
                 )
               ],
             );
-          } else if (snapshot.hasError) {
-            return Text(snapshot.error.toString());
           }
+//          } else if (snapshot.hasError) {
+//            return Align(
+//              alignment: Alignment.bottomRight,
+//              child: Container(
+//                margin: EdgeInsets.only(right: 20, bottom: 20),
+//                child: FloatingActionButton(
+//                  onPressed: () => _handleCheckout(context),
+//                  child: Icon(Icons.add),
+//                ),
+//              ),
+//            );
+//          }
           return Center(child: CircularProgressIndicator());
         },
       ),
+//
     );
   }
 

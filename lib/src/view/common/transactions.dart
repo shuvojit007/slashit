@@ -32,18 +32,22 @@ class _TransactionsState extends State<Transactions> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Transactions"),
+        title: Text("Transactions", style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.black),
       ),
       body: StreamBuilder(
         stream: _bloc.allTransaction,
         builder: (context, AsyncSnapshot<List<Result>> snapshot) {
-          if (snapshot.hasData) {
+          if (snapshot.hasData && snapshot.data.length > 0) {
             return ListView.builder(
                 scrollDirection: Axis.vertical,
                 itemCount: snapshot.data.length,
                 itemBuilder: (BuildContext ctx, int index) {
                   return _transactionsView(snapshot.data[index]);
                 });
+          } else if (snapshot.hasData) {
+            return Center(child: Text("You have no transaction history yet"));
           } else if (snapshot.hasError) {
             return Text(snapshot.error.toString());
           }

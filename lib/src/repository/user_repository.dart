@@ -34,11 +34,9 @@ class UserRepository {
       LazyCacheMap map = result.data.get("Login");
       if (map['success'] == true) {
         storeUser(result.data['Login']);
-        showToastMsgGreen("Login succesfull");
         return true;
       } else {
-        print("Something went wrong");
-        showToastMsg("Something went wrong");
+        showToastMsg(map['message']);
         return false;
       }
     }
@@ -63,7 +61,7 @@ class UserRepository {
         showToastMsgGreen(
             "User created successfully. Please verify your email");
       } else {
-        showToastMsg("Something went wrong");
+        showToastMsg(map['message']);
       }
     }
   }
@@ -246,7 +244,7 @@ class UserRepository {
           showToastMsgGreen("Card successfully added");
           return true;
         } else {
-          showToastMsg("Something went wrong");
+          showToastMsg(map['message']);
           return false;
         }
       }
@@ -327,7 +325,7 @@ class UserRepository {
           showToastMsgGreen(map['message']);
           return true;
         } else {
-          showToastMsg("Something went wrong");
+          showToastMsg(map['message']);
           return false;
         }
       }
@@ -403,13 +401,13 @@ class UserRepository {
 
   Future<bool> createPaymentReq(
     dynamic paymentInput,
-    bool fromWallet,
+    dynamic paymentMethod,
   ) async {
     try {
       GraphQLClient _client = GraphQLConfiguration().clientToQuery();
       QueryResult result = await _client.mutate(MutationOptions(
           documentNode: gql(
-        GraphApi.instance.createPaymentReq(paymentInput, fromWallet),
+        GraphApi.instance.createPaymentReq(paymentInput, paymentMethod),
       )));
       if (result.hasException) {
         showToastMsg("Something went wrong");
@@ -432,13 +430,13 @@ class UserRepository {
 
   Future<String> createPaymentReqCopy(
     dynamic paymentInput,
-    bool fromWallet,
+    dynamic paymentMethod,
   ) async {
     try {
       GraphQLClient _client = GraphQLConfiguration().clientToQuery();
       QueryResult result = await _client.mutate(MutationOptions(
           documentNode: gql(
-        GraphApi.instance.createPaymentReq(paymentInput, fromWallet),
+        GraphApi.instance.createPaymentReq(paymentInput, paymentMethod),
       )));
       if (result.hasException) {
         showToastMsg("Something went wrong");
@@ -447,7 +445,6 @@ class UserRepository {
         LazyCacheMap map = result.data.get("CreatePaymentReq");
         if (map['success'] == true) {
           showToastMsgGreen(map['message']);
-
           return map['orderId'];
         } else {
           showToastMsgGreen(map['message']);
@@ -537,6 +534,30 @@ class UserRepository {
       }
     } catch (e) {
       return false;
+    }
+  }
+
+  Future<String> uploadImage(dynamic file) async {
+    try {
+      GraphQLClient _client = GraphQLConfiguration().clientToQuery();
+      QueryResult result = await _client.mutate(MutationOptions(
+          documentNode: gql(GraphApi.instance.uploadImage()),
+          variables: {"file": file}));
+      if (result.hasException) {
+        showToastMsg("Something went wrong");
+        print(result.exception.toString());
+        return null;
+      } else {
+        LazyCacheMap map = result.data.get("SingleUpload");
+        if (map['imageLink'] != "") {
+          return map['imageLink'];
+        } else {
+          return "Something went wrong";
+        }
+      }
+    } catch (e) {
+      print(e.toString());
+      return null;
     }
   }
 }

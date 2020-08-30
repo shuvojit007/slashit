@@ -395,9 +395,18 @@ query{
 """;
   }
 
-  String createPaymentReq(dynamic paymentInput, bool fromwallet) {
+  String uploadImage() {
+    return r"""mutation ($file:Upload!) {
+  SingleUpload(file:$file){
+    imageLink
+  }
+}
+""";
+  }
+
+  String createPaymentReq(dynamic paymentInput, dynamic paymentMethod) {
     return """mutation {
-  CreatePaymentReq(paymentInput:$paymentInput,fromWallet:$fromwallet){
+  CreatePaymentReq(paymentInput:$paymentInput,paymentMethod:$paymentMethod){
     code
     message
     success

@@ -50,10 +50,12 @@ class _AddMoneyState extends State<AddMoney> {
                   autofocus: true,
                   controller: _controller,
                   textAlign: TextAlign.center,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: <TextInputFormatter>[
-                    WhitelistingTextInputFormatter.digitsOnly
-                  ],
+                  keyboardType: TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+//                  inputFormatters: <TextInputFormatter>[
+//                    WhitelistingTextInputFormatter.digitsOnly
+//                  ],
                   decoration: InputDecoration.collapsed(
                       hintText: "0.00", border: InputBorder.none),
                   style: TextStyle(

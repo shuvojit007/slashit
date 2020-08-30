@@ -1,9 +1,7 @@
 name: slashit
 description: Slashit payment gateway. 
 
-
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-
 version: 1.0.0+1
 
 environment:
@@ -31,6 +29,11 @@ dependencies:
   badges : ^1.1.1
   dio: ^3.0.9
   flutter_typeahead: ^1.8.8
+  share: ^0.6.2+1
+  #Image Picker and Cropper
+  image_cropper: ^1.2.2
+  image_picker: ^0.6.6+1
+
 
 
 
@@ -71,6 +74,18 @@ flutter:
         - asset: fonts/poppinsmedium.ttf
         - asset: fonts/poppinsregular.ttf
         - asset: fonts/poppinssemibold.ttf
+
+    - family: SourceSans
+      fonts:
+        - asset: fonts/SourceSansPro-Regular.ttf
+
+    - family: Raleway
+      fonts:
+        - asset: fonts/Raleway-VariableFont_wght.ttf
+
+    - family: Roboto
+      fonts:
+        - asset: fonts/roboto.ttf
 
     - family: Bebas
       fonts:

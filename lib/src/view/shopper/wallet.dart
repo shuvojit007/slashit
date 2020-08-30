@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:slashit/src/di/locator.dart';
 import 'package:slashit/src/resources/text_styles.dart';
@@ -29,6 +30,7 @@ class _WalletScreenState extends State<WalletScreen> {
               ),
               QrImage(
                 constrainErrorBounds: true,
+                embeddedImage: AssetImage("assets/images/slashit.jpeg"),
                 data:
                     "{\"type\":\"wallet\",\"id\" :\"${locator<PrefManager>().userID}\"}",
                 version: QrVersions.auto,
@@ -55,7 +57,11 @@ class _WalletScreenState extends State<WalletScreen> {
               onTap: () => Navigator.pop(context),
               child: Padding(
                 padding: EdgeInsets.only(left: 20, top: 50),
-                child: Text("Cancel", style: debitCards),
+                child: Icon(
+                  FontAwesomeIcons.times,
+                  size: 25,
+                  color: Colors.black54,
+                ),
               ),
             ),
             GestureDetector(

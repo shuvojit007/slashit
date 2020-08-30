@@ -112,16 +112,16 @@ const TextStyle goToSignUpBlue = TextStyle(
 );
 
 const TextStyle userTitle = TextStyle(
-  color: Colors.white,
+  color: Colors.black,
   fontSize: 16,
-  fontFamily: 'Poppins',
+  fontFamily: 'SourceSans',
   fontWeight: FontWeight.w600,
 );
 
 const TextStyle shopperText1 = TextStyle(
   color: Colors.white,
   fontSize: size_18,
-  fontFamily: 'Poppins',
+  fontFamily: 'Raleway',
   fontWeight: FontWeight.normal,
 );
 
@@ -134,13 +134,13 @@ const TextStyle shopperText2 = TextStyle(
 const TextStyle shopperText3 = TextStyle(
   color: Colors.white,
   fontSize: size_18,
-  fontFamily: 'Poppins',
+  fontFamily: 'Raleway',
   fontWeight: FontWeight.normal,
 );
 const TextStyle shopperText4 = TextStyle(
   color: Colors.black87,
   fontSize: size_18,
-  fontFamily: 'Poppins',
+  fontFamily: 'SourceSans',
   fontWeight: FontWeight.w500,
 );
 
@@ -155,7 +155,7 @@ const TextStyle shopperText5 = TextStyle(
 const TextStyle barcodeText = TextStyle(
   color: Colors.black87,
   fontSize: size_16,
-  fontFamily: 'Poppins',
+  fontFamily: 'Raleway',
   fontWeight: FontWeight.normal,
 );
 //=========business
@@ -199,8 +199,8 @@ const TextStyle WalletTitle = TextStyle(
 const TextStyle WalletPrice = TextStyle(
   color: Colors.black87,
   fontSize: size_14,
-  fontFamily: 'Poppins',
-  fontWeight: FontWeight.w400,
+  fontFamily: 'Raleway',
+  fontWeight: FontWeight.w600,
 );
 
 //=====upcomming repayments
@@ -342,6 +342,14 @@ const TextStyle TransactionDetials3 = TextStyle(
   color: Colors.green,
   backgroundColor: Color(0xFFDEFFDF),
   fontSize: 14,
+  fontFamily: 'Poppins',
+  fontWeight: FontWeight.normal,
+);
+
+//==========MenuElement
+const TextStyle menuText = TextStyle(
+  color: Colors.black,
+  fontSize: size_18,
   fontFamily: 'Poppins',
   fontWeight: FontWeight.normal,
 );

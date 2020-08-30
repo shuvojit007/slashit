@@ -29,7 +29,10 @@ class _UpcommingRepaymentsState extends State<UpcommingRepayments> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Upcoming Repayment"),
+        title:
+            Text("Upcoming Repayment", style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.black),
       ),
       body: BlocBuilder(
         bloc: _bloc,
