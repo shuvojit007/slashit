@@ -11,8 +11,11 @@ import 'package:graphql/utilities.dart' show multipartFileFrom;
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:share/share.dart';
 import 'package:slashit/src/repository/user_repository.dart';
+import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/utils/showToast.dart';
 import 'package:slashit/src/view/business/business.dart';
+
+import '../home.dart';
 
 class BarCodeScanning extends StatefulWidget {
   static const routeName = "/barCode";
@@ -36,6 +39,8 @@ class _BarCodeScanningState extends State<BarCodeScanning> {
   var _useAutoFocus = true;
   var _autoEnableFlash = false;
 
+  String orderID;
+
   static final _possibleFormats = BarcodeFormat.values.toList()
     ..removeWhere((e) => e == BarcodeFormat.unknown);
 
@@ -50,50 +55,61 @@ class _BarCodeScanningState extends State<BarCodeScanning> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _header(),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            RaisedButton(
-                onPressed: () => scan(),
-                shape: StadiumBorder(),
-                color: Colors.blue,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Icon(
-                      Icons.camera,
-                      color: Colors.white,
-                    ),
-                    Text(
-                      " Scan   ",
-                      style: TextStyle(color: Colors.white, fontSize: 20),
-                    )
-                  ],
-                )),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(
-                  FontAwesomeIcons.qrcode,
-                  color: Colors.green,
-                  size: 30,
-                ),
-                SizedBox(
-                  width: 5,
-                ),
-                Text(
-                  "Scan a barcode to accept payment",
-                  style: TextStyle(color: Colors.green, fontSize: 18),
-                )
-              ],
-            )
-          ],
+    return WillPopScope(
+      onWillPop: () async {
+        if (orderID == null) {
+          Navigator.pop(context);
+        } else {
+          Navigator.pushNamedAndRemoveUntil(
+              context, Home.routeName, (route) => false);
+        }
+        return true;
+      },
+      child: Scaffold(
+        appBar: _header(),
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              RaisedButton(
+                  onPressed: () => scan(),
+                  shape: StadiumBorder(),
+                  color: PrimaryColor,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Icon(
+                        Icons.camera,
+                        color: Colors.white,
+                      ),
+                      Text(
+                        " Scan   ",
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      )
+                    ],
+                  )),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Icon(
+                    FontAwesomeIcons.qrcode,
+                    color: PrimaryColor,
+                    size: 30,
+                  ),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Text(
+                    "Scan a barcode to accept payment",
+                    style: TextStyle(color: Colors.black54, fontSize: 18),
+                  )
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -103,7 +119,7 @@ class _BarCodeScanningState extends State<BarCodeScanning> {
     try {
       var options = ScanOptions(
         strings: {
-          "cancel": "  X  ",
+          "cancel": "cancel",
           "flash_on": _flashOnController.text,
           "flash_off": _flashOffController.text,
         },
@@ -184,7 +200,7 @@ class _BarCodeScanningState extends State<BarCodeScanning> {
               ),
             ),
             GestureDetector(
-              onTap: () => _copyLink(),
+              onTap: () => _shareLink(),
               child: Align(
                 alignment: Alignment.topRight,
                 child: Padding(
@@ -205,29 +221,36 @@ class _BarCodeScanningState extends State<BarCodeScanning> {
     );
   }
 
-  _copyLink() async {
+  _shareLink() async {
     print("copy Link");
-    String url = "";
-    if (widget.file != null) {
-      url = await _uploadImage();
-    }
 
-    var paymentInput = {
-      "title": "\"${widget.title}\"",
-      "desc": "\"${widget.desc}\"",
-      "amount": "${widget.amount}",
-      "attachment": "\"${url}\"",
-      "note": "\"${widget.note}\""
-    };
+    if (orderID == null) {
+      String url = "";
+      if (widget.file != null) {
+        url = await _uploadImage();
+      }
 
-    _pr.show();
-    String orderId = await UserRepository.instance
-        .createPaymentReqCopy(paymentInput, "WALLET_INSTALLMENT");
-    if (orderId != null) {
-      String link = "https://ez-pm.herokuapp.com/request-order/${orderId}";
-      Share.share(link);
+      var paymentInput = {
+        "title": "\"${widget.title}\"",
+        "desc": "\"${widget.desc}\"",
+        "amount": "${widget.amount}",
+        "attachment": "\"${url}\"",
+        "note": "\"${widget.note}\""
+      };
+
+      _pr.show();
+      orderID = await UserRepository.instance
+          .createPaymentReqCopy(paymentInput, "WALLET_INSTALLMENT");
+      if (orderID != null) {
+        String link = "https://ez-pm.herokuapp.com/request-order/${orderID}";
+        _pr.hide();
+        await Share.share(link);
+      }
+      _pr.hide();
+    } else {
+      String link = "https://ez-pm.herokuapp.com/request-order/${orderID}";
+      await Share.share(link);
     }
-    _pr.hide();
   }
 
   @override

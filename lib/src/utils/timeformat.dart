@@ -11,3 +11,9 @@ String getTime(String time) {
       new DateTime.fromMillisecondsSinceEpoch(int.parse(time)),
       format: DateTimeFormats.european);
 }
+
+String getShortTime(String time) {
+  return DateTimeFormat.format(
+      new DateTime.fromMillisecondsSinceEpoch(int.parse(time)),
+      format: 'D, M j, H:i');
+}

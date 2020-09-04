@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
           child: MaterialApp(
             title: 'Slashit',
             theme: ThemeData(
-              primarySwatch: Colors.blue,
+              primarySwatch: Colors.purple,
               visualDensity: VisualDensity.adaptivePlatformDensity,
             ),
             debugShowCheckedModeBanner: false,

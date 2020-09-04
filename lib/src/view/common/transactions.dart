@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:slashit/src/blocs/transactions.dart';
 import 'package:slashit/src/models/transaction.dart';
 import 'package:slashit/src/resources/text_styles.dart';
+import 'package:slashit/src/utils/number.dart';
 import 'package:slashit/src/utils/timeformat.dart';
 import 'package:slashit/src/view/common/transactionsDetails.dart';
 
@@ -80,7 +81,7 @@ class _TransactionsState extends State<Transactions> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      "NGN ${data.amount}",
+                      "₦ ${formatNumberValue(data.amount)}",
                       style: TransactionsList1,
                     ),
                     SizedBox(

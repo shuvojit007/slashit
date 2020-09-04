@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 getTransactionStatus(String status) {
   switch (status) {
     case "PAYMENT_SUCCESS":
@@ -9,7 +11,7 @@ getTransactionStatus(String status) {
     case "PAYOUT_PENDING":
       return "PENDING";
       break;
-    case "PAYMENT_SUCCESS":
+    case "PAYMENT_PENDING":
       return "PENDING";
       break;
     case "PAYMENT_REFUNDED":
@@ -21,5 +23,25 @@ getTransactionStatus(String status) {
 
     default:
       return status;
+  }
+}
+
+Color getTransactionStatusColor(String status) {
+  print("getTransactionStatusColor $status");
+  switch (status) {
+    case "COMPLETED":
+      return Color(0xFFDEFFDF);
+      break;
+    case "PENDING":
+      return Color(0xFFFCF3CF);
+      break;
+    case "FAILED":
+      return Color(0xFFFDEDEC);
+      break;
+    case "REFUNDED":
+      return Color(0xFFFDEDEC);
+      break;
+    default:
+      return Color(0xFFDEFFDF);
   }
 }

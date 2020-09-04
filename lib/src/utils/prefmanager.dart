@@ -9,6 +9,7 @@ class PrefManager {
   static const String ROLE = "ROLE";
   static const String AVATAR = "AVATAR";
   static const String USERID = "USERID";
+  static const String UNIQUEID = "uniqueId";
   static const String SPENED = "SPENDLIMIT";
   static const String AVAILABLEBALANCE = "AVAILABLEBALANCE";
 
@@ -76,6 +77,9 @@ class PrefManager {
 
   String get userID => _getFromDisk(USERID) ?? null;
   set userID(String value) => _saveToDisk(USERID, value);
+
+  String get uniqueId => _getFromDisk(USERID) ?? null;
+  set uniqueId(String value) => _saveToDisk(USERID, value);
 
   int get availableBalance => _getFromDisk(AVAILABLEBALANCE) ?? null;
   set availableBalance(int value) => _saveToDisk(AVAILABLEBALANCE, value);

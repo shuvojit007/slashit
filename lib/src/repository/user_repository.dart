@@ -42,7 +42,7 @@ class UserRepository {
     }
   }
 
-  Future registerUser(Map<String, String> userInput) async {
+  Future<bool> registerUser(Map<String, String> userInput) async {
     GraphQLClient _client = GraphQLConfiguration().clientToQuery();
     QueryResult result = await _client.mutate(MutationOptions(
         documentNode: gql(
@@ -50,18 +50,15 @@ class UserRepository {
     )));
     if (result.hasException) {
       showToastMsg("Something went wrong");
+      return false;
     } else {
       LazyCacheMap map = result.data.get("Register");
-
-      map.forEach((key, value) {
-        print("key $key  value $value");
-      });
-      print("result $result");
       if (map['success'] == true) {
-        showToastMsgGreen(
-            "User created successfully. Please verify your email");
+        showToastMsg("User created successfully. Please verify your email");
+        return true;
       } else {
         showToastMsg(map['message']);
+        return false;
       }
     }
   }
@@ -203,6 +200,33 @@ class UserRepository {
     }
   }
 
+  Future<bool> payLateFee(
+    String id,
+  ) async {
+    try {
+      GraphQLClient _client = GraphQLConfiguration().clientToQuery();
+      QueryResult result = await _client.mutate(MutationOptions(
+          documentNode: gql(
+        GraphApi.instance.payLateFee(id),
+      )));
+      if (result.hasException) {
+        showToastMsg(result.exception.toString());
+        return false;
+      } else {
+        LazyCacheMap map = result.data.get("PayLateFee");
+        if (map['success'] == true) {
+          showToastMsgGreen(map['message']);
+          return true;
+        } else {
+          showToastMsg(map['message']);
+          return false;
+        }
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
   //============Cards =============//
   Future<Cards> fetchCards() async {
     GraphQLClient _client = GraphQLConfiguration().clientToQuery();
@@ -322,7 +346,7 @@ class UserRepository {
       } else {
         LazyCacheMap map = result.data.get("RechargeWallet");
         if (map['success'] == true) {
-          showToastMsgGreen(map['message']);
+          showToastMsgGreen("Wallet has been completed");
           return true;
         } else {
           showToastMsg(map['message']);
@@ -483,6 +507,34 @@ class UserRepository {
     }
   }
 
+  Future<String> accountHolderName(
+    String bankCode,
+    String accountNumber,
+  ) async {
+    try {
+      GraphQLClient _client = GraphQLConfiguration().clientToQuery();
+      QueryResult result = await _client.mutate(
+        MutationOptions(
+          documentNode: gql(
+            GraphApi.instance.resolveBankAccount(bankCode, accountNumber),
+          ),
+        ),
+      );
+      if (result.hasException) {
+        return null;
+      } else {
+        LazyCacheMap map = result.data.get("ResolveBankAccount");
+        if (map['success'] == true) {
+          return map['accountHolderName'];
+        } else {
+          return null;
+        }
+      }
+    } catch (e) {
+      return null;
+    }
+  }
+
   Future<bool> rejectPaymentReq(
     String orderId,
   ) async {
@@ -557,6 +609,35 @@ class UserRepository {
       }
     } catch (e) {
       print(e.toString());
+      return null;
+    }
+  }
+
+  //===============Subscription===========//
+  Future<Stream> paymentSubscriptions(
+    String id,
+  ) async {
+    try {
+      GraphQLClient _client = GraphQLConfiguration().clientToQuery();
+      return await GraphQLConfiguration().clientToQuery().subscribe(Operation(
+              documentNode: gql(
+            GraphApi.instance.paymentSubscription(id),
+          )));
+
+//      if (result.hasException) {
+//        showToastMsg("Something went wrong");
+//        return false;
+//      } else {
+//        LazyCacheMap map = result.data.get("RechargeWallet");
+//        if (map['success'] == true) {
+//          showToastMsgGreen("Wallet has been completed");
+//          return true;
+//        } else {
+//          showToastMsg(map['message']);
+//          return false;
+//        }
+//      }
+    } catch (e) {
       return null;
     }
   }

@@ -42,7 +42,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                         decoration: InputDecoration(
                             hintText: "Enter your email here",
                             border: OutlineInputBorder(
-                                borderSide: BorderSide(color: PrimrayColor))),
+                                borderSide: BorderSide(color: PrimaryColor))),
                         cursorColor: appbartitle,
                         controller: _controller,
                         keyboardType: TextInputType.emailAddress,
@@ -51,7 +51,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                     RaisedButton(
                         textColor: Colors.white,
                         shape: StadiumBorder(),
-                        color: PrimrayColor,
+                        color: PrimaryColor,
                         onPressed: _resetPass,
                         child: Text("SUBMIT"))
                   ],

@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="slashit"
+        android:label="Slashit"
         android:icon="@mipmap/launcher_icon">
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"

@@ -5,6 +5,7 @@ import 'package:slashit/src/blocs/repayment/repayment_bloc_event.dart';
 import 'package:slashit/src/blocs/repayment/repayment_bloc_state.dart';
 import 'package:slashit/src/models/upcommingPayments.dart';
 import 'package:slashit/src/resources/text_styles.dart';
+import 'package:slashit/src/utils/number.dart';
 import 'package:slashit/src/utils/timeformat.dart';
 import 'package:slashit/src/view/shopper/orderInfo.dart';
 
@@ -29,8 +30,7 @@ class _UpcommingRepaymentsState extends State<UpcommingRepayments> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:
-            Text("Upcoming Repayment", style: TextStyle(color: Colors.black)),
+        title: Text("Upcoming Repayment", style: userTitle),
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.black),
       ),
@@ -82,7 +82,7 @@ class _UpcommingRepaymentsState extends State<UpcommingRepayments> {
                 child: Padding(
                   padding: const EdgeInsets.only(right: 10.0),
                   child: Text(
-                    "NGN ${data.amount}",
+                    "₦ ${formatNumberValue(data.amount)}",
                     style: Repayments3,
                   ),
                 ),

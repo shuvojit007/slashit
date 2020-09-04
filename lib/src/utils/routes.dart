@@ -7,6 +7,7 @@ import 'package:slashit/src/view/business/request_money.dart';
 import 'package:slashit/src/view/business/requestsList.dart';
 import 'package:slashit/src/view/common/bankTransfer.dart';
 import 'package:slashit/src/view/common/requestDetails.dart';
+import 'package:slashit/src/view/common/resetPassword.dart';
 import 'package:slashit/src/view/common/transactions.dart';
 import 'package:slashit/src/view/home.dart';
 import 'package:slashit/src/view/shopper/addMoney.dart';
@@ -23,6 +24,7 @@ class Routes {
   static const HOME = Home.routeName;
   static const DEBITCARDS = DebitCards.routeName;
   static const TRANSACTIONS = Transactions.routeName;
+  static const RESETPASS = ResetPassword.routeName;
   static const root = Splash.routeName;
   static const PAYSTACK = PayStackWidget.routeName;
   static const FEATURES = FeaturesList.routeName;
@@ -43,6 +45,7 @@ class Routes {
     Routes.HOME: (context) => Home(),
     Routes.root: (context) => Splash(),
     Routes.REQUESTDETAILS: (context) => RequestDetails(),
+    Routes.RESETPASS: (context) => ResetPassword(),
     Routes.TRANSACTIONS: (context) => Transactions(),
     Routes.BARCODE: (context) => BarCodeScanning(),
     Routes.REQUESTS: (context) => Requests(),
@@ -51,7 +54,7 @@ class Routes {
     Routes.TRANSACTIONDETAILS: (context) => OrderInfo(),
     Routes.LOGINSHOPPER: (context) => LoginShopper(),
     Routes.DEBITCARDS: (context) => DebitCards(),
-    Routes.FEATURES: (context) => FeaturesList(),
+    // Routes.FEATURES: (context) => FeaturesList(),
     Routes.WALLET: (context) => WalletScreen(),
     Routes.PAYSTACK: (context) => PayStackWidget(),
     Routes.LOGINBUSINESS: (context) => LoginBusiness(),

@@ -1,21 +1,29 @@
+import 'dart:async';
+import 'dart:collection';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:slashit/src/blocs/features.dart';
 import 'package:slashit/src/blocs/wallet/wallet_bloc.dart';
 import 'package:slashit/src/blocs/wallet/wallet_bloc_event.dart';
 import 'package:slashit/src/blocs/wallet/wallet_bloc_state.dart';
 import 'package:slashit/src/di/locator.dart';
+import 'package:slashit/src/graphql/client.dart';
+import 'package:slashit/src/graphql/graph_api.dart';
 import 'package:slashit/src/models/features_model.dart';
 import 'package:slashit/src/resources/assets.dart';
+import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/str.dart';
 import 'package:slashit/src/resources/text_styles.dart';
 import 'package:slashit/src/utils/homeExtra.dart';
 import 'package:slashit/src/utils/innerDrawer.dart';
+import 'package:slashit/src/utils/number.dart';
 import 'package:slashit/src/utils/prefmanager.dart';
 import 'package:slashit/src/utils/url.dart';
 import 'package:slashit/src/utils/userData.dart';
@@ -24,8 +32,10 @@ import 'package:slashit/src/view/common/bankTransfer.dart';
 import 'package:slashit/src/view/common/transactions.dart';
 import 'package:slashit/src/view/shopper/debitCards.dart';
 import 'package:slashit/src/view/shopper/repayment.dart';
+import 'package:slashit/src/view/shopper/shopperScan.dart';
 import 'package:slashit/src/view/shopper/shopper_requests.dart';
 import 'package:slashit/src/view/shopper/wallet.dart';
+import 'package:slashit/src/widget/dialog/acceptPaymentReq.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'featuresList.dart';
@@ -42,19 +52,49 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
   final GlobalKey<InnerDrawerState> _innerDrawerKey =
       GlobalKey<InnerDrawerState>();
   FeaturesBloc _bloc;
+  StreamSubscription _pyamentStream;
 
   @override
   void initState() {
     BlocProvider.of<WalletBloc>(context).add(GetWallet());
     _bloc = FeaturesBloc();
     _bloc.featchAllFeatures();
-
+    stream();
     super.initState();
+  }
+
+  stream() {
+    _pyamentStream = GraphQLConfiguration()
+        .clientToQuery()
+        .subscribe(Operation(
+            documentNode: gql(
+          GraphApi.instance.paymentSubscription(locator<PrefManager>().userID),
+        )))
+        .listen(
+      (event) {
+        LinkedHashMap value = event.data;
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) => AcceptPaymentRequest(
+            createdAt: value["NewPaymentReq"]["createdAt"],
+            title: value["NewPaymentReq"]["title"],
+            amount: value["NewPaymentReq"]["amount"],
+            orderId: value["NewPaymentReq"]["orderId"],
+          ),
+        );
+      },
+      onError: (err) {
+        print("subscription err ${err.toString()}");
+      },
+      onDone: () {},
+    );
   }
 
   @override
   void dispose() {
-    _bloc.dispose();
+    _bloc?.dispose();
+    _pyamentStream?.cancel();
     super.dispose();
   }
 
@@ -63,10 +103,10 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
     return InnerDrawer(
       key: _innerDrawerKey,
       onTapClose: true,
-      swipe: false,
+      swipe: true,
       colorTransitionChild: Colors.black54,
       colorTransitionScaffold: Colors.transparent,
-      offset: IDOffset.horizontal(-0.1),
+      offset: IDOffset.horizontal(0.0),
       rightAnimationType: InnerDrawerAnimation.quadratic,
       rightChild: Container(
         color: Colors.white,
@@ -79,14 +119,18 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
             for (Option option in shopper) ...[
               _menuWidget(option),
               SizedBox(
-                height: 10,
+                height: 20,
               ),
             ]
           ],
         ),
       ),
       scaffold: Scaffold(
-          backgroundColor: Colors.white, key: scaffoldKey, body: _body()),
+        backgroundColor: Colors.white,
+        key: scaffoldKey,
+        body: _body(),
+        appBar: _header(),
+      ),
     );
   }
 
@@ -94,7 +138,7 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
-          _header(),
+          // _header(),
           SizedBox(
             height: 20,
           ),
@@ -102,7 +146,7 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
             height: 35,
             margin: EdgeInsets.only(left: 5, right: 5),
             decoration: BoxDecoration(
-                color: Colors.blue,
+                color: PrimaryColor,
                 borderRadius: BorderRadius.all(Radius.circular(10))),
             child: Center(
               child: Text(
@@ -116,7 +160,7 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
           ),
           Center(
             child: Text(
-              "NGN ${locator<PrefManager>().spendLimit}",
+              "₦ ${formatNumberValue(locator<PrefManager>().spendLimit)}",
               style: shopperText2,
             ),
           ),
@@ -134,9 +178,9 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
             onPressed: () =>
                 Navigator.pushNamed(context, UpcommingRepayments.routeName),
             shape: StadiumBorder(),
-            color: Colors.blue,
+            color: PrimaryColor,
             child: Text(
-              "     Upcoming Repayments     ",
+              "     See Upcoming Repayments     ",
               style: shopperText3,
             ),
           ),
@@ -145,14 +189,13 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
           ),
           Container(
             width: 300,
-            height: 50,
+            height: 55,
             child: Text(
               Str.barcode,
               style: barcodeText,
             ),
           ),
           QrImage(
-            embeddedImage: AssetImage("assets/images/slashit.jpeg"),
             constrainErrorBounds: true,
             data:
                 "{\"type\":\"installment\",\"id\" :\"${locator<PrefManager>().userID}\"}",
@@ -160,12 +203,21 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
             size: 200.0,
             gapless: false,
           ),
+
+          GestureDetector(
+            onTap: _goToShopperScan,
+            child: Icon(
+              FontAwesomeIcons.camera,
+              color: Colors.grey,
+              size: 30,
+            ),
+          ),
           SizedBox(
             height: 10,
           ),
           _wallet(),
           SizedBox(
-            height: 20,
+            height: 50,
           ),
           Container(
             margin: EdgeInsets.only(left: 10, right: 5),
@@ -178,6 +230,7 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
             ),
           ),
           _features(),
+          //   _paymentSubscription()
         ],
       ),
     );
@@ -197,7 +250,7 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    "Wallet",
+                    "Slash direct",
                     style: shopperText4,
                   ),
                   SizedBox(
@@ -208,20 +261,16 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
                       builder: (BuildContext ctx, WalletBlocState state) {
                         if (state is WalletBlocLoaded) {
                           return Text(
-                            "Available Balance | NGN ${locator<PrefManager>().availableBalance}",
+                            "Available Balance | ₦ ${formatNumberValue(locator<PrefManager>().availableBalance)}",
                             style: WalletPrice,
                           );
                         } else {
                           return Text(
-                            "Available Balance | NGN 0",
+                            "Available Balance | ₦ 0",
                             style: WalletPrice,
                           );
                         }
                       }),
-//                  Text(
-//                    "Available Balance | NGN ${locator<PrefManager>().availableBalance}",
-//                    style: WalletPrice,
-//                  )
                 ],
               ),
             ),
@@ -240,8 +289,8 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
                   child: Container(
                     child: Icon(
                       Icons.arrow_forward,
-                      color: Colors.blue,
-                      size: 40,
+                      color: PrimaryColor,
+                      size: 30,
                     ),
                   ),
                 ),
@@ -254,62 +303,34 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
   }
 
   _header() {
-    return Card(
-      margin: EdgeInsets.all(0),
-      child: Container(
-        height: 85,
-        color: Colors.white,
-        width: double.infinity,
-        child: Stack(
-          children: <Widget>[
-//          ProfileImage(
-//            photo: locator<PrefManager>().avatar,
-//          ),
-            Container(
-              margin: EdgeInsets.only(top: 45, left: 20),
-              child: Text(
-                "Shopper, ${locator<PrefManager>().name}",
-                style: userTitle,
+    return PreferredSize(
+      preferredSize: Size.fromHeight(85),
+      child: Card(
+        margin: EdgeInsets.all(0),
+        child: Container(
+          height: 85,
+          color: Colors.white,
+          width: double.infinity,
+          child: Stack(
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.only(top: 45, left: 20),
+                child: Text(
+                  "${locator<PrefManager>().name}",
+                  style: userTitle,
+                ),
               ),
-            ),
-//          if (count != 0) ...[
-//            counterWidget()
-//          ] else ...[
-//            zerocounterWidget(),
-//          ],
-            Positioned(
-                right: 10,
-                top: 45,
-                child: GestureDetector(
-                  onTap: () {
-                    _innerDrawerKey.currentState.open();
-                  },
-                  child: Icon(Icons.menu),
-                )
-
-//              PopupMenuButton<Option>(
-//                onSelected: _appbarOption,
-//                itemBuilder: (BuildContext context) {
-//                  print("shopper  ${shopper.length}");
-//                  return shopper.map((Option option) {
-//                    return PopupMenuItem<Option>(
-//                        value: option, child: Text(option.title)
-//
-////                    Row(
-////                      mainAxisSize: MainAxisSize.min,
-////                      crossAxisAlignment: CrossAxisAlignment.center,
-////                      children: <Widget>[
-////                        Icon(option.icon, size: 20.0, color: PrimrayColor),
-////                        SizedBox(width: 10),
-////                        Text(option.title),
-////                      ],
-////                    ),
-//                        );
-//                  }).toList();
-//                },
-//              ),
-                )
-          ],
+              Positioned(
+                  right: 10,
+                  top: 45,
+                  child: GestureDetector(
+                    onTap: () {
+                      _innerDrawerKey.currentState.open();
+                    },
+                    child: Icon(Icons.menu),
+                  ))
+            ],
+          ),
         ),
       ),
     );
@@ -322,7 +343,7 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Icon(option.icon, size: 15.0, color: Colors.black),
+          Icon(option.icon, size: 25.0, color: PrimaryColor),
           SizedBox(width: 10),
           Text(
             option.title,
@@ -360,15 +381,13 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
         itemBuilder: (BuildContext ctx, int index) {
           if (index > 4) {
             return GestureDetector(
-              onTap: () => Navigator.pushNamed(
-                context,
-                FeaturesList.routeName,
-              ),
+              onTap: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => FeaturesList(0))),
               child: Container(
                 child: Icon(
-                  FontAwesomeIcons.chevronCircleRight,
-                  color: Colors.blue,
-                  size: 50,
+                  Icons.arrow_forward,
+                  color: PrimaryColor,
+                  size: 30,
                 ),
               ),
             );
@@ -434,31 +453,8 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
     }
   }
 
-//  counterWidget() {
-//    return Positioned(
-//      right: 50,
-//      bottom: 25,
-//      child: GestureDetector(
-//        onTap: () => Navigator.pushNamed(context, ShopperRequests.routeName),
-//        child: Badge(
-//          badgeContent: Text("${count}"),
-//          child: Icon(
-//            FontAwesomeIcons.bell,
-//            color: Colors.white,
-//          ),
-//        ),
-//      ),
-//    );
-//  }
-//
-//  zerocounterWidget() {
-//    return Positioned(
-//      right: 50,
-//      bottom: 25,
-//      child: GestureDetector(
-//        onTap: () => Navigator.pushNamed(context, ShopperRequests.routeName),
-//        child: Icon(FontAwesomeIcons.bell, color: Colors.white),
-//      ),
-//    );
-//  }
+  _goToShopperScan() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => ShopperScan(index: 1,)));
+  }
 }

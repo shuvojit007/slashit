@@ -1,12 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:slashit/src/blocs/cards.dart';
 import 'package:slashit/src/di/locator.dart';
 import 'package:slashit/src/models/cards.dart';
 import 'package:slashit/src/repository/user_repository.dart';
+import 'package:slashit/src/resources/str.dart';
 import 'package:slashit/src/resources/text_styles.dart';
 import 'package:slashit/src/utils/prefmanager.dart';
 import 'package:slashit/src/widget/dialog/removecard.dart';
@@ -65,13 +67,24 @@ class _DebitCardsState extends State<DebitCards> {
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Container(
-                    margin: EdgeInsets.only(right: 20, bottom: 20),
+                    margin: EdgeInsets.only(right: 20, bottom: 50),
                     child: Visibility(
                       visible: snapshot.data.length < 4 ? true : false,
                       child: FloatingActionButton(
                         onPressed: () => _handleCheckout(context),
                         child: Icon(Icons.add),
                       ),
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    margin: EdgeInsets.only(right: 30, bottom: 20, left: 30),
+                    child: Text(
+                      Str.cardText,
+                      textAlign: TextAlign.justify,
+                      style: cardText,
                     ),
                   ),
                 )
@@ -238,14 +251,9 @@ class _DebitCardsState extends State<DebitCards> {
         logo: Container(
           width: 50.0,
           height: 50.0,
-          decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              color: Colors.blue,
-              borderRadius: BorderRadius.all(Radius.circular(10))),
           child: Center(
-            child: Text(
-              "Slashit",
-              style: splashText1,
+            child: Image.asset(
+              "assets/images/slashit.jpeg",
             ),
           ),
         ),

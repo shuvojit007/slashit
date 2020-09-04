@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:progress_dialog/progress_dialog.dart';
+import 'package:share/share.dart';
 import 'package:slashit/src/models/paymentReq.dart';
 import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/text_styles.dart';
+import 'package:slashit/src/utils/showToast.dart';
+import 'package:slashit/src/utils/timeformat.dart';
 
 class RequestDetails extends StatefulWidget {
   static const routeName = "/requestDetails";
@@ -14,6 +18,14 @@ class RequestDetails extends StatefulWidget {
 }
 
 class _RequestDetailsState extends State<RequestDetails> {
+  ProgressDialog _pr;
+
+  @override
+  void initState() {
+    _pr = ProgressDialog(context, type: ProgressDialogType.Normal);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,6 +34,21 @@ class _RequestDetailsState extends State<RequestDetails> {
         title: Text("Requests", style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.black),
+        actions: <Widget>[
+          if (widget.data.status == "PENDING") ...[
+            Padding(
+              padding: const EdgeInsets.only(right: 20),
+              child: GestureDetector(
+                onTap: _shareLink,
+                child: Icon(
+                  Icons.share,
+                  size: 25,
+                  color: Colors.black54,
+                ),
+              ),
+            )
+          ]
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -39,14 +66,14 @@ class _RequestDetailsState extends State<RequestDetails> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    "NGN ${widget.data.amount}",
+                    "₦ ${widget.data.amount}",
                     style: RequestDetials1,
                   ),
                   SizedBox(
                     height: 5,
                   ),
                   Text(
-                    "Created ${widget.data.createdAt}",
+                    "Created ${getTime(widget.data.createdAt)}",
                     style: RequestDetials2,
                   ),
                   SizedBox(
@@ -95,7 +122,7 @@ class _RequestDetailsState extends State<RequestDetails> {
                     height: 10,
                   ),
                   Text(
-                    "Amount : NGN 500,00.00",
+                    "Amount : ₦ ${widget.data.amount}",
                     style: RequestDetials4,
                   ),
                   SizedBox(
@@ -133,6 +160,17 @@ class _RequestDetailsState extends State<RequestDetails> {
         return "Payment was denied";
       default:
         return "Payment is ${status.toLowerCase()}";
+    }
+  }
+
+  _shareLink() async {
+    if (widget.data.orderId != null) {
+      String link =
+          "https://ez-pm.herokuapp.com/request-order/${widget.data.orderId}";
+
+      await Share.share(link);
+    } else {
+      showToastMsg("No order id found");
     }
   }
 }

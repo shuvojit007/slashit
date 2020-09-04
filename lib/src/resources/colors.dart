@@ -1,8 +1,12 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+const Color PrimaryColor = Color(0xFF9c27b0);
+const Color AccentColor = Color(0xFFbc6eca);
+//const Color PrimrayColor = Color(0xff5a34f0);
+
 const Color blueColor = Colors.blue;
-const Color PrimrayColor = Color(0xff5a34f0);
+
 const Color primaryTextColor = Color(0xff5a34f0);
 const Color slideDescriptionColor = Color(0xff616161);
 const Color slideTitleColor = Color(0xff301B7C);

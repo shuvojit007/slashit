@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:number_display/number_display.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:slashit/src/blocs/transactions.dart';
 import 'package:slashit/src/di/locator.dart';
 import 'package:slashit/src/models/transaction.dart';
@@ -6,6 +8,7 @@ import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/text_styles.dart';
 import 'package:slashit/src/utils/homeExtra.dart';
 import 'package:slashit/src/utils/innerDrawer.dart';
+import 'package:slashit/src/utils/number.dart';
 import 'package:slashit/src/utils/prefmanager.dart';
 import 'package:slashit/src/utils/timeformat.dart';
 import 'package:slashit/src/utils/userData.dart';
@@ -25,6 +28,11 @@ class _BusinessState extends State<Business> {
   TransactionsBloc _bloc;
   final GlobalKey<InnerDrawerState> _innerDrawerKey =
       GlobalKey<InnerDrawerState>();
+  final display = createDisplay(
+    length: 20,
+    decimal: 0,
+  );
+
   @override
   void initState() {
     _bloc = TransactionsBloc();
@@ -44,7 +52,7 @@ class _BusinessState extends State<Business> {
     return InnerDrawer(
       key: _innerDrawerKey,
       onTapClose: true,
-      swipe: false,
+      swipe: true,
       colorTransitionChild: Colors.black54,
       colorTransitionScaffold: Colors.transparent,
       offset: IDOffset.horizontal(0.0),
@@ -60,61 +68,61 @@ class _BusinessState extends State<Business> {
             for (Option option in business) ...[
               _menuWidget(option),
               SizedBox(
-                height: 10,
+                height: 20,
               ),
             ]
           ],
         ),
       ),
       scaffold: Scaffold(
-        backgroundColor: Colors.white,
-        body: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              _header(),
-              SizedBox(
-                height: 20,
-              ),
-              _body(),
-              SizedBox(
-                height: 20,
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 15, right: 5, bottom: 5),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Recents,",
-                    style: shopperText4,
+          backgroundColor: Colors.white,
+          appBar: _header(),
+          body: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                SizedBox(
+                  height: 20,
+                ),
+                _body(),
+                SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  margin: EdgeInsets.only(left: 15, right: 5, bottom: 5),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Recents,",
+                      style: shopperText4,
+                    ),
                   ),
                 ),
-              ),
-              _recentPayments(),
-            ],
-          ),
-        ),
-      ),
+                _recentPayments(),
+              ],
+            ),
+          )),
     );
   }
 
   _header() {
-    return Card(
-      margin: EdgeInsets.all(0),
-      child: Container(
-        height: 85,
-        color: Colors.white,
-        width: double.infinity,
-        child: Stack(
-          children: <Widget>[
-//          ProfileImage( photo: locator<PrefManager>().avatar,),
-            Container(
-              margin: EdgeInsets.only(top: 45, left: 20),
-              child: Text(
-                "Business, ${locator<PrefManager>().name}",
-                style: userTitle,
+    return PreferredSize(
+      preferredSize: Size.fromHeight(85),
+      child: Card(
+        margin: EdgeInsets.all(0),
+        child: Container(
+          height: 85,
+          color: Colors.white,
+          width: double.infinity,
+          child: Stack(
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.only(top: 45, left: 20),
+                child: Text(
+                  "${locator<PrefManager>().name}",
+                  style: userTitle,
+                ),
               ),
-            ),
-            Positioned(
+              Positioned(
                 right: 10,
                 top: 45,
                 child: GestureDetector(
@@ -122,29 +130,10 @@ class _BusinessState extends State<Business> {
                     _innerDrawerKey.currentState.open();
                   },
                   child: Icon(Icons.menu),
-                )
-//            PopupMenuButton<Option>(
-//              onSelected: _appbarOption,
-//              color: Colors.white,
-//              itemBuilder: (BuildContext context) {
-//                return business.map((Option option) {
-//                  return PopupMenuItem<Option>(
-//                    value: option,
-//                    child: Row(
-//                      mainAxisSize: MainAxisSize.min,
-//                      crossAxisAlignment: CrossAxisAlignment.center,
-//                      children: <Widget>[
-//                        Icon(option.icon, size: 20.0, color: PrimrayColor),
-//                        SizedBox(width: 10),
-//                        Text(option.title),
-//                      ],
-//                    ),
-//                  );
-//                }).toList();
-//              },
-//            ),
-                )
-          ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -153,11 +142,7 @@ class _BusinessState extends State<Business> {
   _body() {
     return Container(
       width: double.infinity,
-      height: 280,
       margin: EdgeInsets.only(left: 15, right: 15),
-//      decoration: BoxDecoration(
-//          border: Border.all(color: Colors.black87),
-//          borderRadius: BorderRadius.all(Radius.circular(10))),
       child: Column(
         children: <Widget>[
           Container(
@@ -165,7 +150,7 @@ class _BusinessState extends State<Business> {
             height: 35,
             margin: EdgeInsets.only(left: 10, top: 10, right: 10),
             decoration: BoxDecoration(
-                color: Colors.blue,
+                color: PrimaryColor,
                 borderRadius: BorderRadius.all(Radius.circular(10))),
             child: Center(
               child: Text(
@@ -175,11 +160,11 @@ class _BusinessState extends State<Business> {
             ),
           ),
           SizedBox(
-            height: 40,
+            height: 30,
           ),
           Center(
             child: Text(
-              "NGN ${locator<PrefManager>().availableBalance}",
+              "₦ ${formatNumberValue(locator<PrefManager>().availableBalance)}",
               style: shopperText2,
             ),
           ),
@@ -199,14 +184,22 @@ class _BusinessState extends State<Business> {
             ),
             child: Divider(color: Colors.black26),
           ),
+          QrImage(
+            constrainErrorBounds: true,
+            data:
+                "{\"type\":\"business\",\"id\" :\"${locator<PrefManager>().uniqueId}\"}",
+            version: QrVersions.auto,
+            size: 250.0,
+            gapless: false,
+          ),
           SizedBox(
-            height: 20,
+            height: 5,
           ),
           RaisedButton(
             onPressed: () =>
                 Navigator.pushNamed(context, RequestMoney.routeName),
             shape: StadiumBorder(),
-            color: Colors.blue,
+            color: PrimaryColor,
             child: Text(
               "     Request Money     ",
               style: shopperText3,
@@ -219,54 +212,56 @@ class _BusinessState extends State<Business> {
 
   _recentPayments() {
     return Container(
-        height: 260,
-        margin: EdgeInsets.only(left: 15, right: 15),
-        decoration: BoxDecoration(border: Border.all(color: Colors.black87)),
-        child: Column(
-          children: <Widget>[
-            MediaQuery.removePadding(
-              context: context,
-              removeTop: true,
-              child: Container(
-                height: 220,
-                child: StreamBuilder(
-                  stream: _bloc.allTransaction,
-                  builder: (context, AsyncSnapshot<List<Result>> snapshot) {
-                    if (snapshot.hasData && snapshot.data.length > 0) {
-                      return ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          itemCount: snapshot.data.length,
-                          itemBuilder: (BuildContext ctx, int index) {
-                            return _data(snapshot.data[index]);
-                          });
-                    } else if (snapshot.hasData) {
-                      return Center(child: Text("No recent transaction"));
-                    } else if (snapshot.hasError) {
-                      return Text(snapshot.error.toString());
-                    }
-                    return Center(child: CircularProgressIndicator());
-                  },
-                ),
-              ),
-            ),
-            GestureDetector(
-              onTap: () => Navigator.pushNamed(
-                context,
-                Transactions.routeName,
-              ),
-              child: Container(
-                margin: EdgeInsets.only(right: 15, top: 5),
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    "View All",
-                    style: shopperText5,
+      height: 260,
+      margin: EdgeInsets.only(left: 15, right: 15),
+      child: StreamBuilder(
+        stream: _bloc.allTransaction,
+        builder: (context, AsyncSnapshot<List<Result>> snapshot) {
+          if (snapshot.hasData && snapshot.data.length > 0) {
+            return Column(
+              children: <Widget>[
+                MediaQuery.removePadding(
+                  context: context,
+                  removeTop: true,
+                  child: Container(
+                    height: 220,
+                    child: ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (BuildContext ctx, int index) {
+                          return _data(snapshot.data[index]);
+                        }),
                   ),
                 ),
-              ),
-            ),
-          ],
-        ));
+                if (snapshot.data.length > 6) ...[
+                  GestureDetector(
+                    onTap: () => Navigator.pushNamed(
+                      context,
+                      Transactions.routeName,
+                    ),
+                    child: Container(
+                      margin: EdgeInsets.only(right: 15, top: 5),
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          "View All",
+                          style: shopperText5,
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ],
+            );
+          } else if (snapshot.hasData) {
+            return Center(child: Text("No recent transaction"));
+          } else if (snapshot.hasError) {
+            return Text(snapshot.error.toString());
+          }
+          return Center(child: CircularProgressIndicator());
+        },
+      ),
+    );
   }
 
   _data(Result data) {
@@ -281,12 +276,12 @@ class _BusinessState extends State<Business> {
             Expanded(
               flex: 1,
               child: Text(
-                "${getTime(data.createdAt)}",
+                "${getShortTime(data.createdAt)}",
                 style: businessText2,
               ),
             ),
             Expanded(
-              flex: 2,
+              flex: 1,
               child: Text(
                 "${data.order.title}",
                 maxLines: 1,
@@ -297,7 +292,7 @@ class _BusinessState extends State<Business> {
             Expanded(
               flex: 1,
               child: Text(
-                "NGN ${data.order.amount}",
+                "₦ ${formatNumberValue(data.order.amount)}",
                 style: businessText2,
               ),
             )
@@ -314,7 +309,7 @@ class _BusinessState extends State<Business> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Icon(option.icon, size: 15.0, color: Colors.black),
+          Icon(option.icon, size: 25.0, color: PrimaryColor),
           SizedBox(width: 10),
           Text(
             option.title,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:slashit/src/blocs/paymentReq.dart';
 import 'package:slashit/src/models/paymentReq.dart';
 import 'package:slashit/src/resources/text_styles.dart';
@@ -14,10 +15,13 @@ class Requests extends StatefulWidget {
 class _RequestsState extends State<Requests> {
   PaymentReqBloc _bloc;
 
+  ProgressDialog _pr;
+
   @override
   void initState() {
     _bloc = PaymentReqBloc();
     _bloc.fetchAllPaymentReq();
+    _pr = ProgressDialog(context, type: ProgressDialogType.Normal);
     super.initState();
   }
 
@@ -78,7 +82,7 @@ class _RequestsState extends State<Requests> {
                       height: 10,
                     ),
                     Text(
-                      "NGN ${data.amount}",
+                      "₦ ${data.amount}",
                       style: TransactionsList2,
                     )
                   ],

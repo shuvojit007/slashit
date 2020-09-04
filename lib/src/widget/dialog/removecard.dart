@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:slashit/src/resources/colors.dart';
 
 class RemoveCard extends StatefulWidget {
   Function pushData;
@@ -43,7 +44,7 @@ class _RemoveCardState extends State<RemoveCard> {
                   FlatButton(
                     textColor: Colors.white,
                     shape: StadiumBorder(),
-                    color: Colors.blue,
+                    color: PrimaryColor,
                     onPressed: () => Navigator.pop(context),
                     child: Text("NOT NOW"),
                   ),
@@ -51,7 +52,7 @@ class _RemoveCardState extends State<RemoveCard> {
                   RaisedButton(
                     textColor: Colors.white,
                     shape: StadiumBorder(),
-                    color: Colors.blue,
+                    color: PrimaryColor,
                     onPressed: () =>
                         {Navigator.pop(context), widget.pushData(widget.id)},
                     child: Text("REMOVE CARD"),

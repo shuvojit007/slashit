@@ -37,7 +37,7 @@ class _RequestMoneyState extends State<RequestMoney> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Create Payments", style: TextStyle(color: Colors.black)),
+        title: Text("Create Payments", style: userTitle),
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.black),
       ),
@@ -74,7 +74,7 @@ class _RequestMoneyState extends State<RequestMoney> {
               decoration: InputDecoration(
                 labelText: "Amount",
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: PrimrayColor, width: 1.0),
+                  borderSide: BorderSide(color: PrimaryColor, width: 1.0),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.black, width: 1.0),
@@ -97,8 +97,8 @@ class _RequestMoneyState extends State<RequestMoney> {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    "Add Attachment",
-                    style: TextStyle(color: Colors.blue, fontSize: 17),
+                    "Add photo",
+                    style: TextStyle(color: PrimaryColor, fontSize: 17),
                   ),
                 ),
               ),
@@ -160,7 +160,7 @@ class _RequestMoneyState extends State<RequestMoney> {
         decoration: InputDecoration(
           labelText: name,
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: PrimrayColor, width: 1.0),
+            borderSide: BorderSide(color: PrimaryColor, width: 1.0),
           ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.black, width: 1.0),
@@ -175,7 +175,7 @@ class _RequestMoneyState extends State<RequestMoney> {
     return RaisedButton(
         onPressed: () => _createPaymentReq(),
         child: Text('  Create  ', style: SignInStyle),
-        color: Colors.blue,
+        color: PrimaryColor,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)));
   }

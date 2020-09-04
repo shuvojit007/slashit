@@ -7,6 +7,7 @@ import 'package:progress_dialog/progress_dialog.dart';
 import 'package:slashit/src/blocs/wallet/wallet_bloc.dart';
 import 'package:slashit/src/blocs/wallet/wallet_bloc_event.dart';
 import 'package:slashit/src/repository/user_repository.dart';
+import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/text_styles.dart';
 import 'package:slashit/src/utils/showToast.dart';
 import 'package:slashit/src/view/shopper/shopper.dart' as SHOPPER;
@@ -70,7 +71,7 @@ class _AddMoneyState extends State<AddMoney> {
               ),
               RaisedButton(
                 onPressed: addMoney,
-                color: Colors.blue,
+                color: PrimaryColor,
                 shape: StadiumBorder(),
                 child: Text(
                   "Add Money",

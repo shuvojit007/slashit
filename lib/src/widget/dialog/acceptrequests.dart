@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:slashit/src/resources/colors.dart';
 
 class AcceptRequest extends StatefulWidget {
   Function pushData;
@@ -44,7 +45,7 @@ class _AcceptRequestState extends State<AcceptRequest> {
                   FlatButton(
                     textColor: Colors.white,
                     shape: StadiumBorder(),
-                    color: Colors.blue,
+                    color: PrimaryColor,
                     onPressed: () => Navigator.pop(context),
                     child: Text("NOT NOW"),
                   ),
@@ -52,7 +53,7 @@ class _AcceptRequestState extends State<AcceptRequest> {
                   RaisedButton(
                     textColor: Colors.white,
                     shape: StadiumBorder(),
-                    color: Colors.blue,
+                    color: PrimaryColor,
                     onPressed: () =>
                         {Navigator.pop(context), widget.pushData(widget.id)},
                     child: Text("ACCEPT"),

@@ -7,8 +7,8 @@ import 'package:slashit/src/utils/showToast.dart';
 import 'package:slashit/src/utils/validators.dart';
 import 'package:slashit/src/view/auth/login_business.dart';
 import 'package:slashit/src/view/auth/register_user.dart';
+import 'package:slashit/src/view/common/resetPassword.dart';
 import 'package:slashit/src/view/home.dart';
-import 'package:slashit/src/widget/dialog/resetPass.dart';
 
 class LoginShopper extends StatefulWidget {
   static const routeName = "/login_shopper";
@@ -56,7 +56,8 @@ class _LoginShopperState extends State<LoginShopper> {
             _userPass(),
             SizedBox(height: 24),
             GestureDetector(
-              onTap: _passwordReset,
+              onTap: () =>
+                  Navigator.pushNamed(context, ResetPassword.routeName),
               child: Padding(
                   padding: EdgeInsets.only(left: 20),
                   child: Text("Forget Password ?", style: forgotPass)),
@@ -102,7 +103,7 @@ class _LoginShopperState extends State<LoginShopper> {
         decoration: InputDecoration(
           labelText: "Email",
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: PrimrayColor, width: 1.0),
+            borderSide: BorderSide(color: PrimaryColor, width: 1.0),
           ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.black, width: 1.0),
@@ -126,7 +127,7 @@ class _LoginShopperState extends State<LoginShopper> {
         decoration: InputDecoration(
           labelText: "Password",
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: PrimrayColor, width: 1.0),
+            borderSide: BorderSide(color: PrimaryColor, width: 1.0),
           ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.black, width: 1.0),
@@ -135,7 +136,7 @@ class _LoginShopperState extends State<LoginShopper> {
           suffixIcon: IconButton(
               icon: Icon(
                 _showPassword ? Icons.remove_red_eye : Icons.visibility_off,
-                color: _showPassword ? Colors.blue : Colors.grey,
+                color: _showPassword ? PrimaryColor : Colors.grey,
               ),
               onPressed: () {
                 setState(() => _showPassword = !_showPassword);
@@ -154,7 +155,7 @@ class _LoginShopperState extends State<LoginShopper> {
       child: RaisedButton(
           onPressed: handleInput,
           child: Text('Sign In', style: SignInStyle),
-          color: PrimrayColor,
+          color: PrimaryColor,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20.0))),
     ));
@@ -177,8 +178,8 @@ class _LoginShopperState extends State<LoginShopper> {
     }
   }
 
-  _passwordReset() {
-    showDialog(
-        context: context, builder: (BuildContext context) => ResetPassword());
-  }
+//  _passwordReset() {
+//    showDialog(
+//        context: context, builder: (BuildContext context) => ResetPassword());
+//  }
 }

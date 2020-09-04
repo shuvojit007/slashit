@@ -15,6 +15,11 @@ storeUser(data) {
     print("_id ${user['_id']}");
   }
 
+  if (user["uniqueId"] != null) {
+    locator<PrefManager>().uniqueId = user['uniqueId'];
+    print("uniqueId ${user['uniqueId']}");
+  }
+
   if (user["role"] != null) {
     locator<PrefManager>().role = user['role'];
 
@@ -24,6 +29,7 @@ storeUser(data) {
         locator<PrefManager>().availableBalance = shopper["availableBalance"];
       }
       if (shopper["spendLimit"] != null) {
+        int speend = shopper["spendLimit"];
         locator<PrefManager>().spendLimit = shopper["spendLimit"];
       }
     } else {
@@ -47,7 +53,9 @@ storeUser(data) {
   print("token ${data['token']}");
 
   locator<PrefManager>().token = token;
-  GraphQLConfiguration.setToken(token);
+  GraphQLConfiguration.setToken(
+    token,
+  );
 }
 
 updateUser(data) {

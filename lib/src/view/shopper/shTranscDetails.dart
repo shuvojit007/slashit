@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:slashit/src/models/upcommingPayments.dart';
 import 'package:slashit/src/resources/text_styles.dart';
+import 'package:slashit/src/utils/number.dart';
 import 'package:slashit/src/utils/timeformat.dart';
 import 'package:slashit/src/utils/transactionStatus.dart';
 
@@ -25,8 +26,7 @@ class _ShopperTranscDetailsState extends State<ShopperTranscDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:
-            Text("Transaction Details", style: TextStyle(color: Colors.black)),
+        title: Text("Transaction Details", style: userTitle),
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.black),
       ),
@@ -102,13 +102,10 @@ class _ShopperTranscDetailsState extends State<ShopperTranscDetails> {
                       width: 150,
                       decoration: BoxDecoration(
                           shape: BoxShape.rectangle,
-                          color: Color(0xFFDEFFDF),
+                          color: _statusColor(),
                           borderRadius: BorderRadius.all(Radius.circular(5))),
                       child: Center(
-                        child: Text(
-                          "  ${getTransactionStatus(widget.transaction.status)}  ",
-                          style: TransactionDetials3,
-                        ),
+                        child: _statusView(),
                       ),
                     ),
                   ),
@@ -143,7 +140,7 @@ class _ShopperTranscDetailsState extends State<ShopperTranscDetails> {
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: Text(
-                      "${widget.result.business.business.businessName}W",
+                      "${widget.result.business.business.businessName}",
                       style: TransactionDetials2,
                     ),
                   ),
@@ -213,7 +210,7 @@ class _ShopperTranscDetailsState extends State<ShopperTranscDetails> {
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: Text(
-                      "${widget.transaction.amount} ",
+                      "₦ ${formatNumberValue(widget.transaction.amount)} ",
                       style: TransactionDetials2,
                     ),
                   ),
@@ -280,6 +277,37 @@ class _ShopperTranscDetailsState extends State<ShopperTranscDetails> {
         break;
       default:
         return "";
+    }
+  }
+
+  Widget _statusView() {
+    String sts = getTransactionStatus(widget.transaction.status);
+    if (sts == "PENDING") {
+      return Text(
+        sts,
+        style: TransactionDetials5,
+      );
+    } else if (sts == "COMPLETED") {
+      return Text(
+        sts,
+        style: TransactionDetials3,
+      );
+    } else {
+      return Text(
+        sts,
+        style: TransactionDetials6,
+      );
+    }
+  }
+
+  Color _statusColor() {
+    String sts = getTransactionStatus(widget.transaction.status);
+    if (sts == "PENDING") {
+      return Color(0xFFfec174);
+    } else if (sts == "COMPLETED") {
+      return Color(0xFFDEFFDF);
+    } else {
+      return Color(0xFFf98087);
     }
   }
 }

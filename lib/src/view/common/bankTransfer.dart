@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -5,6 +7,7 @@ import 'package:progress_dialog/progress_dialog.dart';
 import 'package:slashit/src/models/bank.dart';
 import 'package:slashit/src/repository/user_repository.dart';
 import 'package:slashit/src/resources/colors.dart';
+import 'package:slashit/src/resources/text_styles.dart';
 import 'package:slashit/src/services/network_request.dart';
 import 'package:slashit/src/utils/showToast.dart';
 
@@ -18,15 +21,47 @@ class _BankTransferState extends State<BankTransfer> {
   final TextEditingController _accountNumber = TextEditingController();
   final TextEditingController _bankController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
+
   ProgressDialog _pr;
   List<Datum> list;
   bool textfieldStatus = false;
   Datum bankDetails;
+  final _debouncer = Debouncer(milliseconds: 500);
+
+  String bankCode;
+  String accountName;
+  String accNumber;
 
   @override
   void initState() {
     _networkCall();
     super.initState();
+  }
+
+  onTextChange(String text) async {
+    _debouncer.run(() async {
+      print("text $text");
+      if (_bankController.text.isNotEmpty &&
+          _accountNumber.text.isNotEmpty &&
+          _accountNumber.text.length > 8) {
+        if (accNumber != _accountNumber.text) {
+          accNumber = _accountNumber.text;
+          String code = await UserRepository.instance
+              .accountHolderName(bankDetails.code, _accountNumber.text);
+          print("code $code");
+          print("bank ${bankDetails.code}");
+          if (code != null) {
+            setState(() {
+              accountName = code;
+            });
+          } else {
+            setState(() {
+              accountName = null;
+            });
+          }
+        }
+      }
+    });
   }
 
   _networkCall() async {
@@ -59,7 +94,6 @@ class _BankTransferState extends State<BankTransfer> {
     _accountNumber?.dispose();
     _bankController?.dispose();
     _amountController?.dispose();
-
     super.dispose();
   }
 
@@ -67,18 +101,14 @@ class _BankTransferState extends State<BankTransfer> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Bank Transfer", style: TextStyle(color: Colors.black)),
+        title: Text("Bank Transfer", style: userTitle),
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.black),
       ),
       body: Column(
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.only(
-              left: 20,
-              right: 20,
-              top: 20,
-            ),
+            padding: EdgeInsets.only(left: 20, right: 20, top: 10),
             child: TypeAheadField(
               textFieldConfiguration: TextFieldConfiguration(
                 autofocus: false,
@@ -87,10 +117,10 @@ class _BankTransferState extends State<BankTransfer> {
                 decoration: InputDecoration(
                   labelText: "Bank Name ",
                   focusedBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: PrimrayColor, width: 2.0),
+                    borderSide: BorderSide(color: PrimaryColor, width: 1.0),
                   ),
                   enabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black, width: 2.0),
+                    borderSide: BorderSide(color: Colors.black, width: 1.0),
                   ),
                   // prefixIcon: Icon(Icons.account_balance),
                 ),
@@ -111,32 +141,50 @@ class _BankTransferState extends State<BankTransfer> {
               },
             ),
           ),
+          SizedBox(
+            height: 10,
+          ),
           Padding(
             padding: EdgeInsets.only(
               left: 20,
               right: 20,
-              top: 20,
             ),
             child: TextField(
+              onChanged: onTextChange,
               controller: _accountNumber,
               decoration: InputDecoration(
                 labelText: "Account Number",
                 focusedBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: PrimrayColor, width: 2.0),
+                  borderSide: BorderSide(color: PrimaryColor, width: 1.0),
                 ),
                 enabledBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.black, width: 2.0),
+                  borderSide: BorderSide(color: Colors.black, width: 1.0),
                 ),
                 //   prefixIcon: Icon(FontAwesomeIcons.moneyCheck),
               ),
               cursorColor: appbartitle,
             ),
           ),
+          if (accountName != null) ...[
+            Padding(
+              padding: EdgeInsets.only(
+                left: 20,
+                right: 20,
+                top: 5,
+              ),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Text(accountName),
+              ),
+            )
+          ],
+          SizedBox(
+            height: 10,
+          ),
           Padding(
             padding: EdgeInsets.only(
               left: 20,
               right: 20,
-              top: 20,
             ),
             child: TextField(
               keyboardType: TextInputType.number,
@@ -147,10 +195,10 @@ class _BankTransferState extends State<BankTransfer> {
               decoration: InputDecoration(
                 labelText: "Amount",
                 focusedBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: PrimrayColor, width: 2.0),
+                  borderSide: BorderSide(color: PrimaryColor, width: 1.0),
                 ),
                 enabledBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.black, width: 2.0),
+                  borderSide: BorderSide(color: Colors.black, width: 1.0),
                 ),
                 //  prefixIcon: Icon(FontAwesomeIcons.moneyBill),
               ),
@@ -163,7 +211,7 @@ class _BankTransferState extends State<BankTransfer> {
           RaisedButton(
             shape: StadiumBorder(),
             onPressed: _transferToBank,
-            color: Colors.blue,
+            color: PrimaryColor,
             child: Text(
               "Make Transfer",
               style: TextStyle(color: Colors.white),
@@ -200,5 +248,19 @@ class _BankTransferState extends State<BankTransfer> {
         _amountController.text,
         bankDetails.code);
     _pr?.hide();
+  }
+}
+
+class Debouncer {
+  final int milliseconds;
+  VoidCallback action;
+  Timer _timer;
+
+  Debouncer({this.milliseconds});
+  run(VoidCallback action) {
+    if (_timer != null) {
+      _timer.cancel();
+    }
+    _timer = Timer(Duration(milliseconds: milliseconds), action);
   }
 }

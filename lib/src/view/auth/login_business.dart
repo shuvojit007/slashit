@@ -5,7 +5,7 @@ import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/text_styles.dart';
 import 'package:slashit/src/utils/showToast.dart';
 import 'package:slashit/src/utils/validators.dart';
-import 'package:slashit/src/widget/dialog/resetPass.dart';
+import 'package:slashit/src/view/common/resetPassword.dart';
 
 import '../home.dart';
 
@@ -46,7 +46,7 @@ class _LoginBusinessState extends State<LoginBusiness> {
             Padding(
                 padding: EdgeInsets.only(top: 10, left: 10),
                 child: IconButton(
-                    icon: Icon(Icons.keyboard_backspace, color: PrimrayColor),
+                    icon: Icon(Icons.keyboard_backspace, color: PrimaryColor),
                     onPressed: () => Navigator.pop(context))),
             SizedBox(height: 20),
             Padding(
@@ -62,7 +62,8 @@ class _LoginBusinessState extends State<LoginBusiness> {
             _userPass(),
             SizedBox(height: 24),
             GestureDetector(
-              onTap: _passwordReset,
+              onTap: () =>
+                  Navigator.pushNamed(context, ResetPassword.routeName),
               child: Padding(
                   padding: EdgeInsets.only(left: 20),
                   child: Text("Forget Password ?", style: forgotPass)),
@@ -87,7 +88,7 @@ class _LoginBusinessState extends State<LoginBusiness> {
         decoration: InputDecoration(
           labelText: "Email",
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: PrimrayColor, width: 1.0),
+            borderSide: BorderSide(color: PrimaryColor, width: 1.0),
           ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.black, width: 1.0),
@@ -111,7 +112,7 @@ class _LoginBusinessState extends State<LoginBusiness> {
         decoration: InputDecoration(
           labelText: "Password",
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: PrimrayColor, width: 1.0),
+            borderSide: BorderSide(color: PrimaryColor, width: 1.0),
           ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.black, width: 1.0),
@@ -120,7 +121,7 @@ class _LoginBusinessState extends State<LoginBusiness> {
           suffixIcon: IconButton(
               icon: Icon(
                 _showPassword ? Icons.remove_red_eye : Icons.visibility_off,
-                color: _showPassword ? Colors.blue : Colors.grey,
+                color: _showPassword ? PrimaryColor : Colors.grey,
               ),
               onPressed: () {
                 setState(() => _showPassword = !_showPassword);
@@ -139,7 +140,7 @@ class _LoginBusinessState extends State<LoginBusiness> {
       child: RaisedButton(
           onPressed: handleInput,
           child: Text('Sign In', style: SignInStyle),
-          color: PrimrayColor,
+          color: PrimaryColor,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20.0))),
     ));
@@ -162,8 +163,8 @@ class _LoginBusinessState extends State<LoginBusiness> {
     }
   }
 
-  _passwordReset() {
-    showDialog(
-        context: context, builder: (BuildContext context) => ResetPassword());
-  }
+//  _passwordReset() {
+//    showDialog(
+//        context: context, builder: (BuildContext context) => ResetPassword());
+//  }
 }

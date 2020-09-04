@@ -236,6 +236,17 @@ query{
 """;
   }
 
+  String payLateFee(String id) {
+    return """mutation{
+  PayLateFee(orderId:"$id"){
+    code
+    success
+    message
+  }
+}
+""";
+  }
+
   //===============Transactions
 
   String fetchTransactions(int limit) {
@@ -395,6 +406,18 @@ query{
 """;
   }
 
+  String resolveBankAccount(String bankcode, String accountNumber) {
+    return """mutation{
+  ResolveBankAccount(bankCode:"$bankcode",accountNumber:"$accountNumber"){
+    code
+    message
+    success
+    accountHolderName
+  }
+}
+""";
+  }
+
   String uploadImage() {
     return r"""mutation ($file:Upload!) {
   SingleUpload(file:$file){
@@ -435,6 +458,24 @@ query{
     code
     success
     message
+  }
+}
+""";
+  }
+
+  //=============Subscriptions=============//
+
+  String paymentSubscription(String id) {
+    print(id);
+    return """subscription {
+  NewPaymentReq(shopperId: "$id"){
+    currency
+    createdAt
+    desc
+    authorizationCode
+    title
+    orderId
+    amount
   }
 }
 """;

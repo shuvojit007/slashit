@@ -55,7 +55,7 @@ class _RegisterUserState extends State<RegisterUser> {
             Padding(
                 padding: EdgeInsets.only(top: 10, left: 10),
                 child: IconButton(
-                    icon: Icon(Icons.keyboard_backspace, color: PrimrayColor),
+                    icon: Icon(Icons.keyboard_backspace, color: PrimaryColor),
                     onPressed: () => Navigator.pop(context))),
             SizedBox(height: 20),
             Padding(
@@ -132,10 +132,10 @@ class _RegisterUserState extends State<RegisterUser> {
         decoration: InputDecoration(
           labelText: "First Name",
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: PrimrayColor, width: 2.0),
+            borderSide: BorderSide(color: PrimaryColor, width: 1.0),
           ),
           enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.black, width: 2.0),
+            borderSide: BorderSide(color: Colors.black, width: 1.0),
           ),
           //   prefixIcon: Icon(Icons.supervised_user_circle),
         ),
@@ -155,10 +155,10 @@ class _RegisterUserState extends State<RegisterUser> {
         decoration: InputDecoration(
           labelText: "Last Name",
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: PrimrayColor, width: 2.0),
+            borderSide: BorderSide(color: PrimaryColor, width: 1.0),
           ),
           enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.black, width: 2.0),
+            borderSide: BorderSide(color: Colors.black, width: 1.0),
           ),
           //  prefixIcon: Icon(Icons.supervised_user_circle),
         ),
@@ -178,10 +178,10 @@ class _RegisterUserState extends State<RegisterUser> {
         decoration: InputDecoration(
           labelText: "Email",
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: PrimrayColor, width: 2.0),
+            borderSide: BorderSide(color: PrimaryColor, width: 1.0),
           ),
           enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.black, width: 2.0),
+            borderSide: BorderSide(color: Colors.black, width: 1.0),
           ),
           //   prefixIcon: Icon(Icons.mail_outline),
         ),
@@ -205,16 +205,16 @@ class _RegisterUserState extends State<RegisterUser> {
           suffixIcon: IconButton(
               icon: Icon(
                 _showPassword ? Icons.remove_red_eye : Icons.visibility_off,
-                color: _showPassword ? Colors.blue : Colors.grey,
+                color: _showPassword ? PrimaryColor : Colors.grey,
               ),
               onPressed: () {
                 setState(() => _showPassword = !_showPassword);
               }),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: PrimrayColor, width: 2.0),
+            borderSide: BorderSide(color: PrimaryColor, width: 1.0),
           ),
           enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.black, width: 2.0),
+            borderSide: BorderSide(color: Colors.black, width: 1.0),
           ),
         ),
         cursorColor: appbartitle,
@@ -234,10 +234,10 @@ class _RegisterUserState extends State<RegisterUser> {
         decoration: InputDecoration(
           labelText: "Confirm Password",
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: PrimrayColor, width: 2.0),
+            borderSide: BorderSide(color: PrimaryColor, width: 1.0),
           ),
           enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.black, width: 2.0),
+            borderSide: BorderSide(color: Colors.black, width: 1.0),
           ),
           //  prefixIcon: Icon(Icons.lock_outline),
           suffixIcon: IconButton(
@@ -245,7 +245,7 @@ class _RegisterUserState extends State<RegisterUser> {
                 _showConfirmPassword
                     ? Icons.remove_red_eye
                     : Icons.visibility_off,
-                color: _showConfirmPassword ? Colors.blue : Colors.grey,
+                color: _showConfirmPassword ? PrimaryColor : Colors.grey,
               ),
               onPressed: () {
                 setState(() => _showConfirmPassword = !_showConfirmPassword);
@@ -264,7 +264,7 @@ class _RegisterUserState extends State<RegisterUser> {
       child: RaisedButton(
           onPressed: handleInput,
           child: Text('Register', style: SignInStyle),
-          color: PrimrayColor,
+          color: PrimaryColor,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20.0))),
     ));
@@ -302,10 +302,17 @@ class _RegisterUserState extends State<RegisterUser> {
         "role": "shopper"
       };
 
-      await UserRepository.instance.registerUser(userInput);
+      bool status = await UserRepository.instance.registerUser(userInput);
+
+      if (status) {
+        print(status);
+        _pr.hide();
+        Navigator.pushNamedAndRemoveUntil(
+            context, LoginShopper.routeName, (route) => true);
+      }
       _pr.hide();
     } else {
-      showToastMsgTop("Please add fill up all the input");
+      showToastMsgTop("Please fill up all the input");
     }
   }
 }
