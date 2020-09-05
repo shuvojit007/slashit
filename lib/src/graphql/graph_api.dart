@@ -72,10 +72,10 @@ class GraphApi {
 """;
   }
 
-  String feachFeature() {
+  String feachFeature(int limit, int offset) {
     return """
     query{
-        FetchFeature(limit:100,offset:0){
+        FetchFeature(limit:$limit,offset:$offset){
             code
             message
             count
@@ -249,10 +249,10 @@ query{
 
   //===============Transactions
 
-  String fetchTransactions(int limit) {
+  String fetchTransactions(int limit, int offset) {
     return """
   query {
-  FetchTransaction(limit:100,offset:0,){
+  FetchTransaction(limit:$limit,offset:$offset,){
     code
     message
     count
@@ -318,10 +318,10 @@ query{
   }
 
   //=========Business===========//
-  String fetchPaymentreq() {
+  String fetchPaymentreq(int limit, int offeset) {
     return """
 query{
-  FetchPaymentReq(limit:100,offset:0){
+  FetchPaymentReq(limit:$limit,offset:$offeset){
     code
     success
     count
@@ -434,6 +434,18 @@ query{
     message
     success
     orderId
+  }
+}
+""";
+  }
+
+  String createPaymentReqByShopper(
+      String title, int amount, String type, String uniqueId) {
+    return """mutation{
+  CreatePaymentReqByShopper(title:"$title", amount:$amount,type:$type, uniqueId:"$uniqueId"){
+    code
+    message
+    success
   }
 }
 """;

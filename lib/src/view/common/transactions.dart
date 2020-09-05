@@ -14,11 +14,31 @@ class Transactions extends StatefulWidget {
 
 class _TransactionsState extends State<Transactions> {
   TransactionsBloc _bloc;
+  ScrollController _controller = ScrollController();
+  bool scrlDown = true;
+  int offset = 0;
+
+  _scrollListener() async {
+    if (_controller.position.pixels == _controller.position.maxScrollExtent) {
+      print(" Scroll Lister FetchMore Called");
+      offset = offset + 1;
+      _bloc.featchAllTransctions(20, offset);
+    }
+  }
+
+  _progressDialog() {
+    return Align(
+        alignment: Alignment.bottomCenter,
+        child: Container(
+            margin: EdgeInsets.only(bottom: 30),
+            child: CircularProgressIndicator()));
+  }
 
   @override
   void initState() {
     _bloc = TransactionsBloc();
-    _bloc.featchAllTransctions();
+    _bloc.featchAllTransctions(20, 0);
+    _controller.addListener(_scrollListener);
     super.initState();
   }
 
@@ -37,31 +57,49 @@ class _TransactionsState extends State<Transactions> {
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.black),
       ),
-      body: StreamBuilder(
-        stream: _bloc.allTransaction,
-        builder: (context, AsyncSnapshot<List<Result>> snapshot) {
-          if (snapshot.hasData && snapshot.data.length > 0) {
-            return ListView.builder(
-                scrollDirection: Axis.vertical,
-                itemCount: snapshot.data.length,
-                itemBuilder: (BuildContext ctx, int index) {
-                  return _transactionsView(snapshot.data[index]);
-                });
-          } else if (snapshot.hasData) {
-            return Center(child: Text("You have no transaction history yet"));
-          } else if (snapshot.hasError) {
-            return Text(snapshot.error.toString());
-          }
-          return Center(child: CircularProgressIndicator());
-        },
+      body: Stack(
+        children: <Widget>[
+          StreamBuilder(
+            stream: _bloc.allTransaction,
+            builder: (context, AsyncSnapshot<List<Result>> snapshot) {
+              if (snapshot.hasData && snapshot.data.length > 0) {
+                return ListView.builder(
+                    controller: _controller,
+                    scrollDirection: Axis.vertical,
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (BuildContext ctx, int index) {
+                      return _transactionsView(snapshot.data[index]);
+                    });
+              } else if (snapshot.hasData) {
+                return Center(
+                    child: Text("You have no transaction history yet"));
+              } else if (snapshot.hasError) {
+                return Text(snapshot.error.toString());
+              }
+              return Center(child: CircularProgressIndicator());
+            },
+          ),
+          StreamBuilder<bool>(
+            stream: _bloc.isMoreLoading,
+            initialData: false,
+            builder: (context, snapshot) {
+              if (!snapshot.data) {
+                return Container();
+              } else {
+                return _progressDialog();
+              }
+            },
+          ),
+        ],
       ),
     );
   }
 
   _transactionsView(Result data) {
-    return GestureDetector(
-      onTap: () => _goToTransactionDetails(data),
-      child: Card(
+    return Card(
+      key: Key(data.id),
+      child: GestureDetector(
+        onTap: () => _goToTransactionDetails(data),
         child: Container(
           height: 70,
           margin: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),

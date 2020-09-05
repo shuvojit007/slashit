@@ -58,7 +58,7 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
   void initState() {
     BlocProvider.of<WalletBloc>(context).add(GetWallet());
     _bloc = FeaturesBloc();
-    _bloc.featchAllFeatures();
+    _bloc.featchAllFeatures(8, 0);
     stream();
     super.initState();
   }
@@ -455,6 +455,10 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
 
   _goToShopperScan() {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => ShopperScan(index: 1,)));
+        context,
+        MaterialPageRoute(
+            builder: (context) => ShopperScan(
+                  index: 1,
+                )));
   }
 }

@@ -4,23 +4,30 @@ import 'package:slashit/src/models/features_model.dart';
 import 'package:slashit/src/repository/user_repository.dart';
 
 class FeaturesBloc {
-  /**
-   * We are creating a PublishSubject object whose responsibility is to add the data
-   * which it got from the server in form of ItemModel object and pass it to the
-   * UI screen as stream.
-   **/
-  final _featuresFetcher = PublishSubject<List<Result>>();
+  final _isMoreLoadingSubject = BehaviorSubject<bool>();
+  Stream<bool> get isMoreLoading => _isMoreLoadingSubject.stream;
 
+  final _featuresFetcher = BehaviorSubject<List<Result>>();
   Stream<List<Result>> get allFeatures => _featuresFetcher.stream;
 
-  featchAllFeatures() async {
-    print("featchAllFeatures");
-    Features features = await UserRepository.instance.feachFeatures();
+  List<Result> _features = [];
+  featchAllFeatures(int limit, int offset) async {
+    print("featchAllFeatures offset  ${offset}");
+    if (offset != 0) {
+      _isMoreLoadingSubject.add(true);
+    }
+    Features features =
+        await UserRepository.instance.feachFeatures(limit, offset);
     List<Result> res = features.result;
-    _featuresFetcher.sink.add(res);
+    _isMoreLoadingSubject.add(false);
+
+    for (final Result result in res) {
+      _features.add(result);
+    }
+    _featuresFetcher.sink.add(_features);
   }
 
   dispose() {
-    _featuresFetcher.close();
+    _featuresFetcher?.close();
   }
 }

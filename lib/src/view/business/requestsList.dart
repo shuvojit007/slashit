@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:slashit/src/blocs/paymentReq.dart';
 import 'package:slashit/src/models/paymentReq.dart';
@@ -14,14 +15,26 @@ class Requests extends StatefulWidget {
 
 class _RequestsState extends State<Requests> {
   PaymentReqBloc _bloc;
-
+  ScrollController _controller = ScrollController();
   ProgressDialog _pr;
+
+  bool scrlDown = true;
+  int offset = 0;
+
+  _scrollListener() async {
+    if (_controller.position.pixels == _controller.position.maxScrollExtent) {
+      print(" Scroll Lister FetchMore Called");
+      offset = offset + 1;
+      _bloc.fetchAllPaymentReq(20, offset);
+    }
+  }
 
   @override
   void initState() {
     _bloc = PaymentReqBloc();
-    _bloc.fetchAllPaymentReq();
+    _bloc.fetchAllPaymentReq(20, 0);
     _pr = ProgressDialog(context, type: ProgressDialogType.Normal);
+    _controller.addListener(_scrollListener);
     super.initState();
   }
 
@@ -40,29 +53,54 @@ class _RequestsState extends State<Requests> {
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.black),
       ),
-      body: StreamBuilder(
-        stream: _bloc.allPaymentReq,
-        builder: (context, AsyncSnapshot<List<Result>> snapshot) {
-          if (snapshot.hasData) {
-            return ListView.builder(
-                scrollDirection: Axis.vertical,
-                itemCount: snapshot.data.length,
-                itemBuilder: (BuildContext ctx, int index) {
-                  return _requestView(snapshot.data[index]);
-                });
-          } else if (snapshot.hasError) {
-            return Text(snapshot.error.toString());
-          }
-          return Center(child: CircularProgressIndicator());
-        },
+      body: Stack(
+        children: <Widget>[
+          StreamBuilder(
+            stream: _bloc.allPaymentReq,
+            builder: (context, AsyncSnapshot<List<Result>> snapshot) {
+              if (snapshot.hasData) {
+                return ListView.builder(
+                    controller: _controller,
+                    scrollDirection: Axis.vertical,
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (BuildContext ctx, int index) {
+                      return _requestView(snapshot.data[index], index);
+                    });
+              } else if (snapshot.hasError) {
+                return Text(snapshot.error.toString());
+              }
+              return Center(child: CircularProgressIndicator());
+            },
+          ),
+          StreamBuilder<bool>(
+            stream: _bloc.isMoreLoading,
+            initialData: false,
+            builder: (context, snapshot) {
+              if (!snapshot.data) {
+                return Container();
+              } else {
+                return _progressDialog();
+              }
+            },
+          ),
+        ],
       ),
     );
   }
 
-  _requestView(Result data) {
-    return GestureDetector(
-      onTap: () => _goToRequestDetails(data),
-      child: Card(
+  _progressDialog() {
+    return Align(
+        alignment: Alignment.bottomCenter,
+        child: Container(
+            margin: EdgeInsets.only(bottom: 30),
+            child: CircularProgressIndicator()));
+  }
+
+  _requestView(Result data, int index) {
+    return Card(
+      key: Key(data.orderId),
+      child: GestureDetector(
+        onTap: () => _goToRequestDetails(data),
         child: Container(
           height: 80,
           margin: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),

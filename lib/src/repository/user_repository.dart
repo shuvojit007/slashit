@@ -88,11 +88,11 @@ class UserRepository {
     }
   }
 
-  Future<Features> feachFeatures() async {
+  Future<Features> feachFeatures(int limit, int offset) async {
     GraphQLClient _client = GraphQLConfiguration().clientToQuery();
     QueryResult result = await _client.query(QueryOptions(
         documentNode: gql(
-      GraphApi.instance.feachFeature(),
+      GraphApi.instance.feachFeature(limit, offset),
     )));
     if (result.hasException) {
       print("error  ${result.exception.toString()}");
@@ -131,11 +131,11 @@ class UserRepository {
     }
   }
 
-  Future<TransactionsModel> fetchTransactions(int limit) async {
+  Future<TransactionsModel> fetchTransactions(int limit, int offset) async {
     GraphQLClient _client = GraphQLConfiguration().clientToQuery();
     QueryResult result = await _client.query(QueryOptions(
         documentNode: gql(
-      GraphApi.instance.fetchTransactions(limit),
+      GraphApi.instance.fetchTransactions(limit, offset),
     )));
     if (result.hasException) {
       print("error  ${result.exception.toString()}");
@@ -359,11 +359,11 @@ class UserRepository {
   }
 
   //============business ========/
-  Future<PaymentReq> fetchPaymentReq() async {
+  Future<PaymentReq> fetchPaymentReq(int limit, int offset) async {
     GraphQLClient _client = GraphQLConfiguration().clientToQuery();
     QueryResult result = await _client.query(QueryOptions(
         documentNode: gql(
-      GraphApi.instance.fetchPaymentreq(),
+      GraphApi.instance.fetchPaymentreq(limit, offset),
     )));
     if (result.hasException) {
       print("error  ${result.exception.toString()}");
@@ -477,6 +477,34 @@ class UserRepository {
       }
     } catch (e) {
       return null;
+    }
+  }
+
+  Future<bool> createPaymentReqByShopper(
+      String title, int amount, String type, String uniqueId) async {
+    try {
+      GraphQLClient _client = GraphQLConfiguration().clientToQuery();
+      QueryResult result = await _client.mutate(MutationOptions(
+          documentNode: gql(
+        GraphApi.instance
+            .createPaymentReqByShopper(title, amount, type, uniqueId),
+      )));
+      if (result.hasException) {
+        showToastMsg("Something went wrong");
+        return false;
+      } else {
+        LazyCacheMap map = result.data.get("CreatePaymentReqByShopper");
+        if (map['success'] == true) {
+          showToastMsgGreen(map['message']);
+          print(map['orderId']);
+          return true;
+        } else {
+          showToastMsgGreen(map['message']);
+          return false;
+        }
+      }
+    } catch (e) {
+      return false;
     }
   }
 
