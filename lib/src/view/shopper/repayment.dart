@@ -19,10 +19,31 @@ class _UpcommingRepaymentsState extends State<UpcommingRepayments> {
   List<Color> colors = [Colors.blue, Colors.green, Colors.yellow, Colors.red];
   RepaymentBloc _bloc;
 
+  ScrollController _controller = ScrollController();
+  bool scrlDown = true;
+  int offset = 0;
+
+  _scrollListener() async {
+    if (_controller.position.pixels == _controller.position.maxScrollExtent) {
+      print(" Scroll Lister FetchMore Called");
+      offset = offset + 1;
+      BlocProvider.of<RepaymentBloc>(context).add(GetRepayment(20, offset));
+    }
+  }
+
+  _progressDialog() {
+    return Align(
+        alignment: Alignment.bottomCenter,
+        child: Container(
+            margin: EdgeInsets.only(bottom: 30),
+            child: CircularProgressIndicator()));
+  }
+
   @override
   void initState() {
     _bloc = BlocProvider.of<RepaymentBloc>(context);
-    BlocProvider.of<RepaymentBloc>(context).add(GetRepayment());
+    BlocProvider.of<RepaymentBloc>(context).add(GetRepayment(0, 0));
+    _controller.addListener(_scrollListener);
     super.initState();
   }
 
@@ -34,20 +55,25 @@ class _UpcommingRepaymentsState extends State<UpcommingRepayments> {
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.black),
       ),
-      body: BlocBuilder(
-        bloc: _bloc,
-        builder: (BuildContext context, RepaymentBlocState state) {
-          if (state is RepaymentBlocLoaded) {
-            return ListView.builder(
-                scrollDirection: Axis.vertical,
-                itemCount: state.res.length,
-                itemBuilder: (BuildContext ctx, int index) {
-                  return _cardView(state.res[index]);
-                });
-          } else {
-            return Center(child: CircularProgressIndicator());
-          }
-        },
+      body: Stack(
+        children: <Widget>[
+          BlocBuilder(
+            bloc: _bloc,
+            builder: (BuildContext context, RepaymentBlocState state) {
+              if (state is RepaymentBlocLoaded) {
+                return ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    controller: _controller,
+                    itemCount: state.res.length,
+                    itemBuilder: (BuildContext ctx, int index) {
+                      return _cardView(state.res[index]);
+                    });
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
+            },
+          ),
+        ],
       ),
     );
   }

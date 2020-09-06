@@ -274,21 +274,49 @@ class _BusinessState extends State<Business> {
         child: Row(
           children: <Widget>[
             Expanded(
-              flex: 1,
-              child: Text(
-                "${getShortTime(data.createdAt)}",
-                style: businessText2,
+              flex: 2,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 8.0,
+                      top: 8,
+                    ),
+                    child: Text(
+                      "${data.order.title}",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: businessText2,
+                    ),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 8.0, top: 3, bottom: 8),
+                    child: Text(
+                      "${getShortTime(data.createdAt)}",
+                      style: businessText3,
+                    ),
+                  ),
+                ],
               ),
             ),
-            Expanded(
-              flex: 1,
-              child: Text(
-                "${data.order.title}",
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: businessText2,
-              ),
-            ),
+//            Expanded(
+//              flex: 1,
+//              child: Text(
+//                "${getShortTime(data.createdAt)}",
+//                style: businessText2,
+//              ),
+//            ),
+//            Expanded(
+//              flex: 1,
+//              child: Text(
+//                "${data.order.title}",
+//                maxLines: 1,
+//                overflow: TextOverflow.ellipsis,
+//                style: businessText2,
+//              ),
+//            ),
             Expanded(
               flex: 1,
               child: Text(

@@ -216,6 +216,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.8"
+  flutter_qr_bar_scanner:
+    dependency: "direct main"
+    description:
+      name: flutter_qr_bar_scanner
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
   flutter_typeahead:
     dependency: "direct main"
     description:
@@ -340,6 +347,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.9.6+3"
+  native_device_orientation:
+    dependency: transitive
+    description:
+      name: native_device_orientation
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.0"
   nested:
     dependency: transitive
     description:
@@ -438,6 +452,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.4"
+  progress_indicator_button:
+    dependency: "direct main"
+    description:
+      name: progress_indicator_button
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.3"
   protobuf:
     dependency: transitive
     description:
@@ -487,6 +508,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.24.1"
+  scrollable_positioned_list:
+    dependency: "direct main"
+    description:
+      name: scrollable_positioned_list
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.7"
   share:
     dependency: "direct main"
     description:

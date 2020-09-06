@@ -142,6 +142,7 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
           SizedBox(
             height: 20,
           ),
+
           Container(
             height: 35,
             margin: EdgeInsets.only(left: 5, right: 5),
@@ -217,7 +218,7 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
           ),
           _wallet(),
           SizedBox(
-            height: 50,
+            height: 20,
           ),
           Container(
             margin: EdgeInsets.only(left: 10, right: 5),
@@ -367,7 +368,7 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
         } else if (snapshot.hasError) {
           return Text(snapshot.error.toString());
         }
-        return Center(child: CircularProgressIndicator());
+        return Container();
       },
     );
   }
@@ -393,13 +394,23 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
             );
           } else {
             return GestureDetector(
-              onTap: () => _launchURL(snapshot.data[index].link),
+              onTap: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => FeaturesList(index))),
               child: Container(
                 margin: EdgeInsets.all(5),
                 child: CachedNetworkImage(
                     imageUrl: "${URL.S3_URL}${snapshot.data[index].img}",
                     fit: BoxFit.cover,
-                    placeholder: (context, url) => CircularProgressIndicator(),
+                    placeholderFadeInDuration: Duration(milliseconds: 3),
+//                    placeholder: (context, url) => Center(
+//                          child: SizedBox(
+//                            width: 50,
+//                            height: 50,
+//                            child: CircularProgressIndicator(
+//                              strokeWidth: 2,
+//                            ),
+//                          ),
+//                        ),
                     errorWidget: (context, url, error) => Image.asset(
                           Assets.Placeholder,
                           width: 100,

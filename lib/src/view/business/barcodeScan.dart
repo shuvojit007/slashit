@@ -1,18 +1,13 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:barcode_scan/model/scan_result.dart';
-import 'package:barcode_scan/platform_wrapper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql/utilities.dart' show multipartFileFrom;
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:share/share.dart';
 import 'package:slashit/src/repository/user_repository.dart';
-import 'package:slashit/src/resources/colors.dart';
-import 'package:slashit/src/utils/showToast.dart';
+import 'package:slashit/src/view/QrCode.dart';
 import 'package:slashit/src/view/business/business.dart';
 
 import '../home.dart';
@@ -30,22 +25,21 @@ class BarCodeScanning extends StatefulWidget {
 
 class _BarCodeScanningState extends State<BarCodeScanning> {
   ScanResult scanResult;
-  final _flashOnController = TextEditingController(text: "Flash on");
-  final _flashOffController = TextEditingController(text: "Flash off");
-  final _cancelController = TextEditingController(text: "Cancel");
-
-  var _aspectTolerance = 0.00;
-  var _selectedCamera = -1;
-  var _useAutoFocus = true;
-  var _autoEnableFlash = false;
+//  final _flashOnController = TextEditingController(text: "Flash on");
+//  final _flashOffController = TextEditingController(text: "Flash off");
+//  final _cancelController = TextEditingController(text: "Cancel");
+//
+//  var _aspectTolerance = 0.00;
+//  var _selectedCamera = -1;
+//  var _useAutoFocus = true;
+//  var _autoEnableFlash = false;
+//
+//  static final _possibleFormats = BarcodeFormat.values.toList()
+//    ..removeWhere((e) => e == BarcodeFormat.unknown);
+//
+//  List<BarcodeFormat> selectedFormats = [..._possibleFormats];
 
   String orderID;
-
-  static final _possibleFormats = BarcodeFormat.values.toList()
-    ..removeWhere((e) => e == BarcodeFormat.unknown);
-
-  List<BarcodeFormat> selectedFormats = [..._possibleFormats];
-
   ProgressDialog _pr;
 
   @override
@@ -71,39 +65,34 @@ class _BarCodeScanningState extends State<BarCodeScanning> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              RaisedButton(
-                  onPressed: () => scan(),
-                  shape: StadiumBorder(),
-                  color: PrimaryColor,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Icon(
-                        Icons.camera,
-                        color: Colors.white,
-                      ),
-                      Text(
-                        " Scan   ",
-                        style: TextStyle(color: Colors.white, fontSize: 20),
-                      )
-                    ],
-                  )),
+//              RaisedButton(
+//                  onPressed: () => scan(),
+//                  shape: StadiumBorder(),
+//                  color: PrimaryColor,
+//                  child: Row(
+//                    mainAxisSize: MainAxisSize.min,
+//                    children: <Widget>[
+//                      Icon(
+//                        Icons.camera,
+//                        color: Colors.white,
+//                      ),
+//                      Text(
+//                        " Scan   ",
+//                        style: TextStyle(color: Colors.white, fontSize: 20),
+//                      )
+//                    ],
+//                  )),
+              QrCode(
+                qrCode: qrCode,
+              ),
               SizedBox(
-                height: 10,
+                height: 40,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Icon(
-                    FontAwesomeIcons.qrcode,
-                    color: PrimaryColor,
-                    size: 30,
-                  ),
-                  SizedBox(
-                    width: 5,
-                  ),
                   Text(
-                    "Scan a barcode to accept payment",
+                    "Scan QR Code to accept payment",
                     style: TextStyle(color: Colors.black54, fontSize: 18),
                   )
                 ],
@@ -115,62 +104,91 @@ class _BarCodeScanningState extends State<BarCodeScanning> {
     );
   }
 
-  Future scan() async {
-    try {
-      var options = ScanOptions(
-        strings: {
-          "cancel": "cancel",
-          "flash_on": _flashOnController.text,
-          "flash_off": _flashOffController.text,
-        },
-        restrictFormat: selectedFormats,
-        useCamera: _selectedCamera,
-        autoEnableFlash: _autoEnableFlash,
-        android: AndroidOptions(
-          aspectTolerance: _aspectTolerance,
-          useAutoFocus: _useAutoFocus,
-        ),
-      );
+//  _scan(List value, List key) async {
+//
+//  }
 
-      scanResult = await BarcodeScanner.scan(options: options);
+  Future qrCode(String type, String id) async {
+    _pr.show();
 
-      List value = json.decode(scanResult.rawContent).values.toList();
-      List key = json.decode(scanResult.rawContent).keys.toList();
+    print("type ${type} id ${id}");
+    String url = "";
+    if (widget.file != null) {
+      url = await _uploadImage();
+    }
+    var paymentInput = {
+      "title": "\"${widget.title}\"",
+      "desc": "\"${widget.desc}\"",
+      "amount": "${widget.amount}",
+      "note": "\"${widget.note}\"",
+      "attachment": "\"${url}\"",
+      "shopper": "\"${id}\"",
+    };
 
-      if ((key.length == 2 && value.length == 2) &&
-          (key[0] == "type" && key[1] == "id")) {
-        _pr.show();
-
-        String url = "";
-        if (widget.file != null) {
-          url = await _uploadImage();
-        }
-        var paymentInput = {
-          "title": "\"${widget.title}\"",
-          "desc": "\"${widget.desc}\"",
-          "amount": "${widget.amount}",
-          "note": "\"${widget.note}\"",
-          "attachment": "\"${url}\"",
-          "shopper": "\"${value[1]}\"",
-        };
-
-        bool result = await UserRepository.instance.createPaymentReq(
-            paymentInput, (key[0] == "installment") ? "INSTALLMENT" : "WALLET");
-        _pr.hide();
-        if (result) {
-          _goTobusinessPage();
-        }
-      } else {
-        showToastMsg("Please scan a valid QR code");
-      }
-    } on PlatformException catch (e) {
-      if (e.code == BarcodeScanner.cameraAccessDenied) {
-        showToastMsg('The user did not grant the camera permission!');
-      } else {
-        showToastMsg('Unknown error: $e');
-      }
+    bool result = await UserRepository.instance.createPaymentReq(
+        paymentInput, (type == "installment") ? "INSTALLMENT" : "WALLET");
+    _pr.hide();
+    if (result) {
+      _goTobusinessPage();
     }
   }
+//
+//  Future scan() async {
+//    try {
+//      var options = ScanOptions(
+//        strings: {
+//          "cancel": "cancel",
+//          "flash_on": _flashOnController.text,
+//          "flash_off": _flashOffController.text,
+//        },
+//        restrictFormat: selectedFormats,
+//        useCamera: _selectedCamera,
+//        autoEnableFlash: _autoEnableFlash,
+//        android: AndroidOptions(
+//          aspectTolerance: _aspectTolerance,
+//          useAutoFocus: _useAutoFocus,
+//        ),
+//      );
+//
+//      scanResult = await BarcodeScanner.scan(options: options);
+//
+//      List value = json.decode(scanResult.rawContent).values.toList();
+//      List key = json.decode(scanResult.rawContent).keys.toList();
+//
+//      if ((key.length == 2 && value.length == 2) &&
+//          (key[0] == "type" && key[1] == "id")) {
+//        _pr.show();
+//
+//        String url = "";
+//        if (widget.file != null) {
+//          url = await _uploadImage();
+//        }
+//        var paymentInput = {
+//          "title": "\"${widget.title}\"",
+//          "desc": "\"${widget.desc}\"",
+//          "amount": "${widget.amount}",
+//          "note": "\"${widget.note}\"",
+//          "attachment": "\"${url}\"",
+//          "shopper": "\"${value[1]}\"",
+//        };
+//
+//        bool result = await UserRepository.instance.createPaymentReq(
+//            paymentInput, (key[0] == "installment") ? "INSTALLMENT" : "WALLET");
+//        _pr.hide();
+//        if (result) {
+//          _goTobusinessPage();
+//        }
+//      } else {
+//        showToastMsg("Please scan a valid QR code");
+//      }
+//    } on PlatformException catch (e) {
+//      if (e.code == BarcodeScanner.cameraAccessDenied) {
+//        showToastMsg('The user did not grant the camera permission!');
+//      } else {
+//        showToastMsg('Unknown error: $e');
+//      }
+//    }
+//  }
 
   _goTobusinessPage() {
     Navigator.pushAndRemoveUntil(
@@ -255,9 +273,9 @@ class _BarCodeScanningState extends State<BarCodeScanning> {
 
   @override
   void dispose() {
-    _flashOffController?.dispose();
-    _flashOnController?.dispose();
-    _cancelController?.dispose();
+//    _flashOffController?.dispose();
+//    _flashOnController?.dispose();
+//    _cancelController?.dispose();
     super.dispose();
   }
 

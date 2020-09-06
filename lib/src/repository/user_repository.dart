@@ -109,11 +109,11 @@ class UserRepository {
     }
   }
 
-  Future<UpcommingPayments> upCommingRepayments() async {
+  Future<UpcommingPayments> upCommingRepayments(int limit, offset) async {
     GraphQLClient _client = GraphQLConfiguration().clientToQuery();
     QueryResult result = await _client.query(QueryOptions(
         documentNode: gql(
-      GraphApi.instance.upcomingPayments(),
+      GraphApi.instance.upcomingPayments(limit, offset),
     )));
     if (result.hasException) {
       print("error  ${result.exception.toString()}");
@@ -483,6 +483,7 @@ class UserRepository {
   Future<bool> createPaymentReqByShopper(
       String title, int amount, String type, String uniqueId) async {
     try {
+      print("title $title  amount $amount type $type");
       GraphQLClient _client = GraphQLConfiguration().clientToQuery();
       QueryResult result = await _client.mutate(MutationOptions(
           documentNode: gql(

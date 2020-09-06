@@ -35,6 +35,9 @@ dependencies:
   image_picker: ^0.6.6+1
   number_display: ^2.3.0
   rxdart: ^0.24.1
+  scrollable_positioned_list: ^0.1.7
+  flutter_qr_bar_scanner: ^1.0.2
+  progress_indicator_button: ^0.0.3
 
 
 

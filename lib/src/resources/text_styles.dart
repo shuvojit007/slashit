@@ -170,6 +170,13 @@ const TextStyle cardText = TextStyle(
   fontWeight: FontWeight.w600,
 );
 
+const TextStyle shopperScan = TextStyle(
+  color: Colors.black,
+  fontSize: 18,
+  fontFamily: 'Raleway',
+  fontWeight: FontWeight.w600,
+);
+
 //=========business
 const TextStyle businessText1 = TextStyle(
   color: Colors.black,
@@ -182,20 +189,26 @@ const TextStyle businessText2 = TextStyle(
   color: Colors.black,
   fontSize: size_16,
   fontFamily: 'Roboto',
-  fontWeight: FontWeight.normal,
+  fontWeight: FontWeight.w500,
 );
 
+const TextStyle businessText3 = TextStyle(
+  color: Colors.black,
+  fontSize: size_14,
+  fontFamily: 'Roboto',
+  fontWeight: FontWeight.normal,
+);
 //==========Features
 const TextStyle FeaturesTitle = TextStyle(
   color: Colors.black,
-  fontSize: size_18,
+  fontSize: 17,
   fontFamily: 'Roboto',
-  fontWeight: FontWeight.w600,
+  fontWeight: FontWeight.w500,
 );
 
 const TextStyle FeaturesPrice = TextStyle(
   color: Colors.black87,
-  fontSize: size_15,
+  fontSize: 14,
   fontFamily: 'Roboto',
   fontWeight: FontWeight.w400,
 );

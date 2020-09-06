@@ -55,7 +55,7 @@ class _OrderInfoState extends State<OrderInfo> {
         if (index == 3) status4 = true;
       });
       transaction.status = "PAYMENT_SUCCESS";
-      BlocProvider.of<RepaymentBloc>(context).add(GetRepayment());
+      BlocProvider.of<RepaymentBloc>(context).add(GetRepayment(20, 0));
       if (_pr.isShowing()) _pr.hide();
     }
     if (_pr.isShowing()) _pr.hide();
@@ -66,7 +66,7 @@ class _OrderInfoState extends State<OrderInfo> {
     bool status = await UserRepository.instance.payLateFee(id);
 
     if (status) {
-      BlocProvider.of<RepaymentBloc>(context).add(GetRepayment());
+      BlocProvider.of<RepaymentBloc>(context).add(GetRepayment(20, 0));
       if (_pr.isShowing()) _pr.hide();
     }
     if (_pr.isShowing()) _pr.hide();
@@ -450,7 +450,7 @@ class _OrderInfoState extends State<OrderInfo> {
           if (_radioValue1 == 3) status4 = true;
         });
         widget.data.transactions[_radioValue1].status = "PAYMENT_SUCCESS";
-        BlocProvider.of<RepaymentBloc>(context).add(GetRepayment());
+        BlocProvider.of<RepaymentBloc>(context).add(GetRepayment(20, 0));
         if (_pr.isShowing()) _pr.hide();
       }
       if (_pr.isShowing()) _pr.hide();

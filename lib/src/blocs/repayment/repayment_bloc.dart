@@ -17,14 +17,14 @@ class RepaymentBloc extends Bloc<RepaymentBlocEvent, RepaymentBlocState> {
   ) async* {
     if (event is GetRepayment) {
       yield RepaymentBlocLoading();
-      UpcommingPayments upcommingPayments =
-          await UserRepository.instance.upCommingRepayments();
+      UpcommingPayments upcommingPayments = await UserRepository.instance
+          .upCommingRepayments(event.limit, event.offset);
       List<Result> res = upcommingPayments.result;
       yield RepaymentBlocLoaded(res);
     } else if (event is UpdateRepayment) {
       yield RepaymentBlocLoading();
       UpcommingPayments upcommingPayments =
-          await UserRepository.instance.upCommingRepayments();
+          await UserRepository.instance.upCommingRepayments(20, 0);
       List<Result> res = upcommingPayments.result;
       yield RepaymentBlocLoaded(res);
     }

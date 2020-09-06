@@ -150,10 +150,10 @@ class GraphApi {
   }
 
   //========= Shopper ========//
-  String upcomingPayments() {
+  String upcomingPayments(int limit, offset) {
     return """
  query{
-  FetchOrder(limit:100,offset:0){
+  FetchOrder(limit:$limit,offset:$offset){
     code
     message
     count
