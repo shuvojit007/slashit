@@ -21,18 +21,19 @@ class _QrCodeState extends State<QrCode> with TickerProviderStateMixin {
   AnimationController animCtrl;
 
   _qrCallback(String code) {
-    animCtrl.dispose();
-    setState(() {
-      _camState = true;
-      showToastMsg(code);
-    });
-
     print("json decode ${json.decode(code)}");
     List value = json.decode(code).values.toList();
     List key = json.decode(code).keys.toList();
 
     if ((key.length == 2 && value.length == 2) &&
-        (key[0] == "type" && key[1] == "id")) {
+        (key[0] == "type" && key[1] == "id") &&
+        value[0] != "business") {
+      animCtrl.dispose();
+      setState(() {
+        _camState = true;
+        //showToastMsg(code);
+      });
+
       widget.qrCode(value[0], value[1]);
     } else {
       showToastMsg("Invalid QR Code");

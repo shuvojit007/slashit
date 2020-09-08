@@ -305,11 +305,11 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
 
   _header() {
     return PreferredSize(
-      preferredSize: Size.fromHeight(85),
+      preferredSize: Size.fromHeight(80),
       child: Card(
         margin: EdgeInsets.all(0),
         child: Container(
-          height: 85,
+          height: 80,
           color: Colors.white,
           width: double.infinity,
           child: Stack(

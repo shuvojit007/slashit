@@ -13,6 +13,9 @@ class GetRepayment extends RepaymentBlocEvent {
   GetRepayment(this.limit, this.offset);
 }
 
-class UpdateRepayment extends RepaymentBlocEvent {
-  UpdateRepayment();
+class LoadMore extends RepaymentBlocEvent {
+  final int limit;
+  final int offset;
+
+  LoadMore(this.limit, this.offset);
 }

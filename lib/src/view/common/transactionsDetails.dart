@@ -154,7 +154,9 @@ class _TransactionDetailsState extends State<TransactionDetails> {
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: Text(
-                        "${widget.data.business.business.businessName}",
+                        widget.data.business.business == null
+                            ? ""
+                            : "${widget.data.business.business.businessName}",
                         style: TransactionDetials2,
                       ),
                     ),

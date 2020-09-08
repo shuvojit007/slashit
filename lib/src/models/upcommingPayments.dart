@@ -80,7 +80,7 @@ class Result {
   String createdAt;
   String desc;
   int quantity;
-  int amount;
+  num amount;
   int totalLateFee;
   ResultBusiness business;
   String status;
@@ -199,7 +199,7 @@ class Transaction {
   String createdAt;
   String paymentDate;
   String reference;
-  int amount;
+  num amount;
   bool isRequested;
 
   factory Transaction.fromMap(Map<String, dynamic> json) => Transaction(

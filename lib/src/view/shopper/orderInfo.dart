@@ -43,23 +43,23 @@ class _OrderInfoState extends State<OrderInfo> {
     super.initState();
   }
 
-  _payNow(Transaction transaction, int index) async {
-    _pr.show();
-    bool status = await UserRepository.instance.payNow(transaction.id);
-
-    if (status) {
-      setState(() {
-        if (index == 0) status1 = true;
-        if (index == 1) status2 = true;
-        if (index == 2) status3 = true;
-        if (index == 3) status4 = true;
-      });
-      transaction.status = "PAYMENT_SUCCESS";
-      BlocProvider.of<RepaymentBloc>(context).add(GetRepayment(20, 0));
-      if (_pr.isShowing()) _pr.hide();
-    }
-    if (_pr.isShowing()) _pr.hide();
-  }
+//  _payNow(Transaction transaction, int index) async {
+//    _pr.show();
+//    bool status = await UserRepository.instance.payNow(transaction.id);
+//
+//    if (status) {
+//      setState(() {
+//        if (index == 0) status1 = true;
+//        if (index == 1) status2 = true;
+//        if (index == 2) status3 = true;
+//        if (index == 3) status4 = true;
+//      });
+//      transaction.status = "PAYMENT_SUCCESS";
+//      BlocProvider.of<RepaymentBloc>(context).add(GetRepayment(20, 0));
+//      if (_pr.isShowing()) _pr.hide();
+//    }
+//    if (_pr.isShowing()) _pr.hide();
+//  }
 
   _payLateFee(String id) async {
     _pr.show();
@@ -244,65 +244,6 @@ class _OrderInfoState extends State<OrderInfo> {
                         ],
                       ),
                     )
-//              Container(
-//                width: 10,
-//                color: colors[transaction.installment - 1],
-//              ),
-//              Expanded(
-//                child: GestureDetector(
-//                  onTap: () => Navigator.push(
-//                      context,
-//                      MaterialPageRoute(
-//                          builder: (context) => ShopperTranscDetails(
-//                                transaction: transaction,
-//                                result: result,
-//                              ))),
-//                  child: Container(
-//                    margin: EdgeInsets.only(left: 10, top: 10),
-//                    child: Column(
-//                      mainAxisAlignment: MainAxisAlignment.center,
-//                      children: <Widget>[
-//                        Text(_getName(transaction.installment),
-//                            style: Repayments1),
-//                        SizedBox(
-//                          height: 5,
-//                        ),
-//                        Text(
-//                          "${getDateTime(transaction.paymentDate)}",
-//                          style: Repayments2,
-//                        )
-//                      ],
-//                    ),
-//                  ),
-//                ),
-//              ),
-//              Container(
-//                padding: const EdgeInsets.only(right: 10.0),
-//                child: Column(
-//                  mainAxisAlignment: MainAxisAlignment.center,
-//                  children: <Widget>[
-//                    Text(
-//                      "₦ ${formatNumberValue((widget.data.amount / 4))}",
-//                      style: Repayments3,
-//                    ),
-//                    if (getStatus(i)) ...[
-//                      Text("PAID",
-//                          style: TextStyle(
-//                              color: PrimaryColor, fontWeight: FontWeight.w600))
-//                    ] else ...[
-//                      RaisedButton(
-//                        onPressed: () => _payNow(transaction, i),
-//                        color: PrimaryColor,
-//                        shape: StadiumBorder(),
-//                        child: Text(
-//                          "Pay Now",
-//                          style: TextStyle(color: Colors.white),
-//                        ),
-//                      )
-//                    ],
-//                  ],
-//                ),
-//              )
                   ],
                 ),
               )
@@ -424,6 +365,9 @@ class _OrderInfoState extends State<OrderInfo> {
         break;
       case 4:
         return "Final Installment";
+        break;
+      case 5:
+        return "Fifth Installment";
         break;
       default:
         return " ";

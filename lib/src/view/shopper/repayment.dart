@@ -23,11 +23,13 @@ class _UpcommingRepaymentsState extends State<UpcommingRepayments> {
   bool scrlDown = true;
   int offset = 0;
 
+  List<Result> _repayment = [];
+
   _scrollListener() async {
     if (_controller.position.pixels == _controller.position.maxScrollExtent) {
       print(" Scroll Lister FetchMore Called");
       offset = offset + 1;
-      BlocProvider.of<RepaymentBloc>(context).add(GetRepayment(20, offset));
+      BlocProvider.of<RepaymentBloc>(context).add(LoadMore(20, offset));
     }
   }
 
@@ -42,7 +44,7 @@ class _UpcommingRepaymentsState extends State<UpcommingRepayments> {
   @override
   void initState() {
     _bloc = BlocProvider.of<RepaymentBloc>(context);
-    BlocProvider.of<RepaymentBloc>(context).add(GetRepayment(0, 0));
+    BlocProvider.of<RepaymentBloc>(context).add(GetRepayment(20, 0));
     _controller.addListener(_scrollListener);
     super.initState();
   }
@@ -61,20 +63,48 @@ class _UpcommingRepaymentsState extends State<UpcommingRepayments> {
             bloc: _bloc,
             builder: (BuildContext context, RepaymentBlocState state) {
               if (state is RepaymentBlocLoaded) {
-                return ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    controller: _controller,
-                    itemCount: state.res.length,
-                    itemBuilder: (BuildContext ctx, int index) {
-                      return _cardView(state.res[index]);
-                    });
-              } else {
+                if (state.res.length > 0) {
+                  _repayment = state.res;
+                  return _listView(false);
+                } else {
+                  return Center(
+                      child: Text("You have no upcomming repayment."));
+                }
+              } else if (state is RepaymentBlocMoreLoading) {
+                return _listView(true);
+              } else if (state is RepaymentBlocMoreLoaded) {
+                _repayment = state.res;
+                return _listView(false);
+              } else if (state is RepaymentBlocLoading) {
                 return Center(child: CircularProgressIndicator());
               }
             },
           ),
         ],
       ),
+    );
+  }
+
+  _listView(bool status) {
+    return Stack(
+      children: <Widget>[
+        ListView.builder(
+            scrollDirection: Axis.vertical,
+            controller: _controller,
+            itemCount: _repayment.length,
+            itemBuilder: (BuildContext ctx, int index) {
+              return _cardView(_repayment[index]);
+            }),
+        if (status) ...[
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 20),
+              child: CircularProgressIndicator(),
+            ),
+          )
+        ]
+      ],
     );
   }
 

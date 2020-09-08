@@ -68,7 +68,7 @@ class Result {
   String status;
   int installment;
   String paymentDate;
-  int amount;
+  num amount;
   String createdAt;
   Shopper shopper;
   ResultBusiness business;
@@ -177,7 +177,7 @@ class Order {
   String shippingAddress;
   String desc;
   int quantity;
-  int amount;
+  num amount;
   String status;
   int totalLateFee;
   String currency;

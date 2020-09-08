@@ -11,6 +11,8 @@ import 'package:slashit/src/repository/user_repository.dart';
 import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/text_styles.dart';
 import 'package:slashit/src/utils/showToast.dart';
+import 'package:slashit/src/widget/progress_btn/iconed_button.dart';
+import 'package:slashit/src/widget/progress_btn/progress_button.dart';
 
 import '../home.dart';
 
@@ -33,6 +35,9 @@ class _ShopperScanState extends State<ShopperScan>
 
   bool isScan = false;
   bool isLoading = false;
+
+  StateSetter setModalState;
+  ButtonState stateOnlyText = ButtonState.idle;
 
   @override
   void initState() {
@@ -125,7 +130,8 @@ class _ShopperScanState extends State<ShopperScan>
   void _modalBottomSheetMenu() {
     showModalBottomSheet(
         context: context,
-        elevation: 2,
+        elevation: 0,
+        barrierColor: Colors.white.withOpacity(0),
         isScrollControlled: true,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
@@ -134,80 +140,93 @@ class _ShopperScanState extends State<ShopperScan>
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setModalState) {
             return Padding(
-              padding: MediaQuery.of(context).viewInsets,
-              child: !isScan
-                  ? Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Container(
-                          margin:
-                              EdgeInsets.only(left: 20, top: 20, bottom: 20),
-                          child: Text(
-                            "Create Payment",
-                            style: shopperScan,
-                          ),
-                        ),
-                        _userTitle(),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        _userAmount(),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Container(
-                            width: 180,
-                            margin: EdgeInsets.only(right: 20, bottom: 20),
-                            child: RaisedButton(
-                              onPressed: () {
-                                if (_titleController.text.isNotEmpty &&
-                                    _amountController.text.isNotEmpty) {
-                                  setState(() {
-                                    FocusScope.of(context)
-                                        .requestFocus(FocusNode());
-                                    isScan = true;
-                                  });
-
-                                  setModalState(() {});
-                                } else {
-                                  showToastMsg("Please fill up the form");
-                                }
-                              },
-                              color: PrimaryColor,
-                              shape: StadiumBorder(),
-                              child: Text(
-                                "Scan QR Code to pay",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    )
-                  : Container(
-                      height: 260,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          CircularProgressIndicator(),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Text(
-                            "Please scan QR code to create payment",
-                            style: shopperScan,
-                          ),
-                        ],
+                padding: MediaQuery.of(context).viewInsets,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(left: 20, top: 20, bottom: 20),
+                      child: Text(
+                        "Create Payment",
+                        style: shopperScan,
                       ),
                     ),
-            );
+                    _userTitle(),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    _userAmount(),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Container(
+                        margin: EdgeInsets.only(bottom: 30),
+                        child: ProgressButton.icon(
+                            iconedButtons: {
+                              ButtonState.idle: IconedButton(
+                                  text: "Scan QR Code to pay",
+                                  icon: Icon(Icons.send, color: Colors.white),
+                                  color: PrimaryColor),
+                              ButtonState.loading: IconedButton(
+                                  text: "Loading", color: PrimaryColor),
+                              ButtonState.fail: IconedButton(
+                                  text: "Failed",
+                                  icon: Icon(Icons.cancel, color: Colors.white),
+                                  color: Colors.red.shade300),
+                              ButtonState.success: IconedButton(
+                                  text: "Success",
+                                  icon: Icon(
+                                    Icons.check_circle,
+                                    color: Colors.white,
+                                  ),
+                                  color: Colors.green.shade400)
+                            },
+                            onPressed: () {
+                              if (_titleController.text.isNotEmpty &&
+                                  _amountController.text.isNotEmpty) {
+                                setState(() {
+                                  FocusScope.of(context)
+                                      .requestFocus(FocusNode());
+                                  isScan = true;
+                                });
+
+                                this.setModalState = setModalState;
+                                this.setModalState(() {
+                                  stateOnlyText = ButtonState.loading;
+                                });
+                              } else {
+                                showToastMsg("Please fill up the form");
+                              }
+                            },
+                            state: stateOnlyText),
+                      ),
+                    )
+                  ],
+                )
+//                  : Container(
+//                      height: 260,
+//                      child: Column(
+//                        crossAxisAlignment: CrossAxisAlignment.center,
+//                        mainAxisAlignment: MainAxisAlignment.center,
+//                        children: <Widget>[
+//                          CircularProgressIndicator(),
+//                          SizedBox(
+//                            height: 20,
+//                          ),
+//                          Text(
+//                            "Please scan QR code to create payment",
+//                            style: shopperScan,
+//                          ),
+//                        ],
+//                      ),
+//                    ),
+                );
           });
         }).whenComplete(() => Navigator.pop(context));
   }
@@ -220,6 +239,7 @@ class _ShopperScanState extends State<ShopperScan>
       ),
       child: TextField(
         controller: _titleController,
+        enabled: !isScan,
         decoration: InputDecoration(
           labelText: "Title",
           focusedBorder: OutlineInputBorder(
@@ -242,6 +262,7 @@ class _ShopperScanState extends State<ShopperScan>
         right: 20,
       ),
       child: TextField(
+        enabled: !isScan,
         controller: _amountController,
         keyboardType: TextInputType.numberWithOptions(decimal: true),
         decoration: InputDecoration(
@@ -265,7 +286,8 @@ class _ShopperScanState extends State<ShopperScan>
       List key = json.decode(code).keys.toList();
 
       if ((key.length == 2 && value.length == 2) &&
-          (key[0] == "type" && key[1] == "id")) {
+          (key[0] == "type" && key[1] == "id") &&
+          value[0] == "business") {
         // animCtrl?.dispose();
         isLoading = true;
 
@@ -276,10 +298,19 @@ class _ShopperScanState extends State<ShopperScan>
             value[1]);
 
         if (result) {
+          this.setModalState(() {
+            stateOnlyText = ButtonState.success;
+          });
+
           await UserRepository.instance.fetchUser();
           BlocProvider.of<WalletBloc>(context).add(GetWallet());
+
           Navigator.pushNamedAndRemoveUntil(
               context, Home.routeName, (route) => false);
+        } else {
+          this.setModalState(() {
+            stateOnlyText = ButtonState.fail;
+          });
         }
       } else {
         showToastMsg("Please scan a valid QR code");

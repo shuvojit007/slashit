@@ -496,11 +496,11 @@ class UserRepository {
       } else {
         LazyCacheMap map = result.data.get("CreatePaymentReqByShopper");
         if (map['success'] == true) {
-          showToastMsgGreen(map['message']);
+          //showToastMsg(map['message']);
           print(map['orderId']);
           return true;
         } else {
-          showToastMsgGreen(map['message']);
+          showToastMsg(map['message']);
           return false;
         }
       }

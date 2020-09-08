@@ -11,22 +11,32 @@ class RepaymentBloc extends Bloc<RepaymentBlocEvent, RepaymentBlocState> {
   @override
   RepaymentBlocState get initialState => InitialRepaymentBlocState();
 
+  List<Result> _repayment = [];
   @override
   Stream<RepaymentBlocState> mapEventToState(
     RepaymentBlocEvent event,
   ) async* {
     if (event is GetRepayment) {
+      _repayment = [];
       yield RepaymentBlocLoading();
       UpcommingPayments upcommingPayments = await UserRepository.instance
           .upCommingRepayments(event.limit, event.offset);
       List<Result> res = upcommingPayments.result;
-      yield RepaymentBlocLoaded(res);
-    } else if (event is UpdateRepayment) {
-      yield RepaymentBlocLoading();
-      UpcommingPayments upcommingPayments =
-          await UserRepository.instance.upCommingRepayments(20, 0);
+
+      for (final Result result in res) {
+        _repayment.add(result);
+      }
+      //  print("repayment ${_repayment.length}");
+      yield RepaymentBlocLoaded(_repayment);
+    } else if (event is LoadMore) {
+      yield RepaymentBlocMoreLoading();
+      UpcommingPayments upcommingPayments = await UserRepository.instance
+          .upCommingRepayments(event.limit, event.offset);
       List<Result> res = upcommingPayments.result;
-      yield RepaymentBlocLoaded(res);
+      for (final Result result in res) {
+        _repayment.add(result);
+      }
+      yield RepaymentBlocMoreLoaded(_repayment);
     }
   }
 }
