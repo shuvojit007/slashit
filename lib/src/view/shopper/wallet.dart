@@ -67,8 +67,8 @@ class _WalletScreenState extends State<WalletScreen> {
               child: Padding(
                 padding: EdgeInsets.only(left: 20, top: 50),
                 child: Icon(
-                  FontAwesomeIcons.times,
-                  size: 20,
+                  Icons.close,
+                  size: 30,
                   color: Colors.black54,
                 ),
               ),

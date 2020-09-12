@@ -27,3 +27,15 @@ const List<Option> business = const <Option>[
   const Option(title: 'Requests', id: "request", icon: Icons.history),
   const Option(title: 'Sign Out', id: "signout", icon: Icons.exit_to_app),
 ];
+
+const List<Option> website = const <Option>[
+//  const Option(
+//      title: 'Transfer to bank', id: "bank", icon: FontAwesomeIcons.piggyBank),
+  const Option(title: 'Refresh', id: "refresh", icon: Icons.art_track),
+  const Option(
+      title: 'Open in default browser', id: "browser", icon: Icons.credit_card),
+//  const Option(
+//      title: 'Requests', id: "request", icon: FontAwesomeIcons.history),
+  const Option(
+      title: 'Go Back to Slashit', id: "goback", icon: Icons.exit_to_app),
+];

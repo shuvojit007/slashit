@@ -17,7 +17,7 @@ getTransactionStatus(String status) {
     case "PAYMENT_REFUNDED":
       return "REFUNDED";
       break;
-    case "PAYMENT_REFUND_FAILED ":
+    case "PAYMENT_REFUND_FAILED":
       return "FAILED";
       break;
 

@@ -309,7 +309,7 @@ class _TransactionDetailsState extends State<TransactionDetails> {
     } else if (sts == "COMPLETED") {
       return Color(0xFFDEFFDF);
     } else {
-      return Color(0xFFf98087);
+      return Color(0xFFf98087).withOpacity(0.4);
     }
   }
 }

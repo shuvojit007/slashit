@@ -81,8 +81,8 @@ class PrefManager {
   String get uniqueId => _getFromDisk(USERID) ?? null;
   set uniqueId(String value) => _saveToDisk(USERID, value);
 
-  int get availableBalance => _getFromDisk(AVAILABLEBALANCE) ?? null;
-  set availableBalance(int value) => _saveToDisk(AVAILABLEBALANCE, value);
+  num get availableBalance => _getFromDisk(AVAILABLEBALANCE) ?? null;
+  set availableBalance(num value) => _saveToDisk(AVAILABLEBALANCE, value);
 //========User Information ==================//
 
 //  int get SIndex => _getFromDisk(SINDEX) ?? 0;

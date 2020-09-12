@@ -131,7 +131,7 @@ class _RequestMoneyState extends State<RequestMoney> {
                             });
                           },
                           child: Icon(
-                            Icons.delete_forever,
+                            Icons.close,
                             size: 25,
                             color: Colors.red,
                           ),

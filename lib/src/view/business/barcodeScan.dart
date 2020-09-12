@@ -7,8 +7,8 @@ import 'package:graphql/utilities.dart' show multipartFileFrom;
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:share/share.dart';
 import 'package:slashit/src/repository/user_repository.dart';
-import 'package:slashit/src/view/QrCode.dart';
 import 'package:slashit/src/view/business/business.dart';
+import 'package:slashit/src/view/qrCode.dart';
 
 import '../home.dart';
 
@@ -109,27 +109,29 @@ class _BarCodeScanningState extends State<BarCodeScanning> {
 //  }
 
   Future qrCode(String type, String id) async {
-    _pr.show();
+    if (orderID == null) {
+      _pr.show();
 
-    print("type ${type} id ${id}");
-    String url = "";
-    if (widget.file != null) {
-      url = await _uploadImage();
-    }
-    var paymentInput = {
-      "title": "\"${widget.title}\"",
-      "desc": "\"${widget.desc}\"",
-      "amount": "${widget.amount}",
-      "note": "\"${widget.note}\"",
-      "attachment": "\"${url}\"",
-      "shopper": "\"${id}\"",
-    };
+      print("type ${type} id ${id}");
+      String url = "";
+      if (widget.file != null) {
+        url = await _uploadImage();
+      }
+      var paymentInput = {
+        "title": "\"${widget.title}\"",
+        "desc": "\"${widget.desc}\"",
+        "amount": "${widget.amount}",
+        "note": "\"${widget.note}\"",
+        "attachment": "\"${url}\"",
+        "shopper": "\"${id}\"",
+      };
 
-    bool result = await UserRepository.instance.createPaymentReq(
-        paymentInput, (type == "installment") ? "INSTALLMENT" : "WALLET");
-    _pr.hide();
-    if (result) {
-      _goTobusinessPage();
+      bool result = await UserRepository.instance.createPaymentReq(
+          paymentInput, (type == "installment") ? "INSTALLMENT" : "WALLET");
+      _pr.hide();
+      if (result) {
+        _goTobusinessPage();
+      }
     }
   }
 //

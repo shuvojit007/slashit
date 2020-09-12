@@ -303,11 +303,11 @@ class _ShopperTranscDetailsState extends State<ShopperTranscDetails> {
   Color _statusColor() {
     String sts = getTransactionStatus(widget.transaction.status);
     if (sts == "PENDING") {
-      return Color(0xFFfec174);
+      return Color(0xFFc79200).withOpacity(0.2);
     } else if (sts == "COMPLETED") {
       return Color(0xFFDEFFDF);
     } else {
-      return Color(0xFFf98087);
+      return Color(0xFFf98087).withOpacity(0.4);
     }
   }
 }

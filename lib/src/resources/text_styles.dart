@@ -59,6 +59,12 @@ const TextStyle loginTitle = TextStyle(
   fontFamily: 'SourceSans',
   fontWeight: FontWeight.w500,
 );
+const TextStyle searchTitle = TextStyle(
+  color: PrimaryColor,
+  fontSize: 30,
+  fontFamily: 'SourceSans',
+  fontWeight: FontWeight.w500,
+);
 
 const TextStyle forgotPass = TextStyle(
   color: PrimaryColor,
@@ -379,7 +385,7 @@ const TextStyle TransactionDetials3 = TextStyle(
 );
 
 const TextStyle TransactionDetials5 = TextStyle(
-  color: Colors.yellow,
+  color: Color(0xFFc79200),
 //  backgroundColor: Color(0xFFfa8c16),
   fontSize: 14,
   fontFamily: 'Roboto',
@@ -412,5 +418,33 @@ const TextStyle payment2 = TextStyle(
   color: Colors.black,
   fontSize: size_18,
   fontFamily: 'Roboto',
+  fontWeight: FontWeight.w600,
+);
+
+//==========Search=========//
+const TextStyle searchTitle1 = TextStyle(
+  color: Colors.black87,
+  fontSize: 20,
+  fontFamily: 'Roboto',
+  fontWeight: FontWeight.w500,
+);
+
+const TextStyle searchTitle2 = TextStyle(
+  color: Colors.purple,
+  fontSize: 16,
+  fontFamily: 'Roboto',
+  fontWeight: FontWeight.w500,
+);
+
+const TextStyle createVcard1 = TextStyle(
+  color: Colors.black,
+  fontSize: 30,
+  fontFamily: 'SourceSans',
+  fontWeight: FontWeight.w500,
+);
+const TextStyle createVcard2 = TextStyle(
+  color: Colors.black,
+  fontSize: 18,
+  fontFamily: 'Raleway',
   fontWeight: FontWeight.w600,
 );

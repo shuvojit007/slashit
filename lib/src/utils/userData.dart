@@ -29,7 +29,7 @@ storeUser(data) {
         locator<PrefManager>().availableBalance = shopper["availableBalance"];
       }
       if (shopper["spendLimit"] != null) {
-        int speend = shopper["spendLimit"];
+        //int speend = shopper["spendLimit"];
         locator<PrefManager>().spendLimit = shopper["spendLimit"];
       }
     } else {

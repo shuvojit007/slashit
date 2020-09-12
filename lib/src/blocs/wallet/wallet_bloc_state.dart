@@ -11,6 +11,6 @@ class InitialWalletBlocState extends WalletBlocState {}
 class WalletBlocLoading extends WalletBlocState {}
 
 class WalletBlocLoaded extends WalletBlocState {
-  int gem;
+  num gem;
   WalletBlocLoaded(this.gem) : super([gem]);
 }

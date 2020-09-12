@@ -51,14 +51,13 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<InnerDrawerState> _innerDrawerKey =
       GlobalKey<InnerDrawerState>();
-  FeaturesBloc _bloc;
   StreamSubscription _pyamentStream;
+  final FeaturesBloc _bloc = new FeaturesBloc();
 
   @override
   void initState() {
     BlocProvider.of<WalletBloc>(context).add(GetWallet());
-    _bloc = FeaturesBloc();
-    _bloc.featchAllFeatures(8, 0);
+    _bloc?.featchAllFeatures(8, 0);
     stream();
     super.initState();
   }

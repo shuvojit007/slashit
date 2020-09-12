@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:slashit/src/blocs/repayment/repayment_bloc.dart';
 import 'package:slashit/src/blocs/wallet/wallet_bloc.dart';
 import 'package:slashit/src/di/locator.dart';
 import 'package:slashit/src/graphql/client.dart';
+import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/utils/routes.dart';
 
 Future<void> main() async {
   try {
     WidgetsFlutterBinding.ensureInitialized();
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: PrimaryColor, // status bar color
+    ));
     await setupLocator();
     runApp(MyApp());
   } catch (error) {

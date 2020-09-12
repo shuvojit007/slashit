@@ -162,6 +162,15 @@ class _TransactionsState extends State<Transactions> {
       case "PAYOUT_PENDING":
         return "Pending";
         break;
+      case "PAYMENT_REFUNDED":
+        return "Refunded";
+        break;
+      case "PAYMENT_REFUND_FAILED":
+        return "Refund Failed";
+        break;
+      case "PAYOUT_REFUNDED":
+        return "Refunded";
+        break;
       default:
         return status;
         break;
