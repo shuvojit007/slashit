@@ -448,3 +448,43 @@ const TextStyle createVcard2 = TextStyle(
   fontFamily: 'Raleway',
   fontWeight: FontWeight.w600,
 );
+const TextStyle createVcard8 = TextStyle(
+  color: Colors.black,
+  fontSize: 14,
+  fontFamily: 'Raleway',
+  fontWeight: FontWeight.w600,
+);
+const TextStyle createVcard6 = TextStyle(
+  color: Colors.black,
+  fontSize: 15,
+  fontFamily: 'Raleway',
+  fontWeight: FontWeight.w600,
+);
+
+const TextStyle createVcard3 = TextStyle(
+  color: Colors.black87,
+  fontSize: 14,
+  fontFamily: 'Roboto',
+  fontWeight: FontWeight.bold,
+);
+
+const TextStyle createVcard4 = TextStyle(
+  color: Colors.black,
+  fontSize: 18,
+  fontFamily: 'Raleway',
+  fontWeight: FontWeight.bold,
+);
+
+const TextStyle createVcard5 = TextStyle(
+  color: Colors.grey,
+  fontSize: 18,
+  fontFamily: 'Raleway',
+  fontWeight: FontWeight.bold,
+);
+
+const TextStyle billingAddress1 = TextStyle(
+  color: Colors.black,
+  fontSize: 16,
+  fontFamily: 'Roboto',
+  fontWeight: FontWeight.w500,
+);

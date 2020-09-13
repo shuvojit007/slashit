@@ -3,6 +3,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/utils/homeExtra.dart';
+import 'package:slashit/src/view/shopper/virtual_card/vcard.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../home.dart';
@@ -111,10 +112,16 @@ class _websiteDetailsState extends State<websiteDetails> {
                       SizedBox(
                         width: 20,
                       ),
-                      Icon(
-                        FontAwesomeIcons.creditCard,
-                        color: PrimaryColor,
-                        size: 30,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => VCard()));
+                        },
+                        child: Icon(
+                          FontAwesomeIcons.creditCard,
+                          color: PrimaryColor,
+                          size: 30,
+                        ),
                       )
                     ],
                   ),
