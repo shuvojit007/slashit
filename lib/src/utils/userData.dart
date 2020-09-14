@@ -1,5 +1,9 @@
+import 'dart:convert';
+
+import 'package:slashit/src/database/dao.dart';
 import 'package:slashit/src/di/locator.dart';
 import 'package:slashit/src/graphql/client.dart';
+import 'package:slashit/src/models/serviceFee.dart';
 import 'package:slashit/src/utils/prefmanager.dart';
 
 storeUser(data) {
@@ -29,8 +33,36 @@ storeUser(data) {
         locator<PrefManager>().availableBalance = shopper["availableBalance"];
       }
       if (shopper["spendLimit"] != null) {
-        //int speend = shopper["spendLimit"];
         locator<PrefManager>().spendLimit = shopper["spendLimit"];
+      }
+
+      //=====service fee =====//
+      if (data["serviceFee"] != null) {
+        List<ServiceFee> serviceFee =
+            serviceFeeFromMap(json.encode(data["serviceFee"]));
+        serviceFee.forEach((element) async {
+          await dbLogic.addService(element);
+        });
+      }
+
+      //=====billing address=====//
+      if (shopper["billing"] != null) {
+        var billing = shopper["billing"];
+        if (billing["address"] != null) {
+          locator<PrefManager>().address = billing["address"];
+        }
+        if (billing["city"] != null) {
+          locator<PrefManager>().city = billing["city"];
+        }
+        if (billing["state"] != null) {
+          locator<PrefManager>().state = billing["state"];
+        }
+        if (billing["postalCode"] != null) {
+          locator<PrefManager>().postalcode = billing["postalCode"];
+        }
+        if (billing["country"] != null) {
+          locator<PrefManager>().country = billing["country"];
+        }
       }
     } else {
       var business = user["business"];
@@ -101,14 +133,21 @@ updateUser(data) {
   }
 }
 
-removeUser() {
+removeUser() async {
   locator<PrefManager>().token = "null";
   locator<PrefManager>().email = "null";
   locator<PrefManager>().avatar = "null";
   locator<PrefManager>().name = "null";
   locator<PrefManager>().role = "null";
   locator<PrefManager>().spendLimit = 0;
-  GraphQLConfiguration.removeToken();
+  //shopper billing address
+  locator<PrefManager>().address = "null";
+  locator<PrefManager>().city = "null";
+  locator<PrefManager>().state = "null";
+  locator<PrefManager>().postalcode = "null";
+  locator<PrefManager>().country = "null";
 
+  GraphQLConfiguration.removeToken();
+  await dbLogic.deleteAll();
   print("remove user ${locator<PrefManager>().token}");
 }

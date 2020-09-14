@@ -340,6 +340,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.16.1"
+  logging:
+    dependency: transitive
+    description:
+      name: logging
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.11.4"
   matcher:
     dependency: transitive
     description:
@@ -390,7 +397,7 @@ packages:
     source: hosted
     version: "1.6.4"
   path_provider:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path_provider
       url: "https://pub.dartlang.org"
@@ -522,6 +529,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.7"
+  sembast:
+    dependency: "direct main"
+    description:
+      name: sembast
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.17.2+2"
   share:
     dependency: "direct main"
     description:

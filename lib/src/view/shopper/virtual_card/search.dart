@@ -37,6 +37,7 @@ class _SearchState extends State<Search> {
     _bloc = SearchWebsiteBloc();
     _bloc.fetchAllWebsitewithText(20, offset, "");
     _controller.addListener(_scrollListener);
+
     super.initState();
   }
 
@@ -106,7 +107,6 @@ class _SearchState extends State<Search> {
             ),
           ),
           SizedBox(height: 10),
-
           Expanded(
             child: Stack(
               children: <Widget>[
@@ -143,26 +143,6 @@ class _SearchState extends State<Search> {
               ],
             ),
           ),
-//          Expanded(
-//              child: StreamBuilder(
-//            stream: _bloc.allWebsite,
-//            builder: (context, AsyncSnapshot<List<Result>> snapshot) {
-//              if (snapshot.hasData && snapshot.data.length > 0) {
-//                return ListView.builder(
-//                    controller: _controller,
-//                    scrollDirection: Axis.vertical,
-//                    itemCount: snapshot.data.length,
-//                    itemBuilder: (BuildContext ctx, int index) {
-//                      return _searchList(snapshot.data[index]);
-//                    });
-//              } else if (snapshot.hasData) {
-//                return Center(child: Text("No website found"));
-//              } else if (snapshot.hasError) {
-//                return Text(snapshot.error.toString());
-//              }
-//              return Center(child: CircularProgressIndicator());
-//            },
-//          )),
         ],
       ),
     );

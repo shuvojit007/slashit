@@ -141,17 +141,17 @@ class _websiteDetailsState extends State<websiteDetails> {
 
   _header() {
     return PreferredSize(
-      preferredSize: Size.fromHeight(80),
+      preferredSize: Size.fromHeight(85),
       child: Card(
         margin: EdgeInsets.all(0),
         child: Container(
-          height: 80,
+          height: 85,
           color: Colors.white,
           width: double.infinity,
           child: Stack(
             children: <Widget>[
               Container(
-                margin: EdgeInsets.only(top: 35, left: 20, right: 50),
+                margin: EdgeInsets.only(top: 40, left: 20, right: 50),
                 decoration: BoxDecoration(
                     color: Colors.grey[300],
                     borderRadius: BorderRadius.all(Radius.circular(15))),
@@ -172,7 +172,7 @@ class _websiteDetailsState extends State<websiteDetails> {
               ),
               Positioned(
                 right: 5,
-                bottom: 3,
+                bottom: 2,
                 child: PopupMenuButton(
                   elevation: 3.2,
                   onCanceled: () {

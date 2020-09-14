@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:slashit/src/models/serviceFee.dart';
 
 class PrefManager {
   //===============Daily Streak=========//
@@ -12,7 +13,13 @@ class PrefManager {
   static const String UNIQUEID = "uniqueId";
   static const String SPENED = "SPENDLIMIT";
   static const String AVAILABLEBALANCE = "AVAILABLEBALANCE";
-
+  static const String DOLLAR = "DOLLAR";
+  static const String NGN = "NGN";
+  static const String ADDRESS = "ADDRESS";
+  static const String STATE = "STATE";
+  static const String CITY = "CITY";
+  static const String POSTALCODE = "POSTALCODE";
+  static const String COUNTRY = "COUNTRY";
   static PrefManager _instance;
   static SharedPreferences _preferences;
 
@@ -83,6 +90,28 @@ class PrefManager {
 
   num get availableBalance => _getFromDisk(AVAILABLEBALANCE) ?? null;
   set availableBalance(num value) => _saveToDisk(AVAILABLEBALANCE, value);
+
+  ServiceFee get dollar => _getFromDisk(DOLLAR) ?? null;
+  set dollar(ServiceFee value) => _saveToDisk(DOLLAR, value);
+
+  ServiceFee get ngn => _getFromDisk(NGN) ?? null;
+  set ngn(ServiceFee value) => _saveToDisk(NGN, value);
+
+  //========Shopper Billing Address
+  String get address => _getFromDisk(ADDRESS) ?? "null";
+  set address(String value) => _saveToDisk(ADDRESS, value);
+
+  String get city => _getFromDisk(CITY) ?? "null";
+  set city(String value) => _saveToDisk(CITY, value);
+
+  String get state => _getFromDisk(STATE) ?? "null";
+  set state(String value) => _saveToDisk(STATE, value);
+
+  String get postalcode => _getFromDisk(POSTALCODE) ?? "null";
+  set postalcode(String value) => _saveToDisk(POSTALCODE, value);
+
+  String get country => _getFromDisk(COUNTRY) ?? "null";
+  set country(String value) => _saveToDisk(COUNTRY, value);
 //========User Information ==================//
 
 //  int get SIndex => _getFromDisk(SINDEX) ?? 0;

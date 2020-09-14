@@ -3,6 +3,7 @@ import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/str.dart';
 import 'package:slashit/src/resources/text_styles.dart';
 import 'package:slashit/src/utils/number.dart';
+import 'package:slashit/src/utils/showToast.dart';
 import 'package:slashit/src/view/shopper/virtual_card/vcard.dart';
 
 class CreateVCard extends StatefulWidget {
@@ -179,6 +180,10 @@ class _CreateVCardState extends State<CreateVCard> {
   }
 
   _goToVcard() {
+    if (_radioValue1 != 0) {
+      showToastMsg("Please accept the agrement");
+      return;
+    }
     Navigator.push(context, MaterialPageRoute(builder: (context) => VCard()));
   }
 }

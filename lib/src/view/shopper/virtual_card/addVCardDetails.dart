@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:slashit/src/database/dao.dart';
 import 'package:slashit/src/di/locator.dart';
+import 'package:slashit/src/models/serviceFee.dart';
 import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/text_styles.dart';
 import 'package:slashit/src/utils/number.dart';
@@ -17,29 +19,69 @@ class _addVCardDetailsState extends State<addVCardDetails> {
   String _dropDownValue = "₦";
   TextEditingController _controller = TextEditingController();
   int amount = 0;
-
   int value = 0;
   int percent = 0;
+  ServiceFee dollar, ngn;
+  int servicecharge = 0;
+  int serviceChargeFlat = 0;
+
+  String chargeStatus = "";
+
   @override
   void initState() {
     _controller.addListener(() {
-      print("text changed");
       value = int.parse(_controller.text);
-      percent = (value * 13 * .01).round();
-
-      setState(() {
-        amount = value + percent;
-      });
+      _updateTheValue();
     });
+    _getService();
 
-    // TODO: implement initState
     super.initState();
+  }
+
+  _updateTheValue() {
+    if (servicecharge != 0 && servicecharge != null) {
+      percent = (value * servicecharge * .01).round();
+    }
+
+    if (serviceChargeFlat != 0 && serviceChargeFlat != null) {
+      percent = serviceChargeFlat;
+    }
+    print(
+        "serviceCharge $servicecharge  serviceChargeFlat $serviceChargeFlat  percent $percent");
+    setState(() {
+      amount = value + percent;
+    });
+  }
+
+  _changeDropDownValue(val) {
+    print("val $val");
+    setState(
+      () {
+        _dropDownValue = val;
+        if (_dropDownValue == "\$") {
+          servicecharge = dollar?.serviceChargePercentage;
+          serviceChargeFlat = dollar?.serviceChargeFlat;
+        } else if (_dropDownValue == "₦") {
+          servicecharge = ngn?.serviceChargePercentage;
+          serviceChargeFlat = ngn?.serviceChargeFlat;
+        }
+        _updateTheValue();
+      },
+    );
+  }
+
+  _getService() async {
+    List<ServiceFee> serviceFee = await dbLogic.getService();
+    serviceFee.forEach((element) {
+      if (element.currency == "\$") dollar = element;
+      if (element.currency == "₦") ngn = element;
+    });
+    _changeDropDownValue("₦");
   }
 
   @override
   void dispose() {
     _controller?.dispose();
-    // TODO: implement dispose
     super.dispose();
   }
 
@@ -105,13 +147,7 @@ class _addVCardDetailsState extends State<addVCardDetails> {
                                 );
                               },
                             ).toList(),
-                            onChanged: (val) {
-                              setState(
-                                () {
-                                  _dropDownValue = val;
-                                },
-                              );
-                            },
+                            onChanged: _changeDropDownValue,
                           ),
                         ),
                       ),
@@ -136,9 +172,22 @@ class _addVCardDetailsState extends State<addVCardDetails> {
                       SizedBox(
                         width: 10,
                       ),
-                      Text(
-                        "+13% Service fee",
-                        style: createVcard3,
+                      Column(
+                        children: <Widget>[
+                          if (serviceChargeFlat != null &&
+                              serviceChargeFlat != 0) ...[
+                            Text(
+                              "+$serviceChargeFlat Service fee",
+                              style: createVcard3,
+                            ),
+                          ],
+                          if (servicecharge != null && servicecharge != 0) ...[
+                            Text(
+                              "+$servicecharge% Service fee",
+                              style: createVcard3,
+                            ),
+                          ],
+                        ],
                       ),
                       SizedBox(
                         width: 20,
@@ -206,14 +255,19 @@ class _addVCardDetailsState extends State<addVCardDetails> {
   }
 
   _goToCreateVCard() {
+    if (amount <= 0) {
+      showToastMsg("please add amount first");
+      return;
+    }
+
     if (locator<PrefManager>().spendLimit < amount) {
       showToastMsg("input amount is bigger than spend limit");
-    } else {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  CreateVCard(value, percent, _dropDownValue)));
+      return;
     }
+
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => CreateVCard(value, percent, _dropDownValue)));
   }
 }

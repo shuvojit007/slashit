@@ -38,6 +38,8 @@ dependencies:
   flutter_inappwebview: ^4.0.0+4
   flutter_country_picker: ^0.1.6
   awesome_card: ^1.1.0
+  sembast: ^1.16.0+1
+  path_provider: ^1.1.0
 
 dev_dependencies:
   flutter_launcher_icons: "^0.7.3"

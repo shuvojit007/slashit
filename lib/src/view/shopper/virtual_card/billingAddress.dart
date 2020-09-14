@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_country_picker/country.dart';
 import 'package:flutter_country_picker/flutter_country_picker.dart';
+import 'package:progress_dialog/progress_dialog.dart';
+import 'package:slashit/src/di/locator.dart';
+import 'package:slashit/src/repository/user_repository.dart';
 import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/text_styles.dart';
+import 'package:slashit/src/utils/prefmanager.dart';
+import 'package:slashit/src/utils/showToast.dart';
 
 class BillingAddress extends StatefulWidget {
   @override
@@ -15,6 +20,36 @@ class _BillingAddressState extends State<BillingAddress> {
   TextEditingController _state = TextEditingController();
   TextEditingController _postal = TextEditingController();
   Country _selected;
+  ProgressDialog _pr;
+  String address = "", city = "", state = "", postal = "", country = "";
+
+  @override
+  void initState() {
+    _pr = ProgressDialog(context, type: ProgressDialogType.Normal);
+
+    if (locator<PrefManager>().address != "null") {
+      _address.text = locator<PrefManager>().address;
+      address = locator<PrefManager>().address;
+    }
+    if (locator<PrefManager>().city != "null") {
+      _city.text = locator<PrefManager>().city;
+      city = locator<PrefManager>().city;
+    }
+    if (locator<PrefManager>().state != "null") {
+      _state.text = locator<PrefManager>().state;
+      state = locator<PrefManager>().state;
+    }
+    if (locator<PrefManager>().postalcode != "null") {
+      _postal.text = locator<PrefManager>().postalcode;
+      postal = locator<PrefManager>().postalcode;
+    }
+    if (locator<PrefManager>().country != "null") {
+      _selected = Country.getCountry(locator<PrefManager>().country);
+      country = locator<PrefManager>().country;
+    }
+
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -35,7 +70,7 @@ class _BillingAddressState extends State<BillingAddress> {
         iconTheme: IconThemeData(color: Colors.black),
         actions: <Widget>[
           GestureDetector(
-              onTap: () {},
+              onTap: _checkBillingAddress,
               child: Align(
                 alignment: Alignment.centerRight,
                 child: Container(
@@ -52,6 +87,45 @@ class _BillingAddressState extends State<BillingAddress> {
         child: _body(),
       ),
     );
+  }
+
+  _checkBillingAddress() async {
+    if ((address.isNotEmpty && address == _address.text) &&
+        (city.isNotEmpty && city == _city.text) &&
+        (state.isNotEmpty && state == _state.text) &&
+        (postal.isNotEmpty && postal == _postal.text) &&
+        (country.isNotEmpty && country == _selected.name)) {
+      print("all are same");
+      Navigator.pop(context);
+    } else {
+      if (_address.text.isNotEmpty &&
+          _city.text.isNotEmpty &&
+          _state.text.isNotEmpty &&
+          _postal.text.isNotEmpty &&
+          _selected != null) {
+        print("all are same 2");
+        _pr.show();
+        bool result = await UserRepository.instance.updateBilling(_address.text,
+            _city.text, _state.text, _selected.name, _postal.text);
+        _pr.hide();
+        if (result) {
+          updateSharedPref(_address.text, _city.text, _state.text,
+              _selected.name, _postal.text);
+          Navigator.pop(context);
+        }
+      } else {
+        showToastMsg("Please fill up the all inputs");
+      }
+    }
+  }
+
+  updateSharedPref(String address, String city, String state, String country,
+      String postal) {
+    locator<PrefManager>().state = state;
+    locator<PrefManager>().address = address;
+    locator<PrefManager>().city = city;
+    locator<PrefManager>().country = country;
+    locator<PrefManager>().postalcode = postal;
   }
 
   _body() {
@@ -85,6 +159,7 @@ class _BillingAddressState extends State<BillingAddress> {
                         setState(() {
                           _selected = country;
                         });
+                        print("selected ${_selected.name}");
                       },
                       selectedCountry: _selected,
                     ))

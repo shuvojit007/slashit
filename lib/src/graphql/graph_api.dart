@@ -44,6 +44,13 @@ class GraphApi {
               exp_month
               exp_year
             }
+               billing{
+          address
+          city
+          state
+          postalCode
+          country
+        }
           }
           business{
             bankName
@@ -54,6 +61,11 @@ class GraphApi {
           email
           address
           status
+    }
+     serviceFee{
+      currency
+      serviceChargeFlat
+      serviceChargePercentage
     }
   }
 }
@@ -506,6 +518,24 @@ query{
       img
       link
     }
+  }
+}
+""";
+  }
+
+  String updateBilling(String address, String city, String state,
+      String country, String postal) {
+    return """mutation {
+  UpdateBilling(
+    address: "$address"
+    city: "$city"
+    state: "$state"
+    country: "$country"
+    postalCode: "$postal"
+  ) {
+    code
+    message
+    success
   }
 }
 """;

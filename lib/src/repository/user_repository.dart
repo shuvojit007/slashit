@@ -679,4 +679,30 @@ class UserRepository {
       }
     }
   }
+
+  Future<bool> updateBilling(String address, String city, String state,
+      String country, String postal) async {
+    try {
+      GraphQLClient _client = GraphQLConfiguration().clientToQuery();
+      QueryResult result = await _client.mutate(MutationOptions(
+          documentNode: gql(
+        GraphApi.instance.updateBilling(address, city, state, country, postal),
+      )));
+      if (result.hasException) {
+        showToastMsg("Something went wrong");
+        return false;
+      } else {
+        LazyCacheMap map = result.data.get("UpdateBilling");
+        if (map['success'] == true) {
+          showToastMsg(map['message']);
+          return true;
+        } else {
+          showToastMsg(map['message']);
+          return false;
+        }
+      }
+    } catch (e) {
+      return false;
+    }
+  }
 }
