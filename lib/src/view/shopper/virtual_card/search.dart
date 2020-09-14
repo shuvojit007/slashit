@@ -1,9 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:slashit/src/blocs/searchWebstie.dart';
+import 'package:slashit/src/models/website.dart';
 import 'package:slashit/src/resources/assets.dart';
 import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/text_styles.dart';
+import 'package:slashit/src/view/common/bankTransfer.dart';
 import 'package:slashit/src/view/shopper/virtual_card/websiteDetails.dart';
 
 class Search extends StatefulWidget {
@@ -13,7 +16,57 @@ class Search extends StatefulWidget {
 }
 
 class _SearchState extends State<Search> {
-  final TextEditingController _accountNumber = TextEditingController();
+  final TextEditingController _searchWebsite = TextEditingController();
+
+  SearchWebsiteBloc _bloc;
+  ScrollController _controller = ScrollController();
+  bool scrlDown = true;
+  int offset = 0;
+  final _debouncer = Debouncer(milliseconds: 500);
+
+  _scrollListener() async {
+    if (_controller.position.pixels == _controller.position.maxScrollExtent) {
+      print(" Scroll Lister FetchMore Called");
+      offset = offset + 1;
+      _bloc.fetchAllWebsitewithText(20, offset, "");
+    }
+  }
+
+  @override
+  void initState() {
+    _bloc = SearchWebsiteBloc();
+    _bloc.fetchAllWebsitewithText(20, offset, "");
+    _controller.addListener(_scrollListener);
+    super.initState();
+  }
+
+  _textChangeListener(String text) {
+    _debouncer.run(() async {
+      print("text $text");
+      if (_searchWebsite.text.isNotEmpty) {
+        print("_debouncer $text");
+        _bloc.fetchAllWebsitewithText(20, 0, text);
+      } else {
+        _bloc.fetchAllWebsite();
+      }
+    });
+  }
+
+  _progressDialog() {
+    return Align(
+        alignment: Alignment.bottomCenter,
+        child: Container(
+            margin: EdgeInsets.only(bottom: 30),
+            child: CircularProgressIndicator()));
+  }
+
+  @override
+  void dispose() {
+    _bloc?.dispose();
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,8 +88,8 @@ class _SearchState extends State<Search> {
               right: 20,
             ),
             child: TextField(
-              onChanged: (String text) {},
-              controller: _accountNumber,
+              onChanged: _textChangeListener,
+              controller: _searchWebsite,
               decoration: InputDecoration(
                 hintText: "www.ebelle.com",
                 focusedBorder: const OutlineInputBorder(
@@ -53,35 +106,69 @@ class _SearchState extends State<Search> {
             ),
           ),
           SizedBox(height: 10),
+
           Expanded(
-            child: ListView(
-              shrinkWrap: true,
+            child: Stack(
               children: <Widget>[
-                _searchList(),
-                _searchList(),
-                _searchList(),
-                _searchList(),
-                _searchList(),
-                _searchList(),
-                _searchList(),
-                _searchList(),
-                _searchList(),
-                _searchList(),
-                _searchList(),
-                _searchList(),
-                _searchList(),
-                _searchList(),
-                _searchList(),
-                _searchList(),
+                StreamBuilder(
+                  stream: _bloc.allWebsite,
+                  builder: (context, AsyncSnapshot<List<Result>> snapshot) {
+                    if (snapshot.hasData && snapshot.data.length > 0) {
+                      return ListView.builder(
+                          controller: _controller,
+                          scrollDirection: Axis.vertical,
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (BuildContext ctx, int index) {
+                            return _searchList(snapshot.data[index]);
+                          });
+                    } else if (snapshot.hasData) {
+                      return Center(child: Text("No website found"));
+                    } else if (snapshot.hasError) {
+                      return Text(snapshot.error.toString());
+                    }
+                    return Center(child: CircularProgressIndicator());
+                  },
+                ),
+                StreamBuilder<bool>(
+                  stream: _bloc.isMoreLoading,
+                  initialData: false,
+                  builder: (context, snapshot) {
+                    if (!snapshot.data) {
+                      return Container();
+                    } else {
+                      return _progressDialog();
+                    }
+                  },
+                ),
               ],
             ),
-          )
+          ),
+//          Expanded(
+//              child: StreamBuilder(
+//            stream: _bloc.allWebsite,
+//            builder: (context, AsyncSnapshot<List<Result>> snapshot) {
+//              if (snapshot.hasData && snapshot.data.length > 0) {
+//                return ListView.builder(
+//                    controller: _controller,
+//                    scrollDirection: Axis.vertical,
+//                    itemCount: snapshot.data.length,
+//                    itemBuilder: (BuildContext ctx, int index) {
+//                      return _searchList(snapshot.data[index]);
+//                    });
+//              } else if (snapshot.hasData) {
+//                return Center(child: Text("No website found"));
+//              } else if (snapshot.hasError) {
+//                return Text(snapshot.error.toString());
+//              }
+//              return Center(child: CircularProgressIndicator());
+//            },
+//          )),
         ],
       ),
     );
   }
 
-  _searchList() {
+  _searchList(Result data) {
     return Container(
       height: 80,
       margin: const EdgeInsets.only(left: 20, bottom: 5, top: 5, right: 20),
@@ -89,10 +176,10 @@ class _SearchState extends State<Search> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          _imageView(),
+          _imageView(data.img),
           Expanded(
             child: Text(
-              "Amazon",
+              data.title,
               textAlign: TextAlign.center,
               style: searchTitle1,
             ),
@@ -103,8 +190,8 @@ class _SearchState extends State<Search> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => websiteDetails(
-                          link: "https://amazon.com/",
-                          title: "Amazon",
+                          link: data.link,
+                          title: data.title,
                         ))),
             child: Text(
               "Visit website",
@@ -117,7 +204,7 @@ class _SearchState extends State<Search> {
     );
   }
 
-  _imageView() {
+  _imageView(String url) {
     return Container(
       height: 55,
       width: 55,
@@ -132,7 +219,7 @@ class _SearchState extends State<Search> {
       child: ClipRRect(
         borderRadius: new BorderRadius.circular(55.0),
         child: CachedNetworkImage(
-          imageUrl: "",
+          imageUrl: url,
           height: 55,
           width: 55,
           fit: BoxFit.cover,

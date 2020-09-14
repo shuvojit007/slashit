@@ -10,6 +10,7 @@ import 'package:slashit/src/models/features_model.dart';
 import 'package:slashit/src/models/paymentReq.dart';
 import 'package:slashit/src/models/transaction.dart';
 import 'package:slashit/src/models/upcommingPayments.dart';
+import 'package:slashit/src/models/website.dart';
 import 'package:slashit/src/utils/showToast.dart';
 import 'package:slashit/src/utils/userData.dart';
 
@@ -647,27 +648,35 @@ class UserRepository {
     String id,
   ) async {
     try {
-      GraphQLClient _client = GraphQLConfiguration().clientToQuery();
       return await GraphQLConfiguration().clientToQuery().subscribe(Operation(
               documentNode: gql(
             GraphApi.instance.paymentSubscription(id),
           )));
-
-//      if (result.hasException) {
-//        showToastMsg("Something went wrong");
-//        return false;
-//      } else {
-//        LazyCacheMap map = result.data.get("RechargeWallet");
-//        if (map['success'] == true) {
-//          showToastMsgGreen("Wallet has been completed");
-//          return true;
-//        } else {
-//          showToastMsg(map['message']);
-//          return false;
-//        }
-//      }
     } catch (e) {
       return null;
+    }
+  }
+
+  //==========SreachWebsite=============//
+  Future<Website> fetchWebsite(int limit, int offset, String searchText) async {
+    GraphQLClient _client = GraphQLConfiguration().clientToQuery();
+    QueryResult result = await _client.query(QueryOptions(
+        documentNode: gql(
+      GraphApi.instance.searchWebsite(limit, offset, searchText),
+    )));
+    if (result.hasException) {
+      print("error  ${result.exception.toString()}");
+      return null;
+    } else {
+      LazyCacheMap map = result.data.get("FetchSearchForShopper");
+      if (map['success'] == true) {
+        Website website = websiteFromMap(json.encode(map));
+        print(website.toString());
+        return website;
+      } else {
+        print("Something went wrong");
+        return null;
+      }
     }
   }
 }

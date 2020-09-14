@@ -492,4 +492,22 @@ query{
 }
 """;
   }
+
+  //=============Serach Website============
+  String searchWebsite(int limit, int offset, String searchText) {
+    return """query {
+  FetchSearchForShopper(limit:$limit,offset:$offset,searchText:"$searchText"){
+    code
+    message
+    success
+    count
+    result{
+      title
+      img
+      link
+    }
+  }
+}
+""";
+  }
 }
