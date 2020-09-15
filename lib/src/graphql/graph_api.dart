@@ -540,4 +540,60 @@ query{
 }
 """;
   }
+
+  String fetchVCard() {
+    return """
+query {
+  FetchVCard {
+    success
+    message
+    count
+    results {
+      _id
+      cardId
+      amount
+      cardNo
+      currency
+      currency
+      cvv
+      expiration
+      expiry_year
+      expiry_month
+      createdAt
+    }
+  }
+}
+""";
+  }
+
+  String deleteVcard(String id) {
+    return """mutation {
+  DeleteVCard(cardId: "$id") {
+    success
+    message
+    code
+  }
+}
+""";
+  }
+
+  String addVcard(String currency, int amount) {
+    return """mutation {
+  AddVCard(currency: "$currency", amount: $amount) {
+    success
+    message
+    result {
+      _id
+      amount
+      cardNo
+      currency
+      currency
+    }
+  }
+}
+
+
+
+""";
+  }
 }

@@ -10,6 +10,7 @@ import 'package:slashit/src/models/features_model.dart';
 import 'package:slashit/src/models/paymentReq.dart';
 import 'package:slashit/src/models/transaction.dart';
 import 'package:slashit/src/models/upcommingPayments.dart';
+import 'package:slashit/src/models/vcard.dart';
 import 'package:slashit/src/models/website.dart';
 import 'package:slashit/src/utils/showToast.dart';
 import 'package:slashit/src/utils/userData.dart';
@@ -693,6 +694,78 @@ class UserRepository {
         return false;
       } else {
         LazyCacheMap map = result.data.get("UpdateBilling");
+        if (map['success'] == true) {
+          showToastMsg(map['message']);
+          return true;
+        } else {
+          showToastMsg(map['message']);
+          return false;
+        }
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<VcardModel> fetchVCard() async {
+    GraphQLClient _client = GraphQLConfiguration().clientToQuery();
+    QueryResult result = await _client.query(QueryOptions(
+        documentNode: gql(
+      GraphApi.instance.fetchVCard(),
+    )));
+    if (result.hasException) {
+      print("error  ${result.exception.toString()}");
+      return null;
+    } else {
+      LazyCacheMap map = result.data.get("FetchVCard");
+      if (map['success'] == true) {
+        VcardModel vcardModel = vcardModelFromMap(json.encode(map));
+        print(vcardModel.toString());
+        return vcardModel;
+      } else {
+        print("Something went wrong");
+        return null;
+      }
+    }
+  }
+
+  Future<bool> deleteVCard(String id) async {
+    try {
+      GraphQLClient _client = GraphQLConfiguration().clientToQuery();
+      QueryResult result = await _client.mutate(MutationOptions(
+          documentNode: gql(
+        GraphApi.instance.deleteVcard(id),
+      )));
+      if (result.hasException) {
+        showToastMsg("Something went wrong");
+        return false;
+      } else {
+        LazyCacheMap map = result.data.get("DeleteVCard");
+        if (map['success'] == true) {
+          showToastMsg(map['message']);
+          return true;
+        } else {
+          showToastMsg(map['message']);
+          return false;
+        }
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> addVcard(String currency, amount) async {
+    try {
+      GraphQLClient _client = GraphQLConfiguration().clientToQuery();
+      QueryResult result = await _client.mutate(MutationOptions(
+          documentNode: gql(
+        GraphApi.instance.addVcard(currency, amount),
+      )));
+      if (result.hasException) {
+        showToastMsg("Something went wrong");
+        return false;
+      } else {
+        LazyCacheMap map = result.data.get("AddVCard");
         if (map['success'] == true) {
           showToastMsg(map['message']);
           return true;

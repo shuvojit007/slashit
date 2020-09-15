@@ -38,6 +38,7 @@ class _TransactionsState extends State<Transactions> {
   void initState() {
     _bloc = TransactionsBloc();
     _bloc.featchAllTransctions(20, 0);
+
     _controller.addListener(_scrollListener);
     super.initState();
   }

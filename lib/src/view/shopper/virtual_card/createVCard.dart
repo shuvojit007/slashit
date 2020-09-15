@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:progress_dialog/progress_dialog.dart';
+import 'package:slashit/src/repository/user_repository.dart';
 import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/str.dart';
 import 'package:slashit/src/resources/text_styles.dart';
@@ -28,11 +30,12 @@ class _CreateVCardState extends State<CreateVCard> {
     });
   }
 
+  ProgressDialog _pr;
   @override
   void initState() {
-    setState(() {
-      totalAmount = widget.amount + widget.charge;
-    });
+    _pr = ProgressDialog(context, type: ProgressDialogType.Normal);
+    totalAmount = widget.amount + widget.charge;
+
     // TODO: implement initState
     super.initState();
   }
@@ -179,11 +182,18 @@ class _CreateVCardState extends State<CreateVCard> {
     }
   }
 
-  _goToVcard() {
+  _goToVcard() async {
     if (_radioValue1 != 0) {
       showToastMsg("Please accept the agrement");
       return;
     }
-    Navigator.push(context, MaterialPageRoute(builder: (context) => VCard()));
+
+    _pr.show();
+    bool result = await UserRepository.instance
+        .addVcard(widget.currancyType == "\$" ? "USD" : "NGN", widget.amount);
+    _pr.hide();
+
+    if (result)
+      Navigator.push(context, MaterialPageRoute(builder: (context) => VCard()));
   }
 }
