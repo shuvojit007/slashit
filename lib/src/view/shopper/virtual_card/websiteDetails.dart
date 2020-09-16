@@ -9,16 +9,24 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../home.dart';
 import 'addVCardDetails.dart';
 
-class websiteDetails extends StatefulWidget {
-  String link, title = "";
+class WebsiteDetailsArguments {
+  final String link;
+  final String title;
 
-  websiteDetails({this.link, this.title});
-
-  @override
-  _websiteDetailsState createState() => _websiteDetailsState();
+  WebsiteDetailsArguments(this.link, this.title);
 }
 
-class _websiteDetailsState extends State<websiteDetails> {
+class WebsiteDetails extends StatefulWidget {
+  static const routeName = "/websiteDetails";
+  String link, title = "";
+
+  WebsiteDetails({this.link, this.title});
+
+  @override
+  _WebsiteDetailsState createState() => _WebsiteDetailsState();
+}
+
+class _WebsiteDetailsState extends State<WebsiteDetails> {
   InAppWebViewController webView;
   TextEditingController _url = TextEditingController();
 
@@ -29,8 +37,8 @@ class _websiteDetailsState extends State<websiteDetails> {
 
   @override
   void initState() {
-    url = widget.link;
-    _url.text = "    ${widget.link}";
+    //  url = widget.link;
+    _url.text = "    ${url}";
     super.initState();
   }
 
@@ -42,6 +50,9 @@ class _websiteDetailsState extends State<websiteDetails> {
 
   @override
   Widget build(BuildContext context) {
+    final WebsiteDetailsArguments args =
+        ModalRoute.of(context).settings.arguments;
+    url = args.link;
     return WillPopScope(
       onWillPop: () async {
         if (webView != null && await webView.canGoBack()) {
@@ -107,7 +118,7 @@ class _websiteDetailsState extends State<websiteDetails> {
                               MaterialPageRoute(
                                   builder: (context) => addVCardDetails()));
                         },
-                        child: Text("Pay in 4 on ${widget.title}"),
+                        child: Text("Pay in 4 on ${args.title}"),
                       ),
                       SizedBox(
                         width: 20,

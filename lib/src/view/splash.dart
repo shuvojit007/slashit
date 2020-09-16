@@ -4,8 +4,6 @@ import 'package:slashit/src/graphql/client.dart';
 import 'package:slashit/src/utils/prefmanager.dart';
 import 'package:slashit/src/view/auth/login_shopper.dart';
 
-import 'home.dart';
-
 class Splash extends StatefulWidget {
   static const routeName = "/";
   @override
@@ -28,21 +26,21 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
     controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         controller.dispose();
-        String token = locator<PrefManager>().token;
-        if (token != null && token != "null") {
-          GraphQLConfiguration.setToken(token);
-          Navigator.pushNamedAndRemoveUntil(
-              context, Home.routeName, (route) => false);
-        } else {
-          print("TOKEN IS NULL");
-          Navigator.pushNamedAndRemoveUntil(
-              context, LoginShopper.routeName, (route) => false);
-        }
+//        String token = locator<PrefManager>().token;
+//        if (token != null && token != "null") {
+//          GraphQLConfiguration.setToken(token);
+//          Navigator.pushNamedAndRemoveUntil(
+//              context, Home.routeName, (route) => false);
+//        } else {
+//          print("TOKEN IS NULL");
+//          Navigator.pushNamedAndRemoveUntil(
+//              context, LoginShopper.routeName, (route) => false);
+//        }
 
-//        locator<PrefManager>().token = "null";
-//        GraphQLConfiguration.removeToken();
-//        Navigator.pushNamedAndRemoveUntil(
-//            context, LoginShopper.routeName, (route) => false);
+        locator<PrefManager>().token = "null";
+        GraphQLConfiguration.removeToken();
+        Navigator.pushNamedAndRemoveUntil(
+            context, LoginShopper.routeName, (route) => false);
       } else if (status == AnimationStatus.dismissed) {}
     });
   }

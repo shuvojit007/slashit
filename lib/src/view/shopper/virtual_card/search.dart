@@ -166,13 +166,21 @@ class _SearchState extends State<Search> {
           ),
           Expanded(
               child: GestureDetector(
-            onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => websiteDetails(
-                          link: data.link,
-                          title: data.title,
-                        ))),
+            onTap: () => Navigator.pushNamed(
+              context,
+              WebsiteDetails.routeName,
+              arguments: WebsiteDetailsArguments(
+                data.link,
+                data.title,
+              ),
+            ),
+//                Navigator.push(
+//                context,
+//                MaterialPageRoute(
+//                    builder: (context) => WebsiteDetails(
+//                          link: data.link,
+//                          title: data.title,
+//                        ),ar)),
             child: Text(
               "Visit website",
               textAlign: TextAlign.right,

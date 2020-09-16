@@ -7,6 +7,7 @@ import 'package:slashit/src/resources/text_styles.dart';
 import 'package:slashit/src/utils/number.dart';
 import 'package:slashit/src/utils/showToast.dart';
 import 'package:slashit/src/view/shopper/virtual_card/vcard.dart';
+import 'package:slashit/src/view/shopper/virtual_card/websiteDetails.dart';
 
 class CreateVCard extends StatefulWidget {
   int amount;
@@ -193,7 +194,10 @@ class _CreateVCardState extends State<CreateVCard> {
         .addVcard(widget.currancyType == "\$" ? "USD" : "NGN", widget.amount);
     _pr.hide();
 
-    if (result)
-      Navigator.push(context, MaterialPageRoute(builder: (context) => VCard()));
+    if (result) {
+      Navigator.pushNamedAndRemoveUntil(context, VCard.routeName,
+          (Route route) => route.settings.name == WebsiteDetails.routeName);
+      // Navigator.push(context, MaterialPageRoute(builder: (context) => VCard()));
+    }
   }
 }

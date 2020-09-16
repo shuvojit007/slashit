@@ -16,12 +16,16 @@ import 'package:slashit/src/view/shopper/featuresList.dart';
 import 'package:slashit/src/view/shopper/orderInfo.dart';
 import 'package:slashit/src/view/shopper/repayment.dart';
 import 'package:slashit/src/view/shopper/shopper_requests.dart';
+import 'package:slashit/src/view/shopper/virtual_card/vcard.dart';
+import 'package:slashit/src/view/shopper/virtual_card/websiteDetails.dart';
 import 'package:slashit/src/view/shopper/wallet.dart';
 import 'package:slashit/src/view/splash.dart';
 import 'package:slashit/src/widget/paystack.dart';
 
 class Routes {
   static const HOME = Home.routeName;
+  static const WEBSITEDETAILS = WebsiteDetails.routeName;
+  static const VCARD = VCard.routeName;
   static const DEBITCARDS = DebitCards.routeName;
   static const TRANSACTIONS = Transactions.routeName;
   static const RESETPASS = ResetPassword.routeName;
@@ -44,6 +48,8 @@ class Routes {
   final route = <String, WidgetBuilder>{
     Routes.HOME: (context) => Home(),
     Routes.root: (context) => Splash(),
+    Routes.VCARD: (context) => VCard(),
+    Routes.WEBSITEDETAILS: (context) => WebsiteDetails(),
     Routes.REQUESTDETAILS: (context) => RequestDetails(),
     Routes.RESETPASS: (context) => ResetPassword(),
     Routes.TRANSACTIONS: (context) => Transactions(),
