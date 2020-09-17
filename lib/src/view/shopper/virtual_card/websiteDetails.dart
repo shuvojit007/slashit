@@ -18,9 +18,6 @@ class WebsiteDetailsArguments {
 
 class WebsiteDetails extends StatefulWidget {
   static const routeName = "/websiteDetails";
-  String link, title = "";
-
-  WebsiteDetails({this.link, this.title});
 
   @override
   _WebsiteDetailsState createState() => _WebsiteDetailsState();

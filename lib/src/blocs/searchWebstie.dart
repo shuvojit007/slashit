@@ -12,6 +12,8 @@ class SearchWebsiteBloc {
 
   List<Result> _websiteList = [];
 
+  int _count = 0;
+
   fetchAllWebsitewithText(int limit, offset, String searchText) async {
     print("fetchAllWebsite offset  ${offset}");
     if (offset != 0) {
@@ -23,16 +25,20 @@ class SearchWebsiteBloc {
     _isMoreLoadingSubject.add(false);
 
     if (searchText.isNotEmpty && searchText != "") {
-      print("fetchAllWebsite 1 ");
+      print("fetchAllWebsite 1 ${res.length}");
+      _count = res.length;
       _websiteFetcher.sink.add(res);
     } else {
       print("fetchAllWebsite 2");
       for (final Result result in res) {
         _websiteList.add(result);
       }
+      _count = _websiteList.length;
       _websiteFetcher.sink.add(_websiteList);
     }
   }
+
+  int get count => _count;
 
   fetchAllWebsite() async {
     if (_websiteList.length > 0) {

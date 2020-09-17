@@ -229,7 +229,9 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
               ),
             ),
           ),
+
           _features(),
+
           //   _paymentSubscription()
         ],
       ),

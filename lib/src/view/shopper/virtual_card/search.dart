@@ -6,6 +6,7 @@ import 'package:slashit/src/models/website.dart';
 import 'package:slashit/src/resources/assets.dart';
 import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/text_styles.dart';
+import 'package:slashit/src/utils/showToast.dart';
 import 'package:slashit/src/view/common/bankTransfer.dart';
 import 'package:slashit/src/view/shopper/virtual_card/websiteDetails.dart';
 
@@ -29,6 +30,25 @@ class _SearchState extends State<Search> {
       print(" Scroll Lister FetchMore Called");
       offset = offset + 1;
       _bloc.fetchAllWebsitewithText(20, offset, "");
+    }
+  }
+
+  _onSubmited(String text) {
+    print("_bloc.websiteList.length ${_bloc.count}");
+    if (_bloc.count == 0) {
+      if (!RegExp(
+              r"^[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)")
+          .hasMatch(text)) {
+        showToastMsg("Please add valid url");
+        return;
+      }
+      print("_onSubmited $text");
+
+      if (!text.startsWith("http://") && !text.startsWith("https://")) {
+        _goToWebSiteDetails("https://$text", "");
+      } else {
+        _goToWebSiteDetails(text, "");
+      }
     }
   }
 
@@ -91,6 +111,8 @@ class _SearchState extends State<Search> {
             child: TextField(
               onChanged: _textChangeListener,
               controller: _searchWebsite,
+              onSubmitted: _onSubmited,
+              textInputAction: TextInputAction.search,
               decoration: InputDecoration(
                 hintText: "www.ebelle.com",
                 focusedBorder: const OutlineInputBorder(
@@ -157,30 +179,19 @@ class _SearchState extends State<Search> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           _imageView(data.img),
+          SizedBox(
+            width: 50,
+          ),
           Expanded(
             child: Text(
               data.title,
-              textAlign: TextAlign.center,
+              textAlign: TextAlign.left,
               style: searchTitle1,
             ),
           ),
           Expanded(
               child: GestureDetector(
-            onTap: () => Navigator.pushNamed(
-              context,
-              WebsiteDetails.routeName,
-              arguments: WebsiteDetailsArguments(
-                data.link,
-                data.title,
-              ),
-            ),
-//                Navigator.push(
-//                context,
-//                MaterialPageRoute(
-//                    builder: (context) => WebsiteDetails(
-//                          link: data.link,
-//                          title: data.title,
-//                        ),ar)),
+            onTap: () => _goToWebSiteDetails(data.link, data.title),
             child: Text(
               "Visit website",
               textAlign: TextAlign.right,
@@ -218,6 +229,17 @@ class _SearchState extends State<Search> {
             height: 55,
           ),
         ),
+      ),
+    );
+  }
+
+  _goToWebSiteDetails(String link, String title) {
+    Navigator.pushNamed(
+      context,
+      WebsiteDetails.routeName,
+      arguments: WebsiteDetailsArguments(
+        link,
+        title,
       ),
     );
   }

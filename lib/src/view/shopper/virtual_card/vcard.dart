@@ -1,6 +1,7 @@
 import 'package:awesome_card/credit_card.dart';
 import 'package:awesome_card/style/card_background.dart';
 import 'package:flutter/material.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:slashit/src/blocs/vcard.dart';
 import 'package:slashit/src/di/locator.dart';
@@ -22,10 +23,11 @@ class VCard extends StatefulWidget {
 
 class _VCardState extends State<VCard> {
   VcardBloc _bloc;
-  final currentDate = DateTime.now();
-
-  final oldDate =
-      new DateTime.fromMillisecondsSinceEpoch(int.parse("1600200142439"));
+  String time = "";
+//  final currentDate = DateTime.now();
+//
+//  final oldDate =
+//      new DateTime.fromMillisecondsSinceEpoch(int.parse("1600200142439"));
 
   PageController _controller =
       PageController(initialPage: 0, viewportFraction: 0.92);
@@ -37,17 +39,36 @@ class _VCardState extends State<VCard> {
   @override
   void initState() {
     _pr = ProgressDialog(context, type: ProgressDialogType.Normal);
-    var myDate =
-        new DateTime.fromMillisecondsSinceEpoch(int.parse("1600200142439"));
-    myDate.add(Duration(hours: 24));
-
-    final difference = oldDate.difference(myDate).inHours;
-
-    print(" difference ${difference}  ");
+//    var myDate =
+//        DateTime.fromMillisecondsSinceEpoch(int.parse("1600200142439"));
+//    myDate.subtract(Duration(
+//      hours: 24,
+//    ));
+//
+//    final difference = oldDate.difference(currentDate).inHours;
+//
+//    var jiffy2 = Jiffy(oldDate)..add(hours: 24);
+//
+//    print(" oldDate ${oldDate.toString()}  ");
+//    print(" difference ${difference}  jiffy2 ${jiffy2.fromNow()} ");
 
     _bloc = VcardBloc();
     _bloc.featchAllCard();
     super.initState();
+  }
+
+  String _setTime(String time) {
+    print(time);
+    final oldDate = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
+    // var newTime = DateTime.parse(time);
+
+    var jiffy2 = Jiffy(oldDate)..add(hours: 24);
+    print(jiffy2.fromNow());
+    return jiffy2.fromNow().replaceAll("ago", "").replaceAll("in", "");
+//    setState(() {
+//      time = jiffy2.fromNow();
+//    });
+    //  print(" difference jiffy2 ${jiffy2.fromNow()} ");
   }
 
   @override
@@ -60,6 +81,9 @@ class _VCardState extends State<VCard> {
   _onPageViewChange(int index) {
     page = index;
     print("Current Page: " + page.toString());
+    setState(() {
+      time = _setTime(cardResult[page].createdAt);
+    });
   }
 
   @override
@@ -72,6 +96,7 @@ class _VCardState extends State<VCard> {
           builder: (context, AsyncSnapshot<List<Result>> snapshot) {
             if (snapshot.hasData && snapshot.data.length > 0) {
               cardResult = snapshot.data;
+              time = _setTime(snapshot.data[0].createdAt);
               return SingleChildScrollView(
                   child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,7 +139,7 @@ class _VCardState extends State<VCard> {
                   Padding(
                     padding: EdgeInsets.only(left: 20, bottom: 10),
                     child: Text(
-                      "Valid for 23hr 47m",
+                      "Valid for $time",
                       style: createVcard1,
                     ),
                   ),
@@ -137,7 +162,8 @@ class _VCardState extends State<VCard> {
                     child: Container(
                       color: Colors.grey[100],
                       margin: EdgeInsets.only(top: 10),
-                      padding: EdgeInsets.only(top: 10, left: 10, bottom: 10, right: 10),
+                      padding: EdgeInsets.only(
+                          top: 10, left: 10, bottom: 10, right: 10),
                       child: Stack(
                         children: <Widget>[
                           Align(
@@ -191,7 +217,6 @@ class _VCardState extends State<VCard> {
             return Center(child: CircularProgressIndicator());
           },
         ),
-
       ],
     ));
   }
@@ -226,7 +251,8 @@ class _VCardState extends State<VCard> {
       cvv: data.cvv,
       bankName: "Limited Use card",
       showBackSide: false,
-      amount: "  ${data.currency == "NGN" ? "₦" : "\$"} ${formatNumberValue(double.parse(data.amount))}",
+      amount:
+          "  ${data.currency == "NGN" ? "₦" : "\$"} ${formatNumberValue(double.parse(data.amount))}",
       frontBackground: CardBackgrounds.black,
       backBackground: CardBackgrounds.white,
       showShadow: true,
