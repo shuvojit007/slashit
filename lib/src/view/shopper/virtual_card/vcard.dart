@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:awesome_card/credit_card.dart';
 import 'package:awesome_card/style/card_background.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:slashit/src/blocs/vcard.dart';
@@ -31,11 +34,15 @@ class _VCardState extends State<VCard> {
 
   PageController _controller =
       PageController(initialPage: 0, viewportFraction: 0.92);
+  StreamSubscription card;
 
   int page = 0;
   ProgressDialog _pr;
   List<Result> cardResult = [];
+  String error = "";
 
+  bool isLoaded = false;
+  bool isError = false;
   @override
   void initState() {
     _pr = ProgressDialog(context, type: ProgressDialogType.Normal);
@@ -53,7 +60,9 @@ class _VCardState extends State<VCard> {
 //    print(" difference ${difference}  jiffy2 ${jiffy2.fromNow()} ");
 
     _bloc = VcardBloc();
+    stream();
     _bloc.featchAllCard();
+
     super.initState();
   }
 
@@ -83,139 +92,154 @@ class _VCardState extends State<VCard> {
     print("Current Page: " + page.toString());
     setState(() {
       time = _setTime(cardResult[page].createdAt);
+      print("time $time");
     });
+  }
+
+  stream() {
+    card = _bloc.allVcards.listen(
+      (event) {
+        print("vcardModel  event $cardResult");
+        setState(() {
+          cardResult = event;
+          if (cardResult.length > 0) time = _setTime(cardResult[0].createdAt);
+          isLoaded = true;
+        });
+        print("vcardModel $cardResult");
+      },
+      onError: (err) {
+        setState(() {
+          error = err.toString();
+          isError = true;
+          isLoaded = true;
+        });
+        print("subscription err ${err.toString()}");
+      },
+      onDone: () {},
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Stack(
+      body: isLoaded
+          ? isError
+              ? Center(child: Text(error))
+              : cardResult.length > 0
+                  ? _body()
+                  : Center(child: Text("You have no virtual card."))
+          : Center(child: CircularProgressIndicator()),
+    );
+  }
+
+  _body() {
+    return SingleChildScrollView(
+        child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        StreamBuilder(
-          stream: _bloc.allVcards,
-          builder: (context, AsyncSnapshot<List<Result>> snapshot) {
-            if (snapshot.hasData && snapshot.data.length > 0) {
-              cardResult = snapshot.data;
-              time = _setTime(snapshot.data[0].createdAt);
-              return SingleChildScrollView(
-                  child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(height: 30),
-                  Stack(
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.only(top: 10, left: 10),
-                        child: IconButton(
-                            icon: Icon(Icons.keyboard_backspace,
-                                color: Colors.black),
-                            onPressed: () => Navigator.pop(context)),
-                      ),
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: Container(
-                          padding: EdgeInsets.only(top: 10, right: 10),
-                          child: PopupMenuButton(
-                            elevation: 3.2,
-                            onCanceled: () {
-                              print('You have not chossed anything');
-                            },
-                            tooltip: 'This is tooltip',
-                            onSelected: optionSelected,
-                            itemBuilder: (BuildContext context) {
-                              return ['Delete'].map((String title) {
-                                return PopupMenuItem(
-                                  value: title,
-                                  child: Text(title),
-                                );
-                              }).toList();
-                            },
-                          ),
-                        ),
-                      ),
-                    ],
+        SizedBox(height: 30),
+        Stack(
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.only(top: 10, left: 10),
+              child: IconButton(
+                  icon: Icon(Icons.keyboard_backspace, color: Colors.black),
+                  onPressed: () => Navigator.pop(context)),
+            ),
+            Align(
+              alignment: Alignment.topRight,
+              child: Container(
+                padding: EdgeInsets.only(top: 10, right: 10),
+                child: PopupMenuButton(
+                  elevation: 3.2,
+                  onCanceled: () {
+                    print('You have not chossed anything');
+                  },
+                  tooltip: 'This is tooltip',
+                  onSelected: optionSelected,
+                  itemBuilder: (BuildContext context) {
+                    return ['Delete'].map((String title) {
+                      return PopupMenuItem(
+                        value: title,
+                        child: Text(title),
+                      );
+                    }).toList();
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 5),
+        Padding(
+          padding: EdgeInsets.only(left: 20, bottom: 10),
+          child: Text(
+            "Valid for $time",
+            style: createVcard1,
+          ),
+        ),
+        SizedBox(height: 5),
+        Container(
+          height: 230,
+          color: Colors.grey[100],
+          child: PageView.builder(
+              allowImplicitScrolling: true,
+              controller: _controller,
+              onPageChanged: _onPageViewChange,
+              itemCount: cardResult.length,
+              itemBuilder: (BuildContext ctx, int index) {
+                return _cardView(cardResult[index]);
+              }),
+        ),
+        SizedBox(height: 10),
+        GestureDetector(
+          onTap: _goToBillindAddress,
+          child: Container(
+            color: Colors.grey[100],
+            margin: EdgeInsets.only(top: 10),
+            padding: EdgeInsets.only(top: 10, left: 10, bottom: 10, right: 10),
+            child: Stack(
+              children: <Widget>[
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "  Billing",
+                    style: createVcard5,
                   ),
-                  SizedBox(height: 5),
-                  Padding(
-                    padding: EdgeInsets.only(left: 20, bottom: 10),
-                    child: Text(
-                      "Valid for $time",
-                      style: createVcard1,
-                    ),
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Icon(
+                    Icons.arrow_forward_ios,
+                    color: Colors.grey,
                   ),
-                  SizedBox(height: 5),
-                  Container(
-                    height: 230,
-                    color: Colors.grey[100],
-                    child: PageView.builder(
-                        allowImplicitScrolling: true,
-                        controller: _controller,
-                        onPageChanged: _onPageViewChange,
-                        itemCount: snapshot.data.length,
-                        itemBuilder: (BuildContext ctx, int index) {
-                          return _cardView(snapshot.data[index]);
-                        }),
-                  ),
-                  SizedBox(height: 10),
-                  GestureDetector(
-                    onTap: _goToBillindAddress,
-                    child: Container(
-                      color: Colors.grey[100],
-                      margin: EdgeInsets.only(top: 10),
-                      padding: EdgeInsets.only(
-                          top: 10, left: 10, bottom: 10, right: 10),
-                      child: Stack(
-                        children: <Widget>[
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              "  Billing",
-                              style: createVcard5,
-                            ),
-                          ),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: Icon(
-                              Icons.arrow_forward_ios,
-                              color: Colors.grey,
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 30),
-                  GestureDetector(
-                    onTap: _copyCard,
-                    child: Column(
-                      children: <Widget>[
-                        Center(
-                          child: Icon(
-                            Icons.credit_card,
-                            size: 50,
-                          ),
-                        ),
-                        Center(child: Text("Copy Card")),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 60),
-                  Padding(
-                    padding: EdgeInsets.only(left: 20, right: 10, bottom: 10),
-                    child: Text(
-                      Str.createvCardSlug3,
-                      style: createVcard8,
-                    ),
-                  ),
-                ],
-              ));
-            } else if (snapshot.hasData) {
-              return Center(child: Text("You have no virtual card. "));
-            } else if (snapshot.hasError) {
-              return Text(snapshot.error.toString());
-            }
-            return Center(child: CircularProgressIndicator());
-          },
+                )
+              ],
+            ),
+          ),
+        ),
+        SizedBox(height: 30),
+        GestureDetector(
+          onTap: _copyCard,
+          child: Column(
+            children: <Widget>[
+              Center(
+                child: Icon(
+                  Icons.credit_card,
+                  size: 50,
+                ),
+              ),
+              Center(child: Text("Copy Card")),
+            ],
+          ),
+        ),
+        SizedBox(height: 60),
+        Padding(
+          padding: EdgeInsets.only(left: 20, right: 10, bottom: 10),
+          child: Text(
+            Str.createvCardSlug3,
+            style: createVcard8,
+          ),
         ),
       ],
     ));
@@ -236,7 +260,12 @@ class _VCardState extends State<VCard> {
   _copyCard() {
     print(_bloc.vCard);
     if (_bloc.vCard != null && _bloc.vCard.length > 0) {
-      showToastMsg(_bloc.vCard[page].toString());
+      Clipboard.setData(new ClipboardData(text: _bloc.vCard[page].cardNo))
+          .then((_) {
+        showToastMsg("Card number copied to clipboard");
+      });
+
+      // showToastMsg(_bloc.vCard[page].toString());
     }
   }
 

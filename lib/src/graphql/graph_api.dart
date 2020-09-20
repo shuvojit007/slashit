@@ -64,6 +64,7 @@ class GraphApi {
     }
      serviceFee{
       currency
+      symbol
       serviceChargeFlat
       serviceChargePercentage
     }
@@ -591,9 +592,22 @@ query {
     }
   }
 }
-
-
-
 """;
+  }
+
+  String featchSettings() {
+    return """
+query {
+  FetchSettings {
+    code
+    success
+    exchangeRate {
+      baseCurrency
+      exchangeCurrency
+      rate
+    }
+  }
+}
+    """;
   }
 }

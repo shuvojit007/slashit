@@ -8,6 +8,7 @@ import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/text_styles.dart';
 import 'package:slashit/src/utils/showToast.dart';
 import 'package:slashit/src/view/common/bankTransfer.dart';
+import 'package:slashit/src/view/shopper/virtual_card/vcard.dart';
 import 'package:slashit/src/view/shopper/virtual_card/websiteDetails.dart';
 
 class Search extends StatefulWidget {
@@ -43,7 +44,6 @@ class _SearchState extends State<Search> {
         return;
       }
       print("_onSubmited $text");
-
       if (!text.startsWith("http://") && !text.startsWith("https://")) {
         _goToWebSiteDetails("https://$text", "");
       } else {
@@ -88,13 +88,11 @@ class _SearchState extends State<Search> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+  _header() {
+    return Container(
+      margin: EdgeInsets.only(top: 50),
+      child: Stack(
         children: <Widget>[
-          SizedBox(height: 60),
           Padding(
             padding: EdgeInsets.only(left: 20, right: 30, bottom: 10),
             child: Text(
@@ -102,6 +100,49 @@ class _SearchState extends State<Search> {
               style: searchTitle,
             ),
           ),
+          Positioned(
+            right: 5,
+            top: 1,
+            child: PopupMenuButton(
+              elevation: 3.2,
+              onCanceled: () {
+                print('You have not chossed anything');
+              },
+              tooltip: 'This is tooltip',
+              onSelected: (String option) {
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => VCard()));
+              },
+              itemBuilder: (BuildContext context) {
+                return ["Your virtual cards"].map((String option) {
+                  return PopupMenuItem(
+                    value: option,
+                    child: Text(option),
+                  );
+                }).toList();
+              },
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+//          SizedBox(height: 60),
+//          Padding(
+//            padding: EdgeInsets.only(left: 20, right: 30, bottom: 10),
+//            child: Text(
+//              "Where do you want to shop ? ",
+//              style: searchTitle,
+//            ),
+//          ),
+          _header(),
           SizedBox(height: 30),
           Padding(
             padding: EdgeInsets.only(

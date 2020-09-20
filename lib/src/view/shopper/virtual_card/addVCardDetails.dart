@@ -16,17 +16,20 @@ class addVCardDetails extends StatefulWidget {
 }
 
 class _addVCardDetailsState extends State<addVCardDetails> {
-  String _dropDownValue = "₦";
+  String _dropDownValue = "";
   TextEditingController _controller = TextEditingController();
   int amount = 0;
   int value = 0;
   int percent = 0;
-  ServiceFee dollar, ngn;
+
   int servicecharge = 0;
   int serviceChargeFlat = 0;
 
   String chargeStatus = "";
+  int pos = 0;
+  List<ServiceFee> service = [];
 
+  num spendLimit = 0;
   @override
   void initState() {
     _controller.addListener(() {
@@ -46,24 +49,22 @@ class _addVCardDetailsState extends State<addVCardDetails> {
     if (serviceChargeFlat != 0 && serviceChargeFlat != null) {
       percent = serviceChargeFlat;
     }
-    print(
-        "serviceCharge $servicecharge  serviceChargeFlat $serviceChargeFlat  percent $percent");
-    setState(() {
-      amount = value + percent;
-    });
+
+    amount = value + percent;
   }
 
-  _changeDropDownValue(val) {
-    print("val $val");
+  _changeDropDownValue(ServiceFee fee) {
     setState(
       () {
-        _dropDownValue = val;
-        if (_dropDownValue == "\$") {
-          servicecharge = dollar?.serviceChargePercentage;
-          serviceChargeFlat = dollar?.serviceChargeFlat;
-        } else if (_dropDownValue == "₦") {
-          servicecharge = ngn?.serviceChargePercentage;
-          serviceChargeFlat = ngn?.serviceChargeFlat;
+        _dropDownValue = fee.symbol;
+        servicecharge = fee?.serviceChargePercentage;
+        serviceChargeFlat = fee?.serviceChargeFlat;
+
+        if (fee.currency == "USD") {
+          spendLimit = locator<PrefManager>().spendLimit /
+              locator<PrefManager>().exchangeRate;
+        } else {
+          spendLimit = locator<PrefManager>().spendLimit;
         }
         _updateTheValue();
       },
@@ -71,12 +72,10 @@ class _addVCardDetailsState extends State<addVCardDetails> {
   }
 
   _getService() async {
-    List<ServiceFee> serviceFee = await dbLogic.getService();
-    serviceFee.forEach((element) {
-      if (element.currency == "\$") dollar = element;
-      if (element.currency == "₦") ngn = element;
-    });
-    _changeDropDownValue("₦");
+    service = await dbLogic.getService();
+    if (service.length > 0) {
+      _changeDropDownValue(service[0]);
+    }
   }
 
   @override
@@ -99,7 +98,7 @@ class _addVCardDetailsState extends State<addVCardDetails> {
                   child: IconButton(
                       icon: Icon(Icons.keyboard_backspace, color: Colors.black),
                       onPressed: () => Navigator.pop(context))),
-              SizedBox(height: 10),
+              SizedBox(height: 5),
               Padding(
                 padding: EdgeInsets.only(left: 20, bottom: 10),
                 child: Text(
@@ -110,7 +109,7 @@ class _addVCardDetailsState extends State<addVCardDetails> {
               Padding(
                   padding: EdgeInsets.only(left: 20, bottom: 10),
                   child: Text(
-                    "Spend limit (₦ ${formatNumberValue(locator<PrefManager>().spendLimit)})",
+                    "Spend limit ($_dropDownValue ${formatNumberValue(spendLimit)})",
                     style: createVcard2,
                   )),
             ],
@@ -139,11 +138,11 @@ class _addVCardDetailsState extends State<addVCardDetails> {
                               style: createVcard4,
                             ),
                             style: createVcard4,
-                            items: ['₦', '\$'].map(
+                            items: service.map(
                               (val) {
-                                return DropdownMenuItem<String>(
+                                return DropdownMenuItem<ServiceFee>(
                                   value: val,
-                                  child: Text(val),
+                                  child: Text(val.symbol),
                                 );
                               },
                             ).toList(),

@@ -245,7 +245,7 @@ const TextStyle Wallet1 = TextStyle(
 
 const TextStyle Repayments1 = TextStyle(
   color: Colors.black,
-  fontSize: size_16,
+  fontSize: size_14,
   fontFamily: 'Roboto',
   fontWeight: FontWeight.w600,
 );
@@ -438,13 +438,13 @@ const TextStyle searchTitle2 = TextStyle(
 
 const TextStyle createVcard1 = TextStyle(
   color: Colors.black,
-  fontSize: 30,
+  fontSize: 28,
   fontFamily: 'SourceSans',
   fontWeight: FontWeight.w500,
 );
 const TextStyle createVcard2 = TextStyle(
   color: Colors.black,
-  fontSize: 18,
+  fontSize: 17,
   fontFamily: 'Raleway',
   fontWeight: FontWeight.w600,
 );
@@ -456,7 +456,7 @@ const TextStyle createVcard8 = TextStyle(
 );
 const TextStyle createVcard6 = TextStyle(
   color: Colors.black,
-  fontSize: 15,
+  fontSize: 14,
   fontFamily: 'Raleway',
   fontWeight: FontWeight.w600,
 );

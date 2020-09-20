@@ -13,19 +13,22 @@ String serviceFeeToMap(List<ServiceFee> data) =>
 class ServiceFee {
   ServiceFee({
     this.currency,
+    this.symbol,
     this.serviceChargeFlat,
     this.serviceChargePercentage,
   });
 
   String currency;
-  int serviceChargeFlat;
-  int serviceChargePercentage;
+  String symbol;
+  num serviceChargeFlat;
+  num serviceChargePercentage;
 
   factory ServiceFee.fromMap(Map<String, dynamic> json) => ServiceFee(
         currency: json["currency"] == null ? null : json["currency"],
         serviceChargeFlat: json["serviceChargeFlat"] == null
             ? null
             : json["serviceChargeFlat"],
+        symbol: json["symbol"] == null ? null : json["symbol"],
         serviceChargePercentage: json["serviceChargePercentage"] == null
             ? null
             : json["serviceChargePercentage"],
@@ -35,12 +38,13 @@ class ServiceFee {
         "currency": currency == null ? null : currency,
         "serviceChargeFlat":
             serviceChargeFlat == null ? null : serviceChargeFlat,
+        "symbol": symbol == null ? null : symbol,
         "serviceChargePercentage":
             serviceChargePercentage == null ? null : serviceChargePercentage,
       };
 
   @override
   String toString() {
-    return 'ServiceFee{currency: $currency, serviceChargeFlat: $serviceChargeFlat, serviceChargePercentage: $serviceChargePercentage}';
+    return 'ServiceFee{currency: $currency, serviceChargeFlat: $serviceChargeFlat, symbol: $symbol, serviceChargePercentage: $serviceChargePercentage}';
   }
 }

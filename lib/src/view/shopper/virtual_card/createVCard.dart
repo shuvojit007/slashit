@@ -55,7 +55,7 @@ class _CreateVCardState extends State<CreateVCard> {
                   child: IconButton(
                       icon: Icon(Icons.keyboard_backspace, color: Colors.black),
                       onPressed: () => Navigator.pop(context))),
-              SizedBox(height: 10),
+              SizedBox(height: 5),
               Padding(
                 padding: EdgeInsets.only(left: 20, right: 10, bottom: 10),
                 child: Text(
@@ -70,6 +70,7 @@ class _CreateVCardState extends State<CreateVCard> {
                     style: createVcard6,
                   )),
               for (int i = 0; i < 4; i++) _transactions(i),
+              SizedBox(height: 200),
             ],
           ),
         ),
@@ -127,7 +128,7 @@ class _CreateVCardState extends State<CreateVCard> {
 
   Widget _transactions(int i) {
     return Container(
-      height: 80,
+      height: 65,
       margin: EdgeInsets.only(left: 10, right: 10),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,

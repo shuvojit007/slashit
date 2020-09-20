@@ -112,6 +112,9 @@ class PrefManager {
 
   String get country => _getFromDisk(COUNTRY) ?? "null";
   set country(String value) => _saveToDisk(COUNTRY, value);
+
+  num get exchangeRate => _getFromDisk("EXCHANGERATE") ?? 0;
+  set exchangeRate(num value) => _saveToDisk("EXCHANGERATE", value);
 //========User Information ==================//
 
 //  int get SIndex => _getFromDisk(SINDEX) ?? 0;

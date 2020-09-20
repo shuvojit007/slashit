@@ -168,6 +168,7 @@ class _LoginShopperState extends State<LoginShopper> {
       _pr.show();
       bool result = await UserRepository.instance
           .authUser(_emailController.text, _passwordController.text, false);
+      bool settingsResult = await UserRepository.instance.fetchSettings();
       _pr.hide();
       if (result) {
         Navigator.pushNamedAndRemoveUntil(

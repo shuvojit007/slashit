@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:slashit/src/di/locator.dart';
 import 'package:slashit/src/graphql/client.dart';
 import 'package:slashit/src/graphql/graph_api.dart';
 import 'package:slashit/src/models/cards.dart';
@@ -12,6 +13,7 @@ import 'package:slashit/src/models/transaction.dart';
 import 'package:slashit/src/models/upcommingPayments.dart';
 import 'package:slashit/src/models/vcard.dart';
 import 'package:slashit/src/models/website.dart';
+import 'package:slashit/src/utils/prefmanager.dart';
 import 'package:slashit/src/utils/showToast.dart';
 import 'package:slashit/src/utils/userData.dart';
 
@@ -776,6 +778,30 @@ class UserRepository {
       }
     } catch (e) {
       return false;
+    }
+  }
+
+  Future<bool> fetchSettings() async {
+    GraphQLClient _client = GraphQLConfiguration().clientToQuery();
+    QueryResult result = await _client.query(QueryOptions(
+        documentNode: gql(
+      GraphApi.instance.featchSettings(),
+    )));
+    if (result.hasException) {
+      print("error  ${result.exception.toString()}");
+      return false;
+    } else {
+      LazyCacheMap map = result.data.get("FetchSettings");
+      if (map['success'] == true) {
+        var exchangeRate = result.data['FetchSettings']['exchangeRate'];
+        num rate = exchangeRate['rate'];
+        print("exchange Rate ${rate}");
+        locator<PrefManager>().exchangeRate = rate;
+        return true;
+      } else {
+        print("Something went wrong");
+        return false;
+      }
     }
   }
 }

@@ -40,7 +40,9 @@ storeUser(data) {
       if (data["serviceFee"] != null) {
         List<ServiceFee> serviceFee =
             serviceFeeFromMap(json.encode(data["serviceFee"]));
+
         serviceFee.forEach((element) async {
+          print("service fee ${element.toString()}");
           await dbLogic.addService(element);
         });
       }
