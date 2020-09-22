@@ -264,7 +264,7 @@ class _SearchState extends State<Search> {
           width: 55,
           fit: BoxFit.cover,
           errorWidget: (context, url, error) => Image.asset(
-            Assets.Placeholder,
+            Assets.Placeholder2,
             width: 55,
             fit: BoxFit.cover,
             height: 55,

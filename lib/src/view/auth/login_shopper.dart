@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:slashit/src/database/dao.dart';
 import 'package:slashit/src/repository/user_repository.dart';
 import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/text_styles.dart';
@@ -166,8 +167,10 @@ class _LoginShopperState extends State<LoginShopper> {
         Validators.isValidPassword(_passwordController.text)) {
       FocusScope.of(context).requestFocus(FocusNode());
       _pr.show();
+      await dbLogic.deleteAll();
       bool result = await UserRepository.instance
           .authUser(_emailController.text, _passwordController.text, false);
+
       bool settingsResult = await UserRepository.instance.fetchSettings();
       _pr.hide();
       if (result) {

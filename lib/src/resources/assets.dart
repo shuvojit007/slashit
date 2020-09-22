@@ -15,6 +15,7 @@ class Assets {
   static const String PROFILE = "assets/img/profile.png";
   static const String SETTINGS = "assets/img/settings.png";
   static const String Placeholder = "assets/images/placeholder.png";
+  static const String Placeholder2 = "assets/images/images.png";
   static const String error = "assets/img/error.png";
 
   static const String Diamond = "assets/img/diamond.png";

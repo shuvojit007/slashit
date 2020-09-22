@@ -18,9 +18,9 @@ class addVCardDetails extends StatefulWidget {
 class _addVCardDetailsState extends State<addVCardDetails> {
   String _dropDownValue = "";
   TextEditingController _controller = TextEditingController();
-  int amount = 0;
-  int value = 0;
-  int percent = 0;
+  num amount = 0;
+  num value = 0;
+  num percent = 0;
 
   int servicecharge = 0;
   int serviceChargeFlat = 0;
@@ -32,10 +32,11 @@ class _addVCardDetailsState extends State<addVCardDetails> {
   num spendLimit = 0;
   @override
   void initState() {
-    _controller.addListener(() {
-      value = int.parse(_controller.text);
-      _updateTheValue();
-    });
+//    _controller.addListener(() {
+//      print("   controller ${_controller.text}");
+//      value = int.parse(_controller.text);
+//      _updateTheValue();
+//    });
     _getService();
 
     super.initState();
@@ -43,7 +44,7 @@ class _addVCardDetailsState extends State<addVCardDetails> {
 
   _updateTheValue() {
     if (servicecharge != 0 && servicecharge != null) {
-      percent = (value * servicecharge * .01).round();
+      percent = value * servicecharge * .01;
     }
 
     if (serviceChargeFlat != 0 && serviceChargeFlat != null) {
@@ -51,6 +52,7 @@ class _addVCardDetailsState extends State<addVCardDetails> {
     }
 
     amount = value + percent;
+    print("amount ${amount}  percent ${percent}  value ${value}");
   }
 
   _changeDropDownValue(ServiceFee fee) {
@@ -76,6 +78,14 @@ class _addVCardDetailsState extends State<addVCardDetails> {
     if (service.length > 0) {
       _changeDropDownValue(service[0]);
     }
+  }
+
+  textChangeListener(String text) async {
+    print("   controller ${_controller.text}");
+    value = int.parse(text);
+    setState(() {
+      _updateTheValue();
+    });
   }
 
   @override
@@ -159,6 +169,7 @@ class _addVCardDetailsState extends State<addVCardDetails> {
                             height: 50,
                             child: TextField(
                               controller: _controller,
+                              onChanged: textChangeListener,
                               keyboardType:
                                   const TextInputType.numberWithOptions(
                                 decimal: true,
@@ -239,7 +250,7 @@ class _addVCardDetailsState extends State<addVCardDetails> {
                 color: PrimaryColor,
                 onPressed: _goToCreateVCard,
                 child: Text(
-                    "Total Amount $_dropDownValue ${formatNumberValue(amount)}"),
+                    "Total Amount $_dropDownValue ${amount.toStringAsFixed(2)}"),
               ),
             ),
           )
@@ -259,7 +270,7 @@ class _addVCardDetailsState extends State<addVCardDetails> {
       return;
     }
 
-    if (locator<PrefManager>().spendLimit < amount) {
+    if (spendLimit < amount) {
       showToastMsg("input amount is bigger than spend limit");
       return;
     }

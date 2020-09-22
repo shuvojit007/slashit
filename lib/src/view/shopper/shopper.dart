@@ -17,6 +17,7 @@ import 'package:slashit/src/di/locator.dart';
 import 'package:slashit/src/graphql/client.dart';
 import 'package:slashit/src/graphql/graph_api.dart';
 import 'package:slashit/src/models/features_model.dart';
+import 'package:slashit/src/repository/user_repository.dart';
 import 'package:slashit/src/resources/assets.dart';
 import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/str.dart';
@@ -62,7 +63,7 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
     super.initState();
   }
 
-  stream() {
+  stream() async {
     _pyamentStream = GraphQLConfiguration()
         .clientToQuery()
         .subscribe(Operation(
@@ -88,6 +89,12 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
       },
       onDone: () {},
     );
+
+    bool update = await UserRepository.instance.fetchUser();
+    print("update $update");
+    if (update) {
+      setState(() {});
+    }
   }
 
   @override

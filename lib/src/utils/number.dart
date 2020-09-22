@@ -10,3 +10,9 @@ formatNumberValue(num value) {
   print(double.parse(valueStr));
   return "${display(double.parse(valueStr))}.00";
 }
+
+formatNumberValuefloat(num value) {
+  String valueStr = value.toStringAsFixed(3);
+  print(double.parse(valueStr));
+  return "${display(value)}";
+}

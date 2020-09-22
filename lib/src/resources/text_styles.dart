@@ -249,6 +249,12 @@ const TextStyle Repayments1 = TextStyle(
   fontFamily: 'Roboto',
   fontWeight: FontWeight.w600,
 );
+const TextStyle Repayments11 = TextStyle(
+  color: Colors.black54,
+  fontSize: size_14,
+  fontFamily: 'Roboto',
+  fontWeight: FontWeight.w400,
+);
 const TextStyle Repayments2 = TextStyle(
   color: Colors.black87,
   fontSize: size_15,

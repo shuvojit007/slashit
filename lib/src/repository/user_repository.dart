@@ -159,7 +159,7 @@ class UserRepository {
     }
   }
 
-  Future<void> fetchUser() async {
+  Future<bool> fetchUser() async {
     GraphQLClient _client = GraphQLConfiguration().clientToQuery();
     QueryResult result = await _client.query(QueryOptions(
         documentNode: gql(
@@ -167,6 +167,7 @@ class UserRepository {
     )));
     if (result.hasException) {
       print("error  ${result.exception.toString()}");
+      return false;
     } else {
       LazyCacheMap map = result.data.get("FetchUserById");
       if (map['success'] == true) {
@@ -174,6 +175,7 @@ class UserRepository {
       } else {
         print("Something went wrong");
       }
+      return true;
     }
   }
 

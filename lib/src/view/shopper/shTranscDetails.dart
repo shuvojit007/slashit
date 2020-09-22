@@ -140,7 +140,9 @@ class _ShopperTranscDetailsState extends State<ShopperTranscDetails> {
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: Text(
-                      "${widget.result.business.business.businessName}",
+                      widget.result.business?.business == null
+                          ? ""
+                          : "${widget.result.business.business?.businessName}",
                       style: TransactionDetials2,
                     ),
                   ),

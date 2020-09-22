@@ -73,8 +73,8 @@ class PrefManager {
   String get role => _getFromDisk(ROLE) ?? null;
   set role(String value) => _saveToDisk(ROLE, value);
 
-  int get spendLimit => _getFromDisk(SPENED) ?? null;
-  set spendLimit(int value) => _saveToDisk(SPENED, value);
+  num get spendLimit => _getFromDisk(SPENED) ?? null;
+  set spendLimit(num value) => _saveToDisk(SPENED, value);
 
   String get name => _getFromDisk(NAME) ?? null;
   set name(String value) => _saveToDisk(NAME, value);

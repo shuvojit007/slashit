@@ -29,6 +29,9 @@ class DBLogic {
     print("ResetData Called");
     await _service.delete(await db);
     print("ResetData Finished");
+
+    List<ServiceFee> service = await dbLogic.getService();
+    print(service.toString());
   }
 }
 

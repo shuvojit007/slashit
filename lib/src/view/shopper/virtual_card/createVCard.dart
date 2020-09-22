@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:slashit/src/di/locator.dart';
 import 'package:slashit/src/repository/user_repository.dart';
 import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/str.dart';
 import 'package:slashit/src/resources/text_styles.dart';
-import 'package:slashit/src/utils/number.dart';
+import 'package:slashit/src/utils/prefmanager.dart';
 import 'package:slashit/src/utils/showToast.dart';
 import 'package:slashit/src/view/shopper/virtual_card/vcard.dart';
 import 'package:slashit/src/view/shopper/virtual_card/websiteDetails.dart';
 
 class CreateVCard extends StatefulWidget {
-  int amount;
-  int charge;
+  num amount;
+  num charge;
   String currancyType;
 
   CreateVCard(this.amount, this.charge, this.currancyType);
@@ -23,7 +24,7 @@ class CreateVCard extends StatefulWidget {
 class _CreateVCardState extends State<CreateVCard> {
   Key radio1, radio2, radio3, radio4;
 
-  int totalAmount = 0;
+  num totalAmount = 0;
   int _radioValue1 = -1;
   _handleRadioValueChange(int value) {
     setState(() {
@@ -77,7 +78,7 @@ class _CreateVCardState extends State<CreateVCard> {
         Align(
           alignment: Alignment.bottomCenter,
           child: Container(
-            height: 100,
+            height: 140,
             child: Column(
               children: <Widget>[
                 Expanded(
@@ -113,7 +114,7 @@ class _CreateVCardState extends State<CreateVCard> {
                     color: PrimaryColor,
                     onPressed: _goToVcard,
                     child: Text(
-                      "Pay \nand create your ${widget.currancyType} ${formatNumberValue(totalAmount)} card",
+                      "Pay \nand create your ${widget.currancyType} ${totalAmount.toStringAsFixed(2)} card",
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -128,7 +129,7 @@ class _CreateVCardState extends State<CreateVCard> {
 
   Widget _transactions(int i) {
     return Container(
-      height: 65,
+      height: 75,
       margin: EdgeInsets.only(left: 10, right: 10),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -151,7 +152,7 @@ class _CreateVCardState extends State<CreateVCard> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                    "${widget.currancyType} ${formatNumberValue(totalAmount / 4)}",
+                    "${widget.currancyType} ${(totalAmount / 4).toStringAsFixed(2)}",
                     style: Repayments1),
                 SizedBox(
                   height: 5,
@@ -159,7 +160,15 @@ class _CreateVCardState extends State<CreateVCard> {
                 Text(
                   getDate(i),
                   style: Repayments2,
-                )
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                if (widget.currancyType == "\$") ...[
+                  Text(
+                      "₦ ${((totalAmount * locator<PrefManager>().exchangeRate) / 4).toStringAsFixed(2)}",
+                      style: Repayments11),
+                ]
               ],
             ),
           ),

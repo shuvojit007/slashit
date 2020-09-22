@@ -112,7 +112,9 @@ class _OrderInfoState extends State<OrderInfo> {
             ),
             Center(
                 child: Text(
-              "${widget.data.business.business.businessName}",
+              widget.data?.business?.business == null
+                  ? widget.data?.title
+                  : "${widget.data?.business?.business?.businessName}",
               style: OrderInfo1,
             )),
             SizedBox(
@@ -148,14 +150,16 @@ class _OrderInfoState extends State<OrderInfo> {
             Padding(
               padding: const EdgeInsets.only(left: 20, bottom: 5),
               child: Text(
-                "${widget.data.title}",
+                widget.data?.business?.business == null
+                    ? widget.data?.note
+                    : "${widget.data?.title}",
                 style: OrderInfo4,
               ),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 20),
               child: Text(
-                "${widget.data.desc}",
+                widget.data?.desc == null ? "" : "${widget.data?.desc}",
                 style: OrderInfo5,
               ),
             ),

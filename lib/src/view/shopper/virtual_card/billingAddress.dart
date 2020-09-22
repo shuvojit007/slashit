@@ -44,10 +44,13 @@ class _BillingAddressState extends State<BillingAddress> {
       postal = locator<PrefManager>().postalcode;
     }
     if (locator<PrefManager>().country != "null") {
-      _selected = Country.getCountry(locator<PrefManager>().country);
+      _selected = Country.findByIsoCode(locator<PrefManager>().country);
       country = locator<PrefManager>().country;
+    } else {
+      print("_selected $_selected");
     }
 
+    print("_selected ${locator<PrefManager>().country}");
     super.initState();
   }
 
@@ -57,7 +60,6 @@ class _BillingAddressState extends State<BillingAddress> {
     _city?.dispose();
     _state?.dispose();
     _postal?.dispose();
-    // TODO: implement dispose
     super.dispose();
   }
 
@@ -94,7 +96,7 @@ class _BillingAddressState extends State<BillingAddress> {
         (city.isNotEmpty && city == _city.text) &&
         (state.isNotEmpty && state == _state.text) &&
         (postal.isNotEmpty && postal == _postal.text) &&
-        (country.isNotEmpty && country == _selected.name)) {
+        (country.isNotEmpty && country == _selected.isoCode)) {
       print("all are same");
       Navigator.pop(context);
     } else {
@@ -106,11 +108,11 @@ class _BillingAddressState extends State<BillingAddress> {
         print("all are same 2");
         _pr.show();
         bool result = await UserRepository.instance.updateBilling(_address.text,
-            _city.text, _state.text, _selected.name, _postal.text);
+            _city.text, _state.text, _selected.isoCode, _postal.text);
         _pr.hide();
         if (result) {
           updateSharedPref(_address.text, _city.text, _state.text,
-              _selected.name, _postal.text);
+              _selected.isoCode, _postal.text);
           Navigator.pop(context);
         }
       } else {
@@ -159,7 +161,7 @@ class _BillingAddressState extends State<BillingAddress> {
                         setState(() {
                           _selected = country;
                         });
-                        print("selected ${_selected.name}");
+                        print("selected ${_selected.isoCode}");
                       },
                       selectedCountry: _selected,
                     ))
