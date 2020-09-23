@@ -155,7 +155,7 @@ class _SearchState extends State<Search> {
               onSubmitted: _onSubmited,
               textInputAction: TextInputAction.search,
               decoration: InputDecoration(
-                hintText: "www.ebelle.com",
+                hintText: "www.example.com",
                 focusedBorder: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(15)),
                     borderSide: BorderSide(color: PrimaryColor, width: 1.0)),

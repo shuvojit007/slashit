@@ -66,7 +66,7 @@ class _LoginBusinessState extends State<LoginBusiness> {
                   Navigator.pushNamed(context, ResetPassword.routeName),
               child: Padding(
                   padding: EdgeInsets.only(left: 20),
-                  child: Text("Forget Password ?", style: forgotPass)),
+                  child: Text("Forgot Password ?", style: forgotPass)),
             ),
             SizedBox(height: 20),
             _signInButton(),

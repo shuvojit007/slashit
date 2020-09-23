@@ -169,6 +169,10 @@ class _WebsiteDetailsState extends State<WebsiteDetails> {
                   child: TextField(
                     controller: _url,
                     onSubmitted: (String value) {
+                      if (!value.startsWith("http://") &&
+                          !value.startsWith("https://")) {
+                        value = "https://$value";
+                      }
                       webView.loadUrl(url: value);
                     },
                     //  enabled: false,

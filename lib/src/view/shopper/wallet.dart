@@ -25,7 +25,7 @@ class _WalletScreenState extends State<WalletScreen> {
           child: Column(
             children: <Widget>[
               Text(
-                "Pay Instantly from your Wallet balance using this scancode",
+                "Pay instantly from your Slash direct balance using the QR code.",
                 style: Wallet1,
               ),
               SizedBox(

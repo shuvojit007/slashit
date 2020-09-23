@@ -158,7 +158,7 @@ class _VCardState extends State<VCard> {
                   tooltip: 'This is tooltip',
                   onSelected: optionSelected,
                   itemBuilder: (BuildContext context) {
-                    return ['Delete'].map((String title) {
+                    return ['Delete this card'].map((String title) {
                       return PopupMenuItem(
                         value: title,
                         child: Text(title),
