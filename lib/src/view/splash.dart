@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_session/flutter_session.dart';
 import 'package:slashit/src/di/locator.dart';
 import 'package:slashit/src/graphql/client.dart';
 import 'package:slashit/src/utils/prefmanager.dart';
 import 'package:slashit/src/view/auth/login_shopper.dart';
+
+import 'home.dart';
 
 class Splash extends StatefulWidget {
   static const routeName = "/";
@@ -23,10 +26,25 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
     animation = CurvedAnimation(parent: controller, curve: Curves.easeInCubic);
     controller.forward();
 
-    controller.addStatusListener((status) {
+    controller.addStatusListener((status) async {
       if (status == AnimationStatus.completed) {
         controller.dispose();
-//        String token = locator<PrefManager>().token;
+        dynamic sessionToken = await FlutterSession().get("token");
+        String token = locator<PrefManager>().token;
+
+        print("sessionToken $sessionToken token $token");
+        if (sessionToken != null && token == sessionToken.toString()) {
+          GraphQLConfiguration.setToken(token);
+          Navigator.pushNamedAndRemoveUntil(
+              context, Home.routeName, (route) => false);
+        } else {
+          locator<PrefManager>().token = "null";
+          await FlutterSession().set("token", "");
+          GraphQLConfiguration.removeToken();
+          Navigator.pushNamedAndRemoveUntil(
+              context, LoginShopper.routeName, (route) => false);
+        }
+//
 //        if (token != null && token != "null") {
 //          GraphQLConfiguration.setToken(token);
 //          Navigator.pushNamedAndRemoveUntil(
@@ -37,10 +55,10 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
 //              context, LoginShopper.routeName, (route) => false);
 //        }
 
-        locator<PrefManager>().token = "null";
-        GraphQLConfiguration.removeToken();
-        Navigator.pushNamedAndRemoveUntil(
-            context, LoginShopper.routeName, (route) => false);
+//        locator<PrefManager>().token = "null";
+//        GraphQLConfiguration.removeToken();
+//        Navigator.pushNamedAndRemoveUntil(
+//            context, LoginShopper.routeName, (route) => false);
       } else if (status == AnimationStatus.dismissed) {}
     });
   }

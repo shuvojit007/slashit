@@ -430,9 +430,9 @@ const TextStyle payment2 = TextStyle(
 //==========Search=========//
 const TextStyle searchTitle1 = TextStyle(
   color: Colors.black87,
-  fontSize: 20,
+  fontSize: 18,
   fontFamily: 'Roboto',
-  fontWeight: FontWeight.w500,
+  fontWeight: FontWeight.w400,
 );
 
 const TextStyle searchTitle2 = TextStyle(

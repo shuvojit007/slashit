@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:slashit/src/di/locator.dart';
 import 'package:slashit/src/resources/text_styles.dart';
@@ -20,12 +19,12 @@ class _WalletScreenState extends State<WalletScreen> {
       appBar: _header(),
       body: Center(
         child: Container(
-          height: 350,
+          height: 365,
           width: 320,
           child: Column(
             children: <Widget>[
               Text(
-                "Pay instantly from your Slash direct balance using the QR code.",
+                "Pay instantly from your Slash direct balance using this QR code.",
                 style: Wallet1,
               ),
               SizedBox(
@@ -42,9 +41,9 @@ class _WalletScreenState extends State<WalletScreen> {
               GestureDetector(
                 onTap: _goToShopperScan,
                 child: Icon(
-                  FontAwesomeIcons.camera,
-                  color: Colors.grey,
-                  size: 30,
+                  Icons.crop_free,
+                  color: Colors.black,
+                  size: 40,
                 ),
               ),
             ],

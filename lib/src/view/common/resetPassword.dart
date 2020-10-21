@@ -48,7 +48,7 @@ class _ResetPasswordState extends State<ResetPassword> {
               shape: StadiumBorder(),
               color: PrimaryColor,
               onPressed: _resetPass,
-              child: Text("SUBMIT"))
+              child: Text("Email Link"))
         ],
       ),
     );

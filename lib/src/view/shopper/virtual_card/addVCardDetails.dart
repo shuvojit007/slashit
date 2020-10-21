@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:slashit/src/database/dao.dart';
 import 'package:slashit/src/di/locator.dart';
 import 'package:slashit/src/models/serviceFee.dart';
+import 'package:slashit/src/repository/user_repository.dart';
 import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/text_styles.dart';
 import 'package:slashit/src/utils/number.dart';
@@ -30,6 +32,9 @@ class _addVCardDetailsState extends State<addVCardDetails> {
   List<ServiceFee> service = [];
 
   num spendLimit = 0;
+
+  ProgressDialog _pr;
+
   @override
   void initState() {
 //    _controller.addListener(() {
@@ -37,8 +42,9 @@ class _addVCardDetailsState extends State<addVCardDetails> {
 //      value = int.parse(_controller.text);
 //      _updateTheValue();
 //    });
-    _getService();
 
+    _pr = ProgressDialog(context, type: ProgressDialogType.Normal);
+    _getService();
     super.initState();
   }
 
@@ -74,7 +80,11 @@ class _addVCardDetailsState extends State<addVCardDetails> {
   }
 
   _getService() async {
+    _pr.show();
+    await UserRepository.instance.fetchSettings();
+    _pr.hide();
     service = await dbLogic.getService();
+
     if (service.length > 0) {
       _changeDropDownValue(service[0]);
     }
@@ -82,7 +92,7 @@ class _addVCardDetailsState extends State<addVCardDetails> {
 
   textChangeListener(String text) async {
     print("   controller ${_controller.text}");
-    value = int.parse(text);
+    value = double.parse(text);
     setState(() {
       _updateTheValue();
     });
@@ -122,121 +132,122 @@ class _addVCardDetailsState extends State<addVCardDetails> {
                     "Spend limit ($_dropDownValue ${formatNumberValue(spendLimit)})",
                     style: createVcard2,
                   )),
-            ],
-          ),
-          Align(
-            alignment: Alignment.center,
-            child: Container(
-              width: double.infinity,
-              height: 120,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      SizedBox(
-                        width: 30,
-                      ),
-                      Container(
-                        height: 50,
-                        width: 50,
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton(
-                            hint: Text(
-                              _dropDownValue,
+              Container(
+                margin: EdgeInsets.only(
+                  top: 80,
+                ),
+                width: double.infinity,
+                height: 120,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(
+                          width: 30,
+                        ),
+                        Container(
+                          height: 50,
+                          width: 50,
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton(
+                              hint: Text(
+                                _dropDownValue,
+                                style: createVcard4,
+                              ),
                               style: createVcard4,
+                              items: service.map(
+                                (val) {
+                                  return DropdownMenuItem<ServiceFee>(
+                                    value: val,
+                                    child: Text(val.symbol),
+                                  );
+                                },
+                              ).toList(),
+                              onChanged: _changeDropDownValue,
                             ),
-                            style: createVcard4,
-                            items: service.map(
-                              (val) {
-                                return DropdownMenuItem<ServiceFee>(
-                                  value: val,
-                                  child: Text(val.symbol),
-                                );
-                              },
-                            ).toList(),
-                            onChanged: _changeDropDownValue,
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Container(
-                            height: 50,
-                            child: TextField(
-                              controller: _controller,
-                              onChanged: textChangeListener,
-                              keyboardType:
-                                  const TextInputType.numberWithOptions(
-                                decimal: true,
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: Container(
+                              height: 50,
+                              child: TextField(
+                                controller: _controller,
+                                onChanged: textChangeListener,
+                                keyboardType:
+                                    const TextInputType.numberWithOptions(
+                                  decimal: true,
+                                ),
+                                decoration: InputDecoration.collapsed(
+                                    hintText: "0.00", border: InputBorder.none),
+                                textAlign: TextAlign.center,
+                              )),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Column(
+                          children: <Widget>[
+                            if (serviceChargeFlat != null &&
+                                serviceChargeFlat != 0) ...[
+                              Text(
+                                "+$serviceChargeFlat Service fee",
+                                style: createVcard3,
                               ),
-                              decoration: InputDecoration.collapsed(
-                                  hintText: "0.00", border: InputBorder.none),
-                              textAlign: TextAlign.center,
-                            )),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Column(
-                        children: <Widget>[
-                          if (serviceChargeFlat != null &&
-                              serviceChargeFlat != 0) ...[
-                            Text(
-                              "+$serviceChargeFlat Service fee",
-                              style: createVcard3,
-                            ),
+                            ],
+                            if (servicecharge != null &&
+                                servicecharge != 0) ...[
+                              Text(
+                                "+$servicecharge% Service fee",
+                                style: createVcard3,
+                              ),
+                            ],
                           ],
-                          if (servicecharge != null && servicecharge != 0) ...[
-                            Text(
-                              "+$servicecharge% Service fee",
-                              style: createVcard3,
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                      ],
+                    ),
+                    Container(
+                      child: Divider(color: Colors.black26),
+                    ),
+                    GestureDetector(
+                      onTap: _goToBillindAddress,
+                      child: Container(
+                        color: Colors.grey[100],
+                        margin: EdgeInsets.only(top: 10),
+                        padding: EdgeInsets.only(
+                            top: 10, left: 10, bottom: 10, right: 10),
+                        child: Stack(
+                          children: <Widget>[
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                "  Billing",
+                                style: createVcard5,
+                              ),
                             ),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: Icon(
+                                Icons.arrow_forward_ios,
+                                color: Colors.grey,
+                              ),
+                            )
                           ],
-                        ],
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                    ],
-                  ),
-                  Container(
-                    child: Divider(color: Colors.black26),
-                  ),
-                  GestureDetector(
-                    onTap: _goToBillindAddress,
-                    child: Container(
-                      color: Colors.grey[100],
-                      margin: EdgeInsets.only(top: 10),
-                      padding: EdgeInsets.only(
-                          top: 10, left: 10, bottom: 10, right: 10),
-                      child: Stack(
-                        children: <Widget>[
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              "  Billing",
-                              style: createVcard5,
-                            ),
-                          ),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: Icon(
-                              Icons.arrow_forward_ios,
-                              color: Colors.grey,
-                            ),
-                          )
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
+            ],
           ),
           Align(
             alignment: Alignment.bottomCenter,

@@ -1,12 +1,13 @@
 import 'dart:convert';
 
+import 'package:flutter_session/flutter_session.dart';
 import 'package:slashit/src/database/dao.dart';
 import 'package:slashit/src/di/locator.dart';
 import 'package:slashit/src/graphql/client.dart';
 import 'package:slashit/src/models/serviceFee.dart';
 import 'package:slashit/src/utils/prefmanager.dart';
 
-storeUser(data) {
+storeUser(data) async {
   String token = data['token'];
   var user = data['user'];
   if (user["email"] != null) {
@@ -87,6 +88,7 @@ storeUser(data) {
   print("token ${data['token']}");
 
   locator<PrefManager>().token = token;
+  await FlutterSession().set("token", 'Bearer ' + token);
   GraphQLConfiguration.setToken(
     token,
   );

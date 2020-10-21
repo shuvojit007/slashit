@@ -114,7 +114,7 @@ class _CreateVCardState extends State<CreateVCard> {
                     color: PrimaryColor,
                     onPressed: _goToVcard,
                     child: Text(
-                      "Pay \nand create your ${widget.currancyType} ${totalAmount.toStringAsFixed(2)} card",
+                      "Pay \nand create your ${widget.currancyType} ${widget.amount.toStringAsFixed(2)} card",
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -195,7 +195,7 @@ class _CreateVCardState extends State<CreateVCard> {
 
   _goToVcard() async {
     if (_radioValue1 != 0) {
-      showToastMsg("Please accept the agrement");
+      showToastMsg("Please accept the agreement");
       return;
     }
 

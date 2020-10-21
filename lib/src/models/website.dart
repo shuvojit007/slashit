@@ -57,13 +57,13 @@ class Result {
 
   factory Result.fromMap(Map<String, dynamic> json) => Result(
         title: json["title"] == null ? null : json["title"],
-        img: json["img"] == null ? null : json["img"],
+        img: json["img"] == null ? "" : json["img"],
         link: json["link"] == null ? null : json["link"],
       );
 
   Map<String, dynamic> toMap() => {
         "title": title == null ? null : title,
-        "img": img == null ? null : img,
+        "img": img == null ? "" : img,
         "link": link == null ? null : link,
       };
 }

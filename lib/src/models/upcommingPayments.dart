@@ -49,6 +49,11 @@ class UpcommingPayments {
             ? null
             : List<dynamic>.from(result.map((x) => x.toMap())),
       };
+
+  @override
+  String toString() {
+    return 'UpcommingPayments{code: $code, message: $message, count: $count, hasNext: $hasNext, success: $success, result: $result}';
+  }
 }
 
 class Result {
@@ -141,6 +146,11 @@ class Result {
             ? null
             : List<dynamic>.from(transactions.map((x) => x.toMap())),
       };
+
+  @override
+  String toString() {
+    return 'Result{orderId: $orderId, title: $title, attachment: $attachment, note: $note, shippingAddress: $shippingAddress, createdAt: $createdAt, desc: $desc, quantity: $quantity, amount: $amount, totalLateFee: $totalLateFee, business: $business, status: $status, type: $type, isRequested: $isRequested, authorizationCode: $authorizationCode, currency: $currency, transactions: $transactions}';
+  }
 }
 
 class ResultBusiness {
@@ -159,6 +169,11 @@ class ResultBusiness {
   Map<String, dynamic> toMap() => {
         "business": business == null ? null : business.toMap(),
       };
+
+  @override
+  String toString() {
+    return 'ResultBusiness{business: $business}';
+  }
 }
 
 class BusinessBusiness {
@@ -177,6 +192,11 @@ class BusinessBusiness {
   Map<String, dynamic> toMap() => {
         "businessName": businessName == null ? null : businessName,
       };
+
+  @override
+  String toString() {
+    return 'BusinessBusiness{businessName: $businessName}';
+  }
 }
 
 class Transaction {
@@ -226,4 +246,9 @@ class Transaction {
         "amount": amount == null ? null : amount,
         "isRequested": isRequested == null ? null : isRequested,
       };
+
+  @override
+  String toString() {
+    return 'Transaction{id: $id, transactionId: $transactionId, status: $status, installment: $installment, createdAt: $createdAt, paymentDate: $paymentDate, reference: $reference, amount: $amount, isRequested: $isRequested}';
+  }
 }

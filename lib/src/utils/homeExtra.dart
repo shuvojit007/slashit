@@ -9,8 +9,8 @@ class Option {
 }
 
 const List<Option> shopper = const <Option>[
-//  const Option(
-//      title: 'Transfer to bank', id: "bank", icon: FontAwesomeIcons.piggyBank),
+  const Option(
+      title: 'Transfer to bank', id: "bank", icon: Icons.account_balance),
   const Option(
       title: 'Transactions', id: "transactions", icon: Icons.art_track),
   const Option(title: 'Manage Cards', id: "cards", icon: Icons.credit_card),

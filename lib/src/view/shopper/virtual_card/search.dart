@@ -3,10 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:slashit/src/blocs/searchWebstie.dart';
 import 'package:slashit/src/models/website.dart';
-import 'package:slashit/src/resources/assets.dart';
 import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/text_styles.dart';
 import 'package:slashit/src/utils/showToast.dart';
+import 'package:slashit/src/utils/url.dart';
 import 'package:slashit/src/view/common/bankTransfer.dart';
 import 'package:slashit/src/view/shopper/virtual_card/vcard.dart';
 import 'package:slashit/src/view/shopper/virtual_card/websiteDetails.dart';
@@ -40,12 +40,13 @@ class _SearchState extends State<Search> {
       if (!RegExp(
               r"^[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)")
           .hasMatch(text)) {
-        showToastMsg("Please add valid url");
+        showToastMsg("Please enter a valid web address");
         return;
       }
       print("_onSubmited $text");
-      if (!text.startsWith("http://") && !text.startsWith("https://")) {
-        _goToWebSiteDetails("https://$text", "");
+      if (!text.trim().startsWith("http://") &&
+          !text.trim().startsWith("https://")) {
+        _goToWebSiteDetails("http://$text", "");
       } else {
         _goToWebSiteDetails(text, "");
       }
@@ -134,14 +135,6 @@ class _SearchState extends State<Search> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-//          SizedBox(height: 60),
-//          Padding(
-//            padding: EdgeInsets.only(left: 20, right: 30, bottom: 10),
-//            child: Text(
-//              "Where do you want to shop ? ",
-//              style: searchTitle,
-//            ),
-//          ),
           _header(),
           SizedBox(height: 30),
           Padding(
@@ -185,7 +178,8 @@ class _SearchState extends State<Search> {
                             return _searchList(snapshot.data[index]);
                           });
                     } else if (snapshot.hasData) {
-                      return Center(child: Text("No website found"));
+                      return Center(
+                          child: Text("Search or enter a web address"));
                     } else if (snapshot.hasError) {
                       return Text(snapshot.error.toString());
                     }
@@ -219,7 +213,7 @@ class _SearchState extends State<Search> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          _imageView(data.img),
+          _imageView(data.img == null ? "" : data.img),
           SizedBox(
             width: 50,
           ),
@@ -245,6 +239,7 @@ class _SearchState extends State<Search> {
   }
 
   _imageView(String url) {
+    print(_getImageUrl(url));
     return Container(
       height: 55,
       width: 55,
@@ -259,15 +254,12 @@ class _SearchState extends State<Search> {
       child: ClipRRect(
         borderRadius: new BorderRadius.circular(55.0),
         child: CachedNetworkImage(
-          imageUrl: url,
+          imageUrl: _getImageUrl(url),
           height: 55,
           width: 55,
           fit: BoxFit.cover,
-          errorWidget: (context, url, error) => Image.asset(
-            Assets.Placeholder2,
-            width: 55,
-            fit: BoxFit.cover,
-            height: 55,
+          errorWidget: (context, url, error) => Container(
+            color: Colors.grey[300],
           ),
         ),
       ),
@@ -283,5 +275,14 @@ class _SearchState extends State<Search> {
         title,
       ),
     );
+  }
+
+  _getImageUrl(String url) {
+    if (!url.trim().startsWith("http://") &&
+        !url.trim().startsWith("https://")) {
+      return "${URL.S3_URL}${url}";
+    }
+
+    return url;
   }
 }

@@ -163,15 +163,15 @@ class _LoginShopperState extends State<LoginShopper> {
   }
 
   handleInput() async {
-    if (Validators.isValidEmail(_emailController.text) &&
-        Validators.isValidPassword(_passwordController.text)) {
+    if (CustomValidators.isValidEmail(_emailController.text) &&
+        CustomValidators.isValidPasswordLogin(_passwordController.text)) {
       FocusScope.of(context).requestFocus(FocusNode());
       _pr.show();
       await dbLogic.deleteAll();
       bool result = await UserRepository.instance
           .authUser(_emailController.text, _passwordController.text, false);
 
-      bool settingsResult = await UserRepository.instance.fetchSettings();
+      await UserRepository.instance.fetchSettings();
       _pr.hide();
       if (result) {
         Navigator.pushNamedAndRemoveUntil(

@@ -127,7 +127,10 @@ class _VCardState extends State<VCard> {
               ? Center(child: Text(error))
               : cardResult.length > 0
                   ? _body()
-                  : Center(child: Text("You have no virtual card."))
+                  : Center(
+                      child:
+                          Text("Virtual cards you've created will appear here"),
+                    )
           : Center(child: CircularProgressIndicator()),
     );
   }

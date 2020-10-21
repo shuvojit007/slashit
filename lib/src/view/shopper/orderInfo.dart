@@ -24,7 +24,7 @@ class OrderInfo extends StatefulWidget {
 
 class _OrderInfoState extends State<OrderInfo> {
   List<Color> colors = [Colors.blue, Colors.green, Colors.yellow, Colors.red];
-  bool status1, status2, status3, status4;
+  bool status1, status2, status3, status4, status5;
   ProgressDialog _pr;
 
   int _radioValue1 = -1;
@@ -39,27 +39,8 @@ class _OrderInfoState extends State<OrderInfo> {
     status2 = _checkTransactionStatus(widget.data.transactions[1]);
     status3 = _checkTransactionStatus(widget.data.transactions[2]);
     status4 = _checkTransactionStatus(widget.data.transactions[3]);
-
     super.initState();
   }
-
-//  _payNow(Transaction transaction, int index) async {
-//    _pr.show();
-//    bool status = await UserRepository.instance.payNow(transaction.id);
-//
-//    if (status) {
-//      setState(() {
-//        if (index == 0) status1 = true;
-//        if (index == 1) status2 = true;
-//        if (index == 2) status3 = true;
-//        if (index == 3) status4 = true;
-//      });
-//      transaction.status = "PAYMENT_SUCCESS";
-//      BlocProvider.of<RepaymentBloc>(context).add(GetRepayment(20, 0));
-//      if (_pr.isShowing()) _pr.hide();
-//    }
-//    if (_pr.isShowing()) _pr.hide();
-//  }
 
   _payLateFee(String id) async {
     _pr.show();
@@ -166,7 +147,12 @@ class _OrderInfoState extends State<OrderInfo> {
             SizedBox(
               height: 50,
             ),
-            for (int i = 0; i < widget.data.transactions.length; i++)
+            for (int i = 0;
+                i <
+                    (widget.data.transactions.length > 4
+                        ? 4
+                        : widget.data.transactions.length);
+                i++)
               _transactions(widget.data, widget.data.transactions[i], i),
             SizedBox(
               height: 10,

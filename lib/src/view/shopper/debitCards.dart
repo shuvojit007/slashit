@@ -22,7 +22,7 @@ class DebitCards extends StatefulWidget {
 class _DebitCardsState extends State<DebitCards> {
   int count = 0;
 
-  String paystackPublicKey = 'pk_test_316f780a38daae0c1cc86c2696dd20fdad714a17';
+  String paystackPublicKey = 'pk_live_e8712bbbc7d4b2c9023fa743ff7d1be002796dc0';
   String _cardNumber;
   String _cvv;
   int _expiryMonth = 0;

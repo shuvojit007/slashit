@@ -7,7 +7,8 @@ import 'package:slashit/src/models/upcommingPayments.dart';
 import 'package:slashit/src/resources/text_styles.dart';
 import 'package:slashit/src/utils/number.dart';
 import 'package:slashit/src/utils/timeformat.dart';
-import 'package:slashit/src/view/shopper/orderInfo.dart';
+
+import 'orderInfo.dart';
 
 class UpcommingRepayments extends StatefulWidget {
   static const routeName = "/repayments";
@@ -53,7 +54,7 @@ class _UpcommingRepaymentsState extends State<UpcommingRepayments> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Upcoming Repayment", style: userTitle),
+        title: Text("Upcoming repayments", style: userTitle),
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.black),
       ),
@@ -68,7 +69,7 @@ class _UpcommingRepaymentsState extends State<UpcommingRepayments> {
                   return _listView(false);
                 } else {
                   return Center(
-                      child: Text("You have no upcomming repayment."));
+                      child: Text("You have no upcomming repayments."));
                 }
               } else if (state is RepaymentBlocMoreLoading) {
                 return _listView(true);
@@ -151,6 +152,7 @@ class _UpcommingRepaymentsState extends State<UpcommingRepayments> {
   }
 
   _goToOrderDetails(data) {
+    print("order ${data.toString()}");
     Navigator.push(
         context,
         MaterialPageRoute(

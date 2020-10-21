@@ -32,11 +32,23 @@ class _HomeState extends State<Home> {
             onTap: onTabTapped,
             items: [
               BottomNavigationBarItem(
-                icon: const Icon(Icons.shopping_basket),
-                title: const Text('Shopper'),
+                icon: _currentIndex == 0
+                    ? new Image.asset(
+                        'assets/images/shoppingprimary.png',
+                        width: 30,
+                        height: 25,
+                      )
+                    : new Image.asset(
+                        'assets/images/shoppinggrey.png',
+                        width: 30,
+                        height: 25,
+                      ),
+                title: const Text('Shop'),
               ),
               BottomNavigationBarItem(
-                icon: const Icon(Icons.search),
+                icon: const Icon(
+                  Icons.search,
+                ),
                 title: const Text('Search'),
               ),
             ],

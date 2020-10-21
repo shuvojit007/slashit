@@ -244,7 +244,7 @@ class _BankTransferState extends State<BankTransfer> {
 
     _pr?.show();
     await UserRepository.instance.withdrawBalance(
-        int.parse(_amountController.text),
+        double.parse(_amountController.text),
         _amountController.text,
         bankDetails.code);
     _pr?.hide();

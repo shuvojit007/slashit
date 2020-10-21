@@ -6,6 +6,8 @@ import 'package:slashit/src/resources/text_styles.dart';
 import 'package:slashit/src/utils/showToast.dart';
 import 'package:slashit/src/utils/validators.dart';
 import 'package:slashit/src/view/auth/login_shopper.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:wc_form_validators/wc_form_validators.dart';
 
 class RegisterUser extends StatefulWidget {
   static const routeName = "/register";
@@ -66,7 +68,7 @@ class _RegisterUserState extends State<RegisterUser> {
               ),
             ),
             SizedBox(height: 30),
-            _fristName(),
+            _firstName(),
             SizedBox(height: 30),
             _lastName(),
             SizedBox(height: 30),
@@ -83,13 +85,15 @@ class _RegisterUserState extends State<RegisterUser> {
                   Text("By signing up you agree to Slashit ",
                       style: termsAndCondition),
                   GestureDetector(
-                    onTap: () => {},
+                    onTap: () =>
+                        _launchURL("https://ez-pm.herokuapp.com/terms"),
                     // Navigator.pushNamed(context, LoginShopper.routeName),
                     child: Text("Terms of Service", style: goToSignUpBlue),
                   ),
                   Text(" and ", style: termsAndCondition),
                   GestureDetector(
-                    onTap: () => {},
+                    onTap: () =>
+                        _launchURL("https://ez-pm.herokuapp.com/privacy"),
                     // Navigator.pushNamed(context, LoginShopper.routeName),
                     child: Text("Privacy Policy", style: goToSignUpBlue),
                   )
@@ -121,7 +125,7 @@ class _RegisterUserState extends State<RegisterUser> {
     );
   }
 
-  _fristName() {
+  _firstName() {
     return Padding(
       padding: EdgeInsets.only(
         left: 20,
@@ -183,6 +187,7 @@ class _RegisterUserState extends State<RegisterUser> {
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.black, width: 1.0),
           ),
+
           //   prefixIcon: Icon(Icons.mail_outline),
         ),
         cursorColor: appbartitle,
@@ -196,9 +201,15 @@ class _RegisterUserState extends State<RegisterUser> {
         left: 20,
         right: 20,
       ),
-      child: TextField(
+      child: TextFormField(
         controller: _passwordController,
         obscureText: _showPassword,
+        validator: Validators.compose([
+          Validators.required('Password is required'),
+          Validators.patternString(
+              r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$',
+              'Invalid Password')
+        ]),
         decoration: InputDecoration(
           labelText: "Password",
           //   prefixIcon: Icon(Icons.lock_outline),
@@ -228,7 +239,13 @@ class _RegisterUserState extends State<RegisterUser> {
         left: 20,
         right: 20,
       ),
-      child: TextField(
+      child: TextFormField(
+        validator: Validators.compose([
+          Validators.required('Password is required'),
+          Validators.patternString(
+              r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[^\w\s]).{8,}$',
+              'Invalid Password')
+        ]),
         controller: _confirmPasswordController,
         obscureText: _showConfirmPassword,
         decoration: InputDecoration(
@@ -276,13 +293,14 @@ class _RegisterUserState extends State<RegisterUser> {
         _emailController.text.isNotEmpty &&
         _passwordController.text.isNotEmpty &&
         _confirmPasswordController.text.isNotEmpty) {
-      if (!Validators.isValidEmail(_emailController.text)) {
+      if (!CustomValidators.isValidEmail(_emailController.text)) {
         showToastMsgTop("Please add valid email");
         return;
       }
 
-      if (!Validators.isValidPassword(_passwordController.text)) {
-        showToastMsgTop("Please add valid password");
+      if (!CustomValidators.isValidPassword(_passwordController.text)) {
+        showToastMsgTop(
+            "Please must contain one character , one symbol , one special character and length should be 8");
         return;
       }
 
@@ -313,6 +331,14 @@ class _RegisterUserState extends State<RegisterUser> {
       _pr.hide();
     } else {
       showToastMsgTop("Please fill up all the input");
+    }
+  }
+
+  _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      print("Could not launch $url");
     }
   }
 }

@@ -52,7 +52,7 @@ class _LoginBusinessState extends State<LoginBusiness> {
             Padding(
               padding: EdgeInsets.only(left: 20, bottom: 10),
               child: Text(
-                "Help your customer pay you easily",
+                "Help your customers shop smart and flexibly",
                 style: loginTitle,
               ),
             ),
@@ -147,8 +147,8 @@ class _LoginBusinessState extends State<LoginBusiness> {
   }
 
   handleInput() async {
-    if (Validators.isValidEmail(_emailController.text) &&
-        Validators.isValidPassword(_passwordController.text)) {
+    if (CustomValidators.isValidEmail(_emailController.text) &&
+        CustomValidators.isValidPasswordLogin(_passwordController.text)) {
       FocusScope.of(context).requestFocus(FocusNode());
       _pr.show();
       bool result = await UserRepository.instance

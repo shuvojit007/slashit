@@ -578,7 +578,7 @@ query {
 """;
   }
 
-  String addVcard(String currency, int amount) {
+  String addVcard(String currency, num amount) {
     return """mutation {
   AddVCard(currency: "$currency", amount: $amount) {
     success

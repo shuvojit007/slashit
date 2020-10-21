@@ -30,12 +30,13 @@ class _WebsiteDetailsState extends State<WebsiteDetails> {
   bool isLoaded = false;
   double progress = 0;
 
+  String title = "";
   String url = "";
+  bool newlink = false;
 
   @override
   void initState() {
-    //  url = widget.link;
-    _url.text = "    ${url}";
+    _url.text = url;
     super.initState();
   }
 
@@ -50,6 +51,7 @@ class _WebsiteDetailsState extends State<WebsiteDetails> {
     final WebsiteDetailsArguments args =
         ModalRoute.of(context).settings.arguments;
     url = args.link;
+    title = args.title;
     return WillPopScope(
       onWillPop: () async {
         if (webView != null && await webView.canGoBack()) {
@@ -81,12 +83,11 @@ class _WebsiteDetailsState extends State<WebsiteDetails> {
                 onLoadStart: (InAppWebViewController controller, String url) {
                   setState(() {
                     this.url = url;
-                    _url.text = "    ${url}";
+                    _url.text = url;
                     isLoaded = false;
                   });
                 },
-                onLoadStop:
-                    (InAppWebViewController controller, String url) async {
+                onLoadStop: (InAppWebViewController controller, String url) {
                   setState(() {
                     this.url = url;
                     isLoaded = true;
@@ -115,7 +116,8 @@ class _WebsiteDetailsState extends State<WebsiteDetails> {
                               MaterialPageRoute(
                                   builder: (context) => addVCardDetails()));
                         },
-                        child: Text("Pay in 4 on ${args.title}"),
+                        child:
+                            Text(newlink ? "Pay in 4" : "Pay in 4 on ${title}"),
                       ),
                       SizedBox(
                         width: 20,
@@ -160,6 +162,9 @@ class _WebsiteDetailsState extends State<WebsiteDetails> {
             children: <Widget>[
               Container(
                 margin: EdgeInsets.only(top: 40, left: 20, right: 50),
+                padding: EdgeInsets.only(
+                  left: 20,
+                ),
                 decoration: BoxDecoration(
                     color: Colors.grey[300],
                     borderRadius: BorderRadius.all(Radius.circular(15))),
@@ -169,11 +174,12 @@ class _WebsiteDetailsState extends State<WebsiteDetails> {
                   child: TextField(
                     controller: _url,
                     onSubmitted: (String value) {
-                      if (!value.startsWith("http://") &&
-                          !value.startsWith("https://")) {
-                        value = "https://$value";
+                      if (!value.trim().startsWith("http://") &&
+                          !value.trim().startsWith("https://")) {
+                        value = "http://${value.trim()}";
                       }
-                      webView.loadUrl(url: value);
+                      newlink = true;
+                      webView.loadUrl(url: value.trim());
                     },
                     //  enabled: false,
                     decoration: InputDecoration.collapsed(

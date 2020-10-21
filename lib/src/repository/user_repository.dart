@@ -487,7 +487,7 @@ class UserRepository {
   }
 
   Future<bool> createPaymentReqByShopper(
-      String title, int amount, String type, String uniqueId) async {
+      String title, num amount, String type, String uniqueId) async {
     try {
       print("title $title  amount $amount type $type");
       GraphQLClient _client = GraphQLConfiguration().clientToQuery();
@@ -599,7 +599,7 @@ class UserRepository {
 
   //===========BANK================//
   Future<bool> withdrawBalance(
-      int amount, String accountNumber, String bankCode) async {
+      num amount, String accountNumber, String bankCode) async {
     try {
       GraphQLClient _client = GraphQLConfiguration().clientToQuery();
       QueryResult result = await _client.mutate(MutationOptions(
@@ -759,6 +759,7 @@ class UserRepository {
   }
 
   Future<bool> addVcard(String currency, amount) async {
+    print("======addVcard======");
     try {
       GraphQLClient _client = GraphQLConfiguration().clientToQuery();
       QueryResult result = await _client.mutate(MutationOptions(
@@ -767,9 +768,11 @@ class UserRepository {
       )));
       if (result.hasException) {
         showToastMsg("Something went wrong");
+        print("error =>  ${result.exception}");
         return false;
       } else {
         LazyCacheMap map = result.data.get("AddVCard");
+        print("map =>  ${map.toString()}");
         if (map['success'] == true) {
           showToastMsg(map['message']);
           return true;
@@ -779,6 +782,7 @@ class UserRepository {
         }
       }
     } catch (e) {
+      print("e =>  ${e.toString()}");
       return false;
     }
   }

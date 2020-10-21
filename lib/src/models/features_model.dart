@@ -56,7 +56,7 @@ class Result {
   });
 
   String id, title, link;
-  int price;
+  num price;
   String desc;
   String img;
 

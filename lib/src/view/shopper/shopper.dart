@@ -6,7 +6,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:slashit/src/blocs/features.dart';
@@ -37,7 +36,6 @@ import 'package:slashit/src/view/shopper/shopperScan.dart';
 import 'package:slashit/src/view/shopper/shopper_requests.dart';
 import 'package:slashit/src/view/shopper/wallet.dart';
 import 'package:slashit/src/widget/dialog/acceptPaymentReq.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'featuresList.dart';
 
@@ -91,6 +89,7 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
     );
 
     bool update = await UserRepository.instance.fetchUser();
+
     print("update $update");
     if (update) {
       setState(() {});
@@ -214,9 +213,9 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
           GestureDetector(
             onTap: _goToShopperScan,
             child: Icon(
-              FontAwesomeIcons.camera,
-              color: Colors.grey,
-              size: 30,
+              Icons.crop_free,
+              color: Colors.black87,
+              size: 40,
             ),
           ),
           SizedBox(
@@ -410,15 +409,6 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
                     imageUrl: "${URL.S3_URL}${snapshot.data[index].img}",
                     fit: BoxFit.cover,
                     placeholderFadeInDuration: Duration(milliseconds: 3),
-//                    placeholder: (context, url) => Center(
-//                          child: SizedBox(
-//                            width: 50,
-//                            height: 50,
-//                            child: CircularProgressIndicator(
-//                              strokeWidth: 2,
-//                            ),
-//                          ),
-//                        ),
                     errorWidget: (context, url, error) => Image.asset(
                           Assets.Placeholder,
                           width: 100,
@@ -460,15 +450,6 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
         Navigator.pushNamedAndRemoveUntil(
             context, LoginShopper.routeName, (route) => false);
         break;
-    }
-  }
-
-  _launchURL(String url) async {
-    print(url);
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      print("Could not launch $url");
     }
   }
 
