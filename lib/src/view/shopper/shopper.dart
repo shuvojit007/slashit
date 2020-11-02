@@ -30,6 +30,7 @@ import 'package:slashit/src/utils/userData.dart';
 import 'package:slashit/src/view/auth/login_shopper.dart';
 import 'package:slashit/src/view/common/bankTransfer.dart';
 import 'package:slashit/src/view/common/transactions.dart';
+import 'package:slashit/src/view/shopper/accounts.dart';
 import 'package:slashit/src/view/shopper/debitCards.dart';
 import 'package:slashit/src/view/shopper/repayment.dart';
 import 'package:slashit/src/view/shopper/shopperScan.dart';
@@ -444,8 +445,14 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
           DebitCards.routeName,
         );
         break;
+      case "accounts":
+        Navigator.pushNamed(
+          context,
+          Accounts.routeName,
+        );
+        break;
       case "signout":
-        print("singout ");
+        print("singout");
         removeUser();
         Navigator.pushNamedAndRemoveUntil(
             context, LoginShopper.routeName, (route) => false);

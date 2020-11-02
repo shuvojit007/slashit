@@ -154,6 +154,9 @@ class _TransactionsState extends State<Transactions> {
       case "PAYMENT_SUCCESS":
         return "Completed";
         break;
+      case "WALLET_PAYMENT_SUCCESS":
+        return "Completed";
+        break;
       case "PAYMENT_PENDING":
         return "Pending";
         break;

@@ -494,3 +494,19 @@ const TextStyle billingAddress1 = TextStyle(
   fontFamily: 'Roboto',
   fontWeight: FontWeight.w500,
 );
+
+//===============
+
+const TextStyle accounts = TextStyle(
+  color: Colors.black,
+  fontSize: size_19,
+  fontFamily: 'Roboto',
+  fontWeight: FontWeight.w400,
+);
+
+const TextStyle accountsslug = TextStyle(
+  color: Colors.black,
+  fontSize: size_15,
+  fontFamily: 'Raleway',
+  fontWeight: FontWeight.w600,
+);

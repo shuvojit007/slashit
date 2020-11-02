@@ -238,6 +238,21 @@ query{
     """;
   }
 
+  String fetchInstagramUser() {
+    return """
+query{
+  FetchUserById{
+    code
+    success
+    user{
+      isInstagramVerified
+      instagram
+    }
+  }
+}
+    """;
+  }
+
   String payNow(String id) {
     return """mutation{
   Paynow(id:"$id"){
@@ -477,7 +492,7 @@ query{
 
   //=============Bank========//
 
-  String withDrawBalance(int amount, String accountNumber, String bankCode) {
+  String withDrawBalance(num amount, String accountNumber, String bankCode) {
     return """mutation{
   WithdrawBalance(amount:$amount,accountNumber:"$accountNumber",bankCode:"$bankCode"){
     code
@@ -609,5 +624,16 @@ query {
   }
 }
     """;
+  }
+
+  String addInstagram(dynamic profileData) {
+    return """mutation {
+  ProfileUpdate(profileData:$profileData){
+    code
+    success
+    message
+  }
+}
+""";
   }
 }

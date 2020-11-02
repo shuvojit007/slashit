@@ -5,6 +5,9 @@ getTransactionStatus(String status) {
     case "PAYMENT_SUCCESS":
       return "COMPLETED";
       break;
+    case "WALLET_PAYMENT_SUCCESS":
+      return "COMPLETED";
+      break;
     case "PAYOUT_SUCCESS":
       return "COMPLETED";
       break;

@@ -43,7 +43,6 @@ class _BusinessState extends State<Business> {
   @override
   void dispose() {
     _bloc.dispose();
-    // TODO: implement dispose
     super.dispose();
   }
 
@@ -78,21 +77,22 @@ class _BusinessState extends State<Business> {
           backgroundColor: Colors.white,
           appBar: _header(),
           body: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
             child: Column(
               children: <Widget>[
                 SizedBox(
-                  height: 20,
+                  height: 5,
                 ),
                 _body(),
                 SizedBox(
-                  height: 20,
+                  height: 5,
                 ),
                 Container(
                   margin: EdgeInsets.only(left: 15, right: 5, bottom: 5),
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "Recents,",
+                      "Recent",
                       style: shopperText4,
                     ),
                   ),
@@ -147,8 +147,8 @@ class _BusinessState extends State<Business> {
         children: <Widget>[
           Container(
             width: double.infinity,
-            height: 35,
-            margin: EdgeInsets.only(left: 10, top: 10, right: 10),
+            height: 30,
+            margin: EdgeInsets.only(left: 10, top: 5, right: 10),
             decoration: BoxDecoration(
                 color: PrimaryColor,
                 borderRadius: BorderRadius.all(Radius.circular(10))),
@@ -160,7 +160,7 @@ class _BusinessState extends State<Business> {
             ),
           ),
           SizedBox(
-            height: 30,
+            height: 15,
           ),
           Center(
             child: Text(
@@ -227,30 +227,33 @@ class _BusinessState extends State<Business> {
                     height: 220,
                     child: ListView.builder(
                         scrollDirection: Axis.vertical,
-                        itemCount: snapshot.data.length,
+                        itemCount: snapshot.data.length + 1,
                         itemBuilder: (BuildContext ctx, int index) {
-                          return _data(snapshot.data[index]);
+                          return snapshot.data.length - 1 < index
+                              ? _viewAll()
+                              : _data(snapshot.data[index]);
+                          // return _data(snapshot.data[index]);
                         }),
                   ),
                 ),
-                if (snapshot.data.length > 6) ...[
-                  GestureDetector(
-                    onTap: () => Navigator.pushNamed(
-                      context,
-                      Transactions.routeName,
-                    ),
-                    child: Container(
-                      margin: EdgeInsets.only(right: 15, top: 5),
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          "View All",
-                          style: shopperText5,
-                        ),
-                      ),
-                    ),
-                  )
-                ],
+                // if (snapshot.data.length > 6) ...[
+                //   GestureDetector(
+                //     onTap: () => Navigator.pushNamed(
+                //       context,
+                //       Transactions.routeName,
+                //     ),
+                //     child: Container(
+                //       margin: EdgeInsets.only(right: 15, top: 5),
+                //       child: Align(
+                //         alignment: Alignment.centerRight,
+                //         child: Text(
+                //           "View All",
+                //           style: shopperText5,
+                //         ),
+                //       ),
+                //     ),
+                //   )
+                // ],
               ],
             );
           } else if (snapshot.hasData) {
@@ -261,6 +264,29 @@ class _BusinessState extends State<Business> {
           return Center(child: CircularProgressIndicator());
         },
       ),
+    );
+  }
+
+  _viewAll() {
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(
+        context,
+        Transactions.routeName,
+      ),
+      child: Container(
+          margin: EdgeInsets.only(right: 15, top: 5),
+          child: Container(
+            width: double.infinity,
+            margin: EdgeInsets.only(bottom: 5, left: 5),
+            color: creemWhite,
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                "View All",
+                style: shopperText5,
+              ),
+            ),
+          )),
     );
   }
 
@@ -301,22 +327,6 @@ class _BusinessState extends State<Business> {
                 ],
               ),
             ),
-//            Expanded(
-//              flex: 1,
-//              child: Text(
-//                "${getShortTime(data.createdAt)}",
-//                style: businessText2,
-//              ),
-//            ),
-//            Expanded(
-//              flex: 1,
-//              child: Text(
-//                "${data.order.title}",
-//                maxLines: 1,
-//                overflow: TextOverflow.ellipsis,
-//                style: businessText2,
-//              ),
-//            ),
             Expanded(
               flex: 1,
               child: Text(
@@ -370,7 +380,7 @@ class _BusinessState extends State<Business> {
         );
         break;
       case "signout":
-        print("singout ");
+        print("singout");
         await removeUser();
         Navigator.pushNamedAndRemoveUntil(
             context, LoginShopper.routeName, (route) => false);
@@ -380,10 +390,12 @@ class _BusinessState extends State<Business> {
 
   _goToTransactionDetails(data) {
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => TransactionDetails(
-                  data: data,
-                )));
+      context,
+      MaterialPageRoute(
+        builder: (context) => TransactionDetails(
+          data: data,
+        ),
+      ),
+    );
   }
 }

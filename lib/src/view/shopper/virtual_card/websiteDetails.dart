@@ -31,7 +31,7 @@ class _WebsiteDetailsState extends State<WebsiteDetails> {
   double progress = 0;
 
   String title = "";
-  String url = "";
+  String url = "", newUrl = "";
   bool newlink = false;
 
   @override
@@ -55,7 +55,7 @@ class _WebsiteDetailsState extends State<WebsiteDetails> {
     return WillPopScope(
       onWillPop: () async {
         if (webView != null && await webView.canGoBack()) {
-          print("webview");
+          print("webview ");
           webView.goBack();
         } else {
           print("webview null");
@@ -106,22 +106,23 @@ class _WebsiteDetailsState extends State<WebsiteDetails> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      RaisedButton(
-                        textColor: Colors.white,
-                        shape: StadiumBorder(),
-                        color: PrimaryColor,
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => addVCardDetails()));
-                        },
-                        child:
-                            Text(newlink ? "Pay in 4" : "Pay in 4 on ${title}"),
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
+                      if (!newlink) ...[
+                        RaisedButton(
+                          textColor: Colors.white,
+                          shape: StadiumBorder(),
+                          color: PrimaryColor,
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => addVCardDetails()));
+                          },
+                          child: Text("Pay in 4 on ${title}"),
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                      ],
                       GestureDetector(
                         onTap: () {
                           Navigator.push(context,
@@ -179,6 +180,7 @@ class _WebsiteDetailsState extends State<WebsiteDetails> {
                         value = "http://${value.trim()}";
                       }
                       newlink = true;
+                      newUrl = value;
                       webView.loadUrl(url: value.trim());
                     },
                     //  enabled: false,

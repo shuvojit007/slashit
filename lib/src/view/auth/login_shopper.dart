@@ -61,7 +61,7 @@ class _LoginShopperState extends State<LoginShopper> {
                   Navigator.pushNamed(context, ResetPassword.routeName),
               child: Padding(
                   padding: EdgeInsets.only(left: 20),
-                  child: Text("Forgot Password ?", style: forgotPass)),
+                  child: Text("Forgot password?", style: forgotPass)),
             ),
             SizedBox(height: 20),
             _signInButton(),
@@ -79,7 +79,7 @@ class _LoginShopperState extends State<LoginShopper> {
                 child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text("Business account ? Sign in ", style: goToSignUp),
+                Text("Business account? Sign in ", style: goToSignUp),
                 GestureDetector(
                   onTap: () =>
                       Navigator.pushNamed(context, LoginBusiness.routeName),

@@ -298,10 +298,11 @@ class _ShopperScanState extends State<ShopperScan>
             value[1]);
 
         if (result) {
-          this.setModalState(() {
-            stateOnlyText = ButtonState.success;
-          });
+          // this.setModalState(() {
+          //   stateOnlyText = ButtonState.success;
+          // });
 
+          showToastMsg("Successful");
           await UserRepository.instance.fetchUser();
           BlocProvider.of<WalletBloc>(context).add(GetWallet());
 

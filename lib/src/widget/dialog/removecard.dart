@@ -42,20 +42,20 @@ class _RemoveCardState extends State<RemoveCard> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   FlatButton(
-                    textColor: Colors.white,
+                    textColor: PrimaryColor,
                     shape: StadiumBorder(),
-                    color: PrimaryColor,
+                    //   color: PrimaryColor,
                     onPressed: () => Navigator.pop(context),
-                    child: Text("NOT NOW"),
+                    child: Text("Cancel"),
                   ),
                   SizedBox(width: 15),
-                  RaisedButton(
-                    textColor: Colors.white,
+                  FlatButton(
+                    textColor: PrimaryColor,
                     shape: StadiumBorder(),
-                    color: PrimaryColor,
+                    // color: PrimaryColor,
                     onPressed: () =>
                         {Navigator.pop(context), widget.pushData(widget.id)},
-                    child: Text("REMOVE CARD"),
+                    child: Text("Remove card"),
                   ),
                 ],
               )

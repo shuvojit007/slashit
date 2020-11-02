@@ -8,6 +8,7 @@ import 'package:slashit/src/graphql/client.dart';
 import 'package:slashit/src/graphql/graph_api.dart';
 import 'package:slashit/src/models/cards.dart';
 import 'package:slashit/src/models/features_model.dart';
+import 'package:slashit/src/models/instagramModel.dart';
 import 'package:slashit/src/models/paymentReq.dart';
 import 'package:slashit/src/models/transaction.dart';
 import 'package:slashit/src/models/upcommingPayments.dart';
@@ -58,7 +59,7 @@ class UserRepository {
     } else {
       LazyCacheMap map = result.data.get("Register");
       if (map['success'] == true) {
-        showToastMsg("User created successfully. Please verify your email");
+        showToastMsg("Please check your email to verify your account.");
         return true;
       } else {
         showToastMsg(map['message']);
@@ -352,7 +353,7 @@ class UserRepository {
       } else {
         LazyCacheMap map = result.data.get("RechargeWallet");
         if (map['success'] == true) {
-          showToastMsgGreen("Wallet has been completed");
+          showToastMsgGreen("Successful");
           return true;
         } else {
           showToastMsg(map['message']);
@@ -601,6 +602,7 @@ class UserRepository {
   Future<bool> withdrawBalance(
       num amount, String accountNumber, String bankCode) async {
     try {
+      print("withdrawBalance");
       GraphQLClient _client = GraphQLConfiguration().clientToQuery();
       QueryResult result = await _client.mutate(MutationOptions(
           documentNode: gql(
@@ -611,6 +613,7 @@ class UserRepository {
         return false;
       } else {
         LazyCacheMap map = result.data.get("WithdrawBalance");
+        print(result.data);
         if (map['success'] == true) {
           showToastMsgGreen(map['message']);
           return true;
@@ -620,6 +623,7 @@ class UserRepository {
         }
       }
     } catch (e) {
+      print("e $e");
       return false;
     }
   }
@@ -649,9 +653,7 @@ class UserRepository {
   }
 
   //===============Subscription===========//
-  Future<Stream> paymentSubscriptions(
-    String id,
-  ) async {
+  Future<Stream> paymentSubscriptions(String id) async {
     try {
       return await GraphQLConfiguration().clientToQuery().subscribe(Operation(
               documentNode: gql(
@@ -808,6 +810,62 @@ class UserRepository {
         print("Something went wrong");
         return false;
       }
+    }
+  }
+
+  //==================InstagramModel=============//
+  Future<bool> addInstagram(
+    dynamic profileData,
+  ) async {
+    try {
+      GraphQLClient _client = GraphQLConfiguration().clientToQuery();
+      QueryResult result = await _client.mutate(MutationOptions(
+          documentNode: gql(
+        GraphApi.instance.addInstagram(profileData),
+      )));
+      if (result.hasException) {
+        showToastMsg("Something went wrong");
+        return false;
+      } else {
+        LazyCacheMap map = result.data.get("ProfileUpdate");
+        if (map['success'] == true) {
+          showToastMsgGreen(map['message']);
+          return true;
+        } else {
+          showToastMsgGreen(map['message']);
+          return false;
+        }
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<InstagramModel> fetchInstagram() async {
+    print("======addVcard======");
+    try {
+      GraphQLClient _client = GraphQLConfiguration().clientToQuery();
+      QueryResult result = await _client.query(QueryOptions(
+          documentNode: gql(
+        GraphApi.instance.fetchInstagramUser(),
+      )));
+      if (result.hasException) {
+        print("error  ${result.exception.toString()}");
+        return null;
+      } else {
+        LazyCacheMap map = result.data.get("FetchUserById");
+        InstagramModel instagramModel = instagramModelFromMap(json.encode(map));
+        if (map['success'] == true) {
+          return instagramModel;
+        } else {
+          print(instagramModel.toString());
+          print("Something went wrong");
+          return null;
+        }
+      }
+    } catch (e) {
+      print("e =>  ${e.toString()}");
+      return null;
     }
   }
 }

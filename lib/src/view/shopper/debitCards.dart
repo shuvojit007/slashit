@@ -21,20 +21,19 @@ class DebitCards extends StatefulWidget {
 
 class _DebitCardsState extends State<DebitCards> {
   int count = 0;
-
-  String paystackPublicKey = 'pk_live_e8712bbbc7d4b2c9023fa743ff7d1be002796dc0';
+  //String paystackPublicKey = 'pk_live_e8712bbbc7d4b2c9023fa743ff7d1be002796dc0';
+  String paystackPublicKey = 'pk_test_316f780a38daae0c1cc86c2696dd20fdad714a17';
   String _cardNumber;
   String _cvv;
   int _expiryMonth = 0;
   int _expiryYear = 0;
-
   ProgressDialog _pr;
   CardsBloc _bloc;
 
   @override
   void initState() {
-    _pr = ProgressDialog(context, type: ProgressDialogType.Normal);
     PaystackPlugin.initialize(publicKey: paystackPublicKey);
+    _pr = ProgressDialog(context, type: ProgressDialogType.Normal);
     _bloc = CardsBloc();
     _bloc.featchAllCards();
     super.initState();
@@ -163,7 +162,7 @@ class _DebitCardsState extends State<DebitCards> {
                             width: 0.5,
                             style: BorderStyle.solid),
                         child: const Text(
-                          "Make Preferred",
+                          "Make preferred",
                           style: debitCards4,
                         ),
                       ),
@@ -179,7 +178,7 @@ class _DebitCardsState extends State<DebitCards> {
                           ),
                         ),
                         child: Text(
-                          "Remove Card",
+                          "Remove card",
                           style: debitCards5,
                         ),
                       )

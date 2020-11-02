@@ -11,4 +11,7 @@ class Str {
 
   static const String createvCardSlug3 =
       "If the virtual card has not been used 24 hrs after creation, it is automatically deleted and the first installment excluding service fee is added to your Slash direct balance. \n\nAny leftover money on your virtual card after 24 hrs will be deposited in your Slash direct balance if you've made any purchase with your virtual card.";
+
+  static const String instaSlug =
+      "Go to the Apps and Websites section of your instagram profile in your browser to accept invitation from Slashit.";
 }

@@ -20,6 +20,7 @@ class _RequestMoneyState extends State<RequestMoney> {
   TextEditingController _desc = TextEditingController();
   TextEditingController _amount = TextEditingController();
   TextEditingController _note = TextEditingController();
+  TextEditingController _customer = TextEditingController();
   File _imageFile;
   String attachment = "Add Attachment";
   bool imageLoad = false;
@@ -30,6 +31,7 @@ class _RequestMoneyState extends State<RequestMoney> {
     _desc?.dispose();
     _amount?.dispose();
     _note?.dispose();
+    _customer?.dispose();
     super.dispose();
   }
 
@@ -59,6 +61,8 @@ class _RequestMoneyState extends State<RequestMoney> {
           _inputFields("Add Title", _title),
           SizedBox(height: 16),
           _inputFields("Description", _desc),
+          SizedBox(height: 16),
+          _inputFields("Customer", _desc),
           SizedBox(height: 16),
           Padding(
             padding: EdgeInsets.only(

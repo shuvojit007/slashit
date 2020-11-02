@@ -69,7 +69,7 @@ class _UpcommingRepaymentsState extends State<UpcommingRepayments> {
                   return _listView(false);
                 } else {
                   return Center(
-                      child: Text("You have no upcomming repayments."));
+                      child: Text("You have no upcoming repayments."));
                 }
               } else if (state is RepaymentBlocMoreLoading) {
                 return _listView(true);

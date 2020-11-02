@@ -251,8 +251,7 @@ class _VCardState extends State<VCard> {
   optionSelected(String option) async {
     if (_bloc.vCard != null && _bloc.vCard.length > 0) {
       _pr.show();
-      bool result =
-          await UserRepository.instance.deleteVCard(_bloc.vCard[page].cardId);
+      bool result = await UserRepository.instance.deleteVCard(_bloc.vCard[page].cardId);
       _pr.hide();
       if (result) {
         _bloc.featchAllCard();

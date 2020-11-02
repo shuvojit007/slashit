@@ -23,37 +23,48 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: shopper ? _children[_currentIndex] : Business(),
-      bottomNavigationBar: Visibility(
-          visible: shopper,
-          child: BottomNavigationBar(
-            currentIndex: _currentIndex,
-            onTap: onTabTapped,
-            items: [
-              BottomNavigationBarItem(
-                icon: _currentIndex == 0
-                    ? new Image.asset(
-                        'assets/images/shoppingprimary.png',
-                        width: 30,
-                        height: 25,
-                      )
-                    : new Image.asset(
-                        'assets/images/shoppinggrey.png',
-                        width: 30,
-                        height: 25,
-                      ),
-                title: const Text('Shop'),
-              ),
-              BottomNavigationBarItem(
-                icon: const Icon(
-                  Icons.search,
-                ),
-                title: const Text('Search'),
-              ),
-            ],
-          )),
-    );
+    return WillPopScope(
+        onWillPop: () async {
+          if (_currentIndex != 0) {
+            setState(() {
+              _currentIndex = 0;
+            });
+            return false;
+          }
+          return true;
+        },
+        child: Scaffold(
+          body: shopper ? _children[_currentIndex] : Business(),
+          bottomNavigationBar: Visibility(
+              visible: shopper,
+              child: BottomNavigationBar(
+                currentIndex: _currentIndex,
+                onTap: onTabTapped,
+                items: [
+                  BottomNavigationBarItem(
+                    icon: _currentIndex == 0
+                        ? new Image.asset(
+                            'assets/images/shoppingprimary.png',
+                            width: 30,
+                            height: 25,
+                          )
+                        : new Image.asset(
+                            'assets/images/shoppinggrey.png',
+                            width: 30,
+                            height: 25,
+                          ),
+                    title: const Text('Shop'),
+                  ),
+                  BottomNavigationBarItem(
+                    icon: const Icon(
+                      Icons.search,
+                    ),
+                    title: const Text('Search'),
+                  ),
+                ],
+              )),
+        ) // Your Scaffold goes here.
+        );
   }
 
   void onTabTapped(int index) {

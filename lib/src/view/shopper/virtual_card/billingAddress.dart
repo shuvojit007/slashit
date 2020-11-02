@@ -159,7 +159,10 @@ class _BillingAddressState extends State<BillingAddress> {
                 Align(
                     alignment: Alignment.centerRight,
                     child: CountryPicker(
-                      showDialingCode: true,
+                      showDialingCode: false,
+                      showCurrencyISO: false,
+                      showName: true,
+                      showCurrency: false,
                       onChanged: (Country country) {
                         setState(() {
                           _selected = country;

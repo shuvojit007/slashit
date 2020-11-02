@@ -10,6 +10,7 @@ import 'package:slashit/src/view/common/requestDetails.dart';
 import 'package:slashit/src/view/common/resetPassword.dart';
 import 'package:slashit/src/view/common/transactions.dart';
 import 'package:slashit/src/view/home.dart';
+import 'package:slashit/src/view/shopper/accounts.dart';
 import 'package:slashit/src/view/shopper/addMoney.dart';
 import 'package:slashit/src/view/shopper/debitCards.dart';
 import 'package:slashit/src/view/shopper/featuresList.dart';
@@ -27,6 +28,7 @@ class Routes {
   static const WEBSITEDETAILS = WebsiteDetails.routeName;
   static const VCARD = VCard.routeName;
   static const DEBITCARDS = DebitCards.routeName;
+  static const ACCOUNTS = Accounts.routeName;
   static const TRANSACTIONS = Transactions.routeName;
   static const RESETPASS = ResetPassword.routeName;
   static const root = Splash.routeName;
@@ -68,5 +70,6 @@ class Routes {
     Routes.ADDMONEY: (context) => AddMoney(),
     Routes.CREATEPAYMENTS: (context) => RequestMoney(),
     Routes.BANKTRANSFER: (context) => BankTransfer(),
+    Routes.ACCOUNTS: (context) => Accounts()
   };
 }
