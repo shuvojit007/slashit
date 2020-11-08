@@ -88,6 +88,7 @@ storeUser(data) async {
   print("token ${data['token']}");
 
   locator<PrefManager>().token = token;
+  locator<PrefManager>().tokenTimeStamp = DateTime.now().millisecondsSinceEpoch;
   await FlutterSession().set("token", 'Bearer ' + token);
   GraphQLConfiguration.setToken(
     token,

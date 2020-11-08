@@ -4,6 +4,7 @@ import 'package:progress_dialog/progress_dialog.dart';
 import 'package:slashit/src/blocs/paymentReq.dart';
 import 'package:slashit/src/models/paymentReq.dart';
 import 'package:slashit/src/resources/text_styles.dart';
+import 'package:slashit/src/utils/number.dart';
 import 'package:slashit/src/utils/timeformat.dart';
 import 'package:slashit/src/view/common/requestDetails.dart';
 
@@ -120,7 +121,7 @@ class _RequestsState extends State<Requests> {
                       height: 10,
                     ),
                     Text(
-                      "₦ ${data.amount}",
+                      "₦ ${formatNumberValue(data.amount)}",
                       style: TransactionsList2,
                     )
                   ],
@@ -133,9 +134,13 @@ class _RequestsState extends State<Requests> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      "${getTime(data.createdAt)}",
+                      "${getShortTime(data.createdAt)}",
                       style: TransactionsList1,
                     ),
+                    // Text(
+                    //   "${getDateTime(data.createdAt)}",
+                    //   style: TransactionsList1,
+                    // ),
                   ],
                 ),
               )

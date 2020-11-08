@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_session/flutter_session.dart';
 import 'package:slashit/src/di/locator.dart';
 import 'package:slashit/src/graphql/client.dart';
 import 'package:slashit/src/utils/prefmanager.dart';
@@ -29,17 +28,25 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
     controller.addStatusListener((status) async {
       if (status == AnimationStatus.completed) {
         controller.dispose();
-        dynamic sessionToken = await FlutterSession().get("token");
+        // dynamic sessionToken = await FlutterSession().get("token");
         String token = locator<PrefManager>().token;
+        int timestamp = locator<PrefManager>().tokenTimeStamp;
+        final difference = DateTime.now()
+            .difference(DateTime.fromMillisecondsSinceEpoch(timestamp))
+            .inMinutes;
 
-        print("sessionToken $sessionToken token $token");
-        if (sessionToken != null && token == sessionToken.toString()) {
+        print("token $token duration $difference");
+
+        if (token != "null" &&
+            token != null &&
+            timestamp != 0 &&
+            difference < 30) {
           GraphQLConfiguration.setToken(token);
           Navigator.pushNamedAndRemoveUntil(
               context, Home.routeName, (route) => false);
         } else {
           locator<PrefManager>().token = "null";
-          await FlutterSession().set("token", "");
+          locator<PrefManager>().tokenTimeStamp = 0;
           GraphQLConfiguration.removeToken();
           Navigator.pushNamedAndRemoveUntil(
               context, LoginShopper.routeName, (route) => false);

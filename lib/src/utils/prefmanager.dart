@@ -20,6 +20,7 @@ class PrefManager {
   static const String CITY = "CITY";
   static const String POSTALCODE = "POSTALCODE";
   static const String COUNTRY = "COUNTRY";
+  static const String TIMESTAMP = "TIMESTAMP";
   static PrefManager _instance;
   static SharedPreferences _preferences;
 
@@ -115,6 +116,9 @@ class PrefManager {
 
   num get exchangeRate => _getFromDisk("EXCHANGERATE") ?? 0;
   set exchangeRate(num value) => _saveToDisk("EXCHANGERATE", value);
+
+  num get tokenTimeStamp => _getFromDisk(TIMESTAMP) ?? 0;
+  set tokenTimeStamp(num value) => _saveToDisk(TIMESTAMP, value);
 //========User Information ==================//
 
 //  int get SIndex => _getFromDisk(SINDEX) ?? 0;

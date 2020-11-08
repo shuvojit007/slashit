@@ -30,7 +30,7 @@ class TransactionsBloc {
   featchAllTransctionsWithLimit(int limit) async {
     print("featchAllTransctions");
     TransactionsModel transaction =
-        await UserRepository.instance.fetchTransactions(8, 0);
+        await UserRepository.instance.fetchTransactions(limit, 0);
     List<Result> res = transaction.result;
     _transactionFetcher.sink.add(res);
   }

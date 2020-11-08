@@ -212,7 +212,6 @@ class _BusinessState extends State<Business> {
 
   _recentPayments() {
     return Container(
-      height: 260,
       margin: EdgeInsets.only(left: 15, right: 15),
       child: StreamBuilder(
         stream: _bloc.allTransaction,
@@ -220,22 +219,29 @@ class _BusinessState extends State<Business> {
           if (snapshot.hasData && snapshot.data.length > 0) {
             return Column(
               children: <Widget>[
-                MediaQuery.removePadding(
-                  context: context,
-                  removeTop: true,
-                  child: Container(
-                    height: 220,
-                    child: ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        itemCount: snapshot.data.length + 1,
-                        itemBuilder: (BuildContext ctx, int index) {
-                          return snapshot.data.length - 1 < index
-                              ? _viewAll()
-                              : _data(snapshot.data[index]);
-                          // return _data(snapshot.data[index]);
-                        }),
-                  ),
-                ),
+                ...snapshot.data.map((item) {
+                  return _data(item);
+                }).toList(),
+
+                if (snapshot.data.length > 4) ...[_viewAll()]
+
+                // MediaQuery.removePadding(
+                //   context: context,
+                //   removeTop: true,
+                //   child: Container(
+                //     height: 220,
+                //     child: ListView.builder(
+                //         primary: false,
+                //         scrollDirection: Axis.vertical,
+                //         itemCount: snapshot.data.length + 1,
+                //         itemBuilder: (BuildContext ctx, int index) {
+                //           return snapshot.data.length - 1 < index
+                //               ? _viewAll()
+                //               : _data(snapshot.data[index]);
+                //           // return _data(snapshot.data[index]);
+                //         }),
+                //   ),
+                // ),
                 // if (snapshot.data.length > 6) ...[
                 //   GestureDetector(
                 //     onTap: () => Navigator.pushNamed(
@@ -274,7 +280,7 @@ class _BusinessState extends State<Business> {
         Transactions.routeName,
       ),
       child: Container(
-          margin: EdgeInsets.only(right: 15, top: 5),
+          margin: EdgeInsets.only(right: 15, top: 5, bottom: 5),
           child: Container(
             width: double.infinity,
             margin: EdgeInsets.only(bottom: 5, left: 5),

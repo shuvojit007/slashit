@@ -68,9 +68,6 @@ class _AccountsState extends State<Accounts> {
                             child: TextField(
                               controller: _controller,
                               textAlign: TextAlign.center,
-                              keyboardType: TextInputType.numberWithOptions(
-                                decimal: true,
-                              ),
                               decoration: InputDecoration(
                                 hintText: "Enter your username",
                               ),
@@ -104,7 +101,7 @@ class _AccountsState extends State<Accounts> {
                         SizedBox(width: 10),
                       ],
                     )),
-                if (!model?.user?.isInstagramVerified) ...[
+                if (instaAccount && !model?.user?.isInstagramVerified) ...[
                   Center(
                       child: Container(
                           margin: EdgeInsets.all(10),

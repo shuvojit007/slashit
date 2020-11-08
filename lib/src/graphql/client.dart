@@ -6,14 +6,14 @@ import 'package:slashit/src/utils/prefmanager.dart';
 class GraphQLConfiguration {
   static Link link = null;
   static HttpLink httpLink = HttpLink(
-    uri: 'http://13.228.27.185:4009/',
+    uri: 'https://api.slashit.me/',
     // uri: "https://slashapi.herokuapp.com/"
     // uri: "https://pm-gateway.herokuapp.com/",
   );
 
   static final WebSocketLink websocketLink = WebSocketLink(
     // url: "wss://pm-gateway.herokuapp.com/graphql",
-    url: "http://13.228.27.185:4009/",
+    url: "https://api.slashit.me/",
     config: SocketClientConfig(
       autoReconnect: true,
       inactivityTimeout: Duration(seconds: 30),

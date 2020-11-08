@@ -3,17 +3,23 @@ import 'package:date_time_format/date_time_format.dart';
 String getDateTime(String time) {
   return DateTimeFormat.format(
       new DateTime.fromMillisecondsSinceEpoch(int.parse(time)),
-      format: DateTimeFormats.american);
+      format: 'D, M j, h:i A');
+  // return DateTimeFormat.format(
+  //     new DateTime.fromMillisecondsSinceEpoch(int.parse(time)),
+  //     format: DateTimeFormats.american);
 }
 
 String getTime(String time) {
   return DateTimeFormat.format(
       new DateTime.fromMillisecondsSinceEpoch(int.parse(time)),
-      format: DateTimeFormats.european);
+      format: 'D, M j, h:i A');
+  // return DateTimeFormat.format(
+  //     new DateTime.fromMillisecondsSinceEpoch(int.parse(time)),
+  //     format: DateTimeFormats.european);
 }
 
 String getShortTime(String time) {
   return DateTimeFormat.format(
       new DateTime.fromMillisecondsSinceEpoch(int.parse(time)),
-      format: 'D, M j, H:i');
+      format: 'D, M j, h:i A');
 }
