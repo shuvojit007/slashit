@@ -17,7 +17,6 @@ import 'package:slashit/src/graphql/client.dart';
 import 'package:slashit/src/graphql/graph_api.dart';
 import 'package:slashit/src/models/features_model.dart';
 import 'package:slashit/src/repository/user_repository.dart';
-import 'package:slashit/src/resources/assets.dart';
 import 'package:slashit/src/resources/colors.dart';
 import 'package:slashit/src/resources/str.dart';
 import 'package:slashit/src/resources/text_styles.dart';
@@ -410,12 +409,7 @@ class _ShopperState extends State<Shopper> with SingleTickerProviderStateMixin {
                     imageUrl: "${URL.S3_URL}${snapshot.data[index].img}",
                     fit: BoxFit.cover,
                     placeholderFadeInDuration: Duration(milliseconds: 3),
-                    errorWidget: (context, url, error) => Image.asset(
-                          Assets.Placeholder,
-                          width: 100,
-                          fit: BoxFit.cover,
-                          height: 100,
-                        )),
+                    errorWidget: (context, url, error) => Container()),
               ),
             );
           }

@@ -300,12 +300,12 @@ class _RegisterUserState extends State<RegisterUser> {
 
       if (!CustomValidators.isValidPassword(_passwordController.text)) {
         showToastMsgTop(
-            "Please must contain one character , one symbol , one special character and length should be 8");
+            "Min. length is 8 characters. Password should include a mix of letters, numbers and symbols");
         return;
       }
 
       if (_passwordController.text != _confirmPasswordController.text) {
-        showToastMsgTop("Passowd not matched");
+        showToastMsgTop("Password not matched");
         return;
       }
 
