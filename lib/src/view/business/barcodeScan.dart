@@ -7,6 +7,7 @@ import 'package:graphql/utilities.dart' show multipartFileFrom;
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:share/share.dart';
 import 'package:slashit/src/repository/user_repository.dart';
+import 'package:slashit/src/utils/url.dart';
 import 'package:slashit/src/view/business/business.dart';
 import 'package:slashit/src/view/qrCode.dart';
 
@@ -262,13 +263,13 @@ class _BarCodeScanningState extends State<BarCodeScanning> {
       orderID = await UserRepository.instance
           .createPaymentReqCopy(paymentInput, "WALLET_INSTALLMENT");
       if (orderID != null) {
-        String link = "https://ez-pm.herokuapp.com/request-order/${orderID}";
+        String link = "${URL.WEBSITE_URL}request-order/${orderID}";
         _pr.hide();
         await Share.share(link);
       }
       _pr.hide();
     } else {
-      String link = "https://ez-pm.herokuapp.com/request-order/${orderID}";
+      String link = "${URL.WEBSITE_URL}request-order/${orderID}";
       await Share.share(link);
     }
   }
