@@ -188,6 +188,7 @@ class _RequestMoneyState extends State<RequestMoney> {
     if (_title.text.isNotEmpty &&
         _note.text.isNotEmpty &&
         _desc.text.isNotEmpty &&
+        _customer.text.isNotEmpty&&
         _amount.text.isNotEmpty) {
       Navigator.push(
           context,
@@ -196,6 +197,7 @@ class _RequestMoneyState extends State<RequestMoney> {
                     title: _title.text,
                     note: _note.text,
                     desc: _desc.text,
+                    customer: _customer.text,
                     amount: int.parse(_amount.text),
                     file: _imageFile,
                   )));

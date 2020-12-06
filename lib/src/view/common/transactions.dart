@@ -175,6 +175,9 @@ class _TransactionsState extends State<Transactions> {
       case "PAYOUT_REFUNDED":
         return "Refunded";
         break;
+      case "BANK_TRANSFER_SUCCESS":
+        return "Transfer Successful";
+        break;
       default:
         return status;
         break;

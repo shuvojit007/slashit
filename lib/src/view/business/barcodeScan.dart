@@ -15,10 +15,10 @@ import '../home.dart';
 
 class BarCodeScanning extends StatefulWidget {
   static const routeName = "/barCode";
-  String title, note, desc;
+  String title, note, desc,customer;
   int amount;
   File file;
-  BarCodeScanning({this.title, this.note, this.desc, this.amount, this.file});
+  BarCodeScanning({this.title, this.note,this.customer, this.desc, this.amount, this.file});
 
   @override
   _BarCodeScanningState createState() => _BarCodeScanningState();
@@ -256,7 +256,8 @@ class _BarCodeScanningState extends State<BarCodeScanning> {
         "desc": "\"${widget.desc}\"",
         "amount": "${widget.amount}",
         "attachment": "\"${url}\"",
-        "note": "\"${widget.note}\""
+        "note": "\"${widget.note}\"",
+        "customerName": "\"${widget.customer}\""
       };
 
       _pr.show();
