@@ -15,10 +15,10 @@ import '../home.dart';
 
 class BarCodeScanning extends StatefulWidget {
   static const routeName = "/barCode";
-  String title, note, desc,customer;
+  String title, note, desc,customerName;
   int amount;
   File file;
-  BarCodeScanning({this.title, this.note,this.customer, this.desc, this.amount, this.file});
+  BarCodeScanning({this.title, this.note,this.customerName, this.desc, this.amount, this.file});
 
   @override
   _BarCodeScanningState createState() => _BarCodeScanningState();
@@ -125,6 +125,7 @@ class _BarCodeScanningState extends State<BarCodeScanning> {
         "note": "\"${widget.note}\"",
         "attachment": "\"${url}\"",
         "shopper": "\"${id}\"",
+        "customerName": "\"${widget.customerName}\""
       };
 
       bool result = await UserRepository.instance.createPaymentReq(
@@ -257,7 +258,7 @@ class _BarCodeScanningState extends State<BarCodeScanning> {
         "amount": "${widget.amount}",
         "attachment": "\"${url}\"",
         "note": "\"${widget.note}\"",
-        "customerName": "\"${widget.customer}\""
+        "customerName": "\"${widget.customerName}\""
       };
 
       _pr.show();

@@ -62,7 +62,7 @@ class _RequestMoneyState extends State<RequestMoney> {
           SizedBox(height: 16),
           _inputFields("Description", _desc),
           SizedBox(height: 16),
-          _inputFields("Customer", _desc),
+          _inputFields("Customer", _customer),
           SizedBox(height: 16),
           Padding(
             padding: EdgeInsets.only(
@@ -197,7 +197,7 @@ class _RequestMoneyState extends State<RequestMoney> {
                     title: _title.text,
                     note: _note.text,
                     desc: _desc.text,
-                    customer: _customer.text,
+                    customerName: _customer.text,
                     amount: int.parse(_amount.text),
                     file: _imageFile,
                   )));
